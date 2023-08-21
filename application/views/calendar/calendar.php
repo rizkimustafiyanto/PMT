@@ -17,41 +17,6 @@
     <section class="content">
         <div class="container-fluid">
             <div class="row">
-                <div class="col-md-3">
-                    <div class="sticky-top mb-3">
-                        <div class="card">
-                            <div class="card-header">
-                                <h4 class="card-title">Draggable Events</h4>
-                            </div>
-                            <div class="card-body">
-                                <div id="external-events">
-                                </div>
-                                <label for="drop-remove">
-                                    <input type="checkbox" id="drop-remove">
-                                    remove after drop
-                                </label>
-                            </div>
-                        </div>
-                        <div class="card">
-                            <div class="card-header">
-                                <h3 class="card-title">Create Event</h3>
-                            </div>
-                            <div class="card-body">
-                                <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
-                                    <ul class="fc-color-picker" id="color-chooser">
-                                    </ul>
-                                </div>
-                                <div class="input-group">
-                                    <input id="new-event" type="text" class="form-control" placeholder="Event Title">
-                                    <div class="input-group-append">
-                                        <button id="add-new-event" type="button" class="btn btn-primary">Add</button>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-
                 <div class="col-md-9">
                     <div class="card card-primary">
                         <div class="card-body p-0">
@@ -66,79 +31,48 @@
         </div>
     </section>
     <!-- Edit external event sebelum di drag -->
-    <div class="modal fade" id="editExternalEventModal">
+    <div class="modal fade" id="addEventModal">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Edit External Event</h4>
+                    <h4 class="modal-title">ADD Event</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="edit-external-event-form">
+                    <form id="event-form">
                         <div class="form-group">
-                            <label for="edit-external-event-title">Event Title</label>
-                            <input type="text" class="form-control" id="edit-external-event-title" name="edit-external-event-title" required>
+                            <label for="event-title">Event Title</label>
+                            <input type="text" class="form-control" id="event-title" name="event-title" required>
                         </div>
                         <div class="form-group">
-                            <label for="edit-external-event-color">Event Color</label>
-                            <select class="form-control" id="edit-external-event-color" name="edit-external-event-color" required>
-                                <!-- Options for event colors -->
-                            </select>
-                        </div>
-                    </form>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
-                    <button type="button" class="btn btn-primary" id="save-edit-external-event">Save Changes</button>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <div class="modal fade" id="editEventModal">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Edit Event</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <div class="modal-body">
-                    <form id="edit-event-form">
-                        <div class="form-group">
-                            <label for="edit-event-title">Event Title</label>
-                            <input type="text" class="form-control" id="edit-event-title" name="edit-event-title" required>
-                        </div>
-                        <div class="form-group">
-                            <label for="edit-event-color">Event Color</label>
-                            <select class="form-control" id="edit-event-color" name="edit-event-color" required>
+                            <label for="event-color">Event Color</label>
+                            <select class="form-control" id="event-color" name="event-color" required>
                                 <!-- Options for event colors -->
                             </select>
                         </div>
                         <div class="form-group">
-                            <label for="edit-event-start">Start Date</label>
-                            <input type="text" class="form-control" id="edit-event-start" name="edit-event-start" required>
+                            <label for="event-start">Start Date</label>
+                            <input type="datetime-local" class="form-control" id="event-start" name="event-start" required>
                         </div>
                         <div class="form-group">
-                            <label for="edit-event-end">End Date</label>
-                            <input type="text" class="form-control" id="edit-event-end" name="edit-event-end" required>
+                            <label for="event-end">End Date</label>
+                            <input type="datetime-local" class="form-control" id="event-end" name="event-end" required>
                         </div>
 
-                        <input type="hidden" id="edit-event-id" name="edit-event-id">
+                        <input type="hidden" id="event-id" name="event-id">
                     </form>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-danger" id="delete-event">Delete</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="save-edit-event">Save Changes</button>
+                    <button type="button" class="btn btn-primary" id="save-add-event">Save Changes</button>
                 </div>
 
             </div>
         </div>
     </div>
+
     <div class="modal fade" id="eventDetailModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -149,12 +83,22 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <p id="event-color-id">Color ID: </p>
-                    <p id="event-start-date">Start Date: </p>
-                    <p id="event-end-date">End Date: </p>
+                    <div class="form-group">
+                        <label for="eventID">ID</label>
+                        <input type="text" class="form-control" id="eventID" name="eventID" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-start">Start Date</label>
+                        <input type="datetime-local" class="form-control" id="event-start-date" name="event-start-date" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="event-end">End Date</label>
+                        <input type="datetime-local" class="form-control" id="event-end-date" name="event-end-date" required>
+                    </div>
                 </div>
-
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" id="edit-save-event">Save Changes</button>
+                    <button type="button" class="btn btn-danger" id="delete-event">Delete</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
             </div>
@@ -165,32 +109,41 @@
 <script src="<?= base_url(); ?>assets/plugins/fullcalendar/main.js"></script>
 <script>
     $(function() {
-        var containerEl = document.getElementById('external-events');
         var calendarEl = document.getElementById('calendar');
-        var checkbox = document.getElementById('drop-remove');
         var calendar;
 
+        function handleDateClick(info) {
+            var clickedDate = info.date;
+
+            // Menghitung end date dengan menambahkan 1 jam ke start date
+            var endDate = new Date(clickedDate);
+            endDate.setHours(endDate.getHours() + 1);
+
+            // Mengambil komponen tanggal, bulan, tahun, jam, dan menit
+            var year = clickedDate.getFullYear();
+            var month = (clickedDate.getMonth() + 1).toString().padStart(2, '0');
+            var day = clickedDate.getDate().toString().padStart(2, '0');
+            var hours = clickedDate.getHours().toString().padStart(2, '0');
+            var minutes = clickedDate.getMinutes().toString().padStart(2, '0');
+
+            // Format tanggal dan waktu sesuai dengan format datetime-local
+            var formattedStartDate = `${year}-${month}-${day}T${hours}:${minutes}`;
+            var formattedEndDate = `${year}-${month}-${day}T${endDate.getHours()}:${endDate.getMinutes()}`;
+
+            $('#event-start').val(formattedStartDate);
+            $('#event-end').val(formattedEndDate);
+
+            $('#addEventModal').modal('show');
+        }
+
+
         function initializeCalendar(eventsData) {
-            // Menangani drag dari external event menuju ke kalender
-            new FullCalendar.Draggable(containerEl, {
-                itemSelector: '.external-event',
-                eventData: function(eventEl) {
-
-                    return {
-                        id: eventEl.colorId,
-                        title: eventEl.innerText,
-                        backgroundColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
-                        borderColor: window.getComputedStyle(eventEl, null).getPropertyValue('border-color'),
-                        textColor: window.getComputedStyle(eventEl, null).getPropertyValue('color'),
-                    };
-                }
-            });
-
+            // Menangani drag dari event menuju ke kalender
             calendar = new FullCalendar.Calendar(calendarEl, {
                 headerToolbar: {
-                    left: "prev,next today",
-                    center: "title",
-                    right: "dayGridMonth,timeGridWeek,timeGridDay"
+                    left: 'prev,next today',
+                    center: 'title',
+                    right: 'dayGridMonth,timeGridWeek,timeGridDay'
                 },
                 validRange: {
                     start: '2023-01-01',
@@ -198,61 +151,16 @@
                 },
                 slotMinTime: '06:00:00',
                 slotMaxTime: '22:00:00',
-                themeSystem: "bootstrap",
+                themeSystem: 'bootstrap',
                 events: eventsData,
-                editable: true,
-                droppable: true,
-                eventDrop: handlePositionDrop, // Untuk update
-                eventClick: handleEventClick,
-                eventReceive: function(info) {
-                    var event = info.event;
-                    var title = event.title;
-                    var backgroundColor = event.backgroundColor;
-                    var borderColor = event.borderColor;
-                    var startStr = event.startStr;
-                    var endStr = event.endStr;
-                    var allDay = event.allDay;
-                    var backgroundColorHex = rgbToHex(backgroundColor);
-                    var borderColorHex = rgbToHex(borderColor);
-
-                    // Ambil informasi dari elemen HTML yang di-drop
-                    var droppedEventTitle = $(info.draggedEl).data('title');
-                    var droppedEventId = $(info.draggedEl).data('ex_id');
-
-                    $.ajax({
-                        url: '<?= base_url() ?>AddEvent',
-                        type: 'POST',
-                        data: {
-                            title: title,
-                            background_color: backgroundColorHex,
-                            border_color: borderColorHex,
-                            start_date: startStr,
-                            end_date: endStr,
-                            all_day: allDay,
-                        },
-                        success: function(response) {
-                            console.log('Event added successfully:', response);
-                            if ($('#drop-remove').prop('checked')) {
-                                $(info.draggedEl).remove(); // Hapus elemen yang di-drop
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.log('Error adding event:', error);
-                        }
-                    });
-
-                    if (checkbox == 'checked') {
-
-                    }
-                },
-
+                editable: false,
+                droppable: false,
+                dateClick: handleDateClick,
+                eventClick: handleEventClick
             });
 
             calendar.render();
 
-            $(document).on('click', '#add-new-event', handleAddNewExternalEvent);
-            $(document).on('click', '#color-chooser li a', handleColorChooserClick);
-            $(document).on('click', '#save-edit-event', handleSaveEditEvent);
             $(document).on('click', '#delete-event', handleDeleteEvent);
             $('#edit-event-start, #edit-event-end').datepicker({
                 dateFormat: 'yy-mm-dd',
@@ -265,33 +173,6 @@
 
         }
 
-        $(document).on('click', '#external-events .external-event', handleExternalEventClick);
-
-        function handleExternalEventClick() {
-            $('#external-events .external-event').removeClass('active');
-            // Menambahkan kelas .active ke elemen yang diklik
-            $(this).addClass('active');
-            var colorBack = $(this).data('backgroundColor'); // Pastikan ini mengambil nilai yang sesuai
-            var eventTitle = $(this).data('title');
-            var exId = $(this).data('id');
-            // console.log($(this).data());
-
-            // Mengisi nilai modal edit
-            $('#edit-external-event-title').val(eventTitle);
-            $('#edit-external-event-color').val(colorBack); // Set nilai select sesuai colorId
-
-            // Menampilkan modal edit
-            $('#editExternalEventModal').modal('show');
-        }
-
-        function handlePositionDrop(eventDropInfo) {
-            // console.log(eventDropInfo)
-            var event = eventDropInfo.event;
-            var newStartDate = event.startStr;
-            var newEndDate = event.endStr;
-            updateEventDates(event.id, newStartDate, newEndDate);
-        }
-
         function handleEventClick(info) {
             console.log(info.event);
             var id_event = info.event.id;
@@ -301,189 +182,33 @@
             var endDate = info.event.end;
 
             $('#eventDetailModal .modal-title').text(title);
-            $('#eventDetailModal #event-color-id').text('Color ID: ' + colorId);
+            $('#eventDetailModal #eventID').val(id_event);
 
             if (startDate) {
-                $('#eventDetailModal #event-start-date').text('Start Date: ' + startDate.toLocaleString());
+                $('#eventDetailModal #event-start-date').val(formatDate(startDate));
             } else {
-                $('#eventDetailModal #event-start-date').text('Start Date: N/A');
+                $('#eventDetailModal #event-start-date').val('N/A');
             }
 
             if (endDate) {
-                $('#eventDetailModal #event-end-date').text('End Date: ' + endDate.toLocaleString());
+                $('#eventDetailModal #event-end-date').val(formatDate(endDate));
             } else {
-                $('#eventDetailModal #event-end-date').text('End Date: N/A');
+                $('#eventDetailModal #event-end-date').val('N/A');
             }
+
 
             $('#eventDetailModal').modal('show');
 
         }
 
-        $(document).on('click', '#save-edit-external-event', function() {
-            var newEventTitle = $('#edit-external-event-title').val();
-            var newEventColorId = $('#edit-external-event-color').val();
-            var selectedExternalEvent = $('#external-events .external-event.active');
+        function formatDate(date) {
+            var year = date.getFullYear();
+            var month = (date.getMonth() + 1).toString().padStart(2, '0');
+            var day = date.getDate().toString().padStart(2, '0');
+            var hours = date.getHours().toString().padStart(2, '0');
+            var minutes = date.getMinutes().toString().padStart(2, '0');
 
-            // console.log(newEventTitle + "   " + newEventColorId + " Selected:  " + selectedExternalEvent);
-            if (selectedExternalEvent.length > 0) {
-                selectedExternalEvent.text(newEventTitle);
-                selectedExternalEvent.data('title', newEventTitle);
-
-                // Update data-color-id dengan nilai yang dipilih dari elemen select
-                selectedExternalEvent.data('color-id', newEventColorId);
-
-                // Mengambil warna dari elemen select (misalnya Anda memberikan atribut data-color="#FF0000")
-                selectedExternalEvent.css({
-                    'background-color': newEventColorId,
-                    'border-color': newEventColorId,
-                    'color': '#fff',
-                });
-
-                $('#editExternalEventModal').modal('hide');
-            }
-        });
-
-
-
-        function handleAddNewExternalEvent(e) {
-            e.preventDefault();
-            var val = $('#new-event').val();
-            var backgroundColor = $('#color-chooser li a.active').css('color');
-            var borderColor = $('#color-chooser li a.active').css('border-color');
-            if (val.length === 0) {
-                return;
-            }
-            var backgroundColorHex = rgbToHex(backgroundColor);
-            var borderColorHex = rgbToHex(borderColor);
-
-            $.ajax({
-                url: '<?= base_url() ?>AddExternalEvent',
-                type: 'POST',
-                data: {
-                    eventTitle: val,
-                    background_color: backgroundColorHex,
-                    border_color: borderColorHex,
-                },
-                success: function(response) {
-                    // console.log(response);
-                    var event = $('<div class="external-event ui-draggable ui-draggable-handle"></div>');
-                    event.text(val);
-                    event.css({
-                        'background-color': backgroundColor,
-                        'border-color': backgroundColor,
-                        'color': '#fff'
-                    }).addClass('external-event');
-                    event.data('event', {
-                        title: val,
-                        backgroundColor: backgroundColor,
-                        borderColor: backgroundColor,
-                        colorId: response.colorId // Assuming the response contains the new colorId
-                    });
-                    event.draggable({
-                        zIndex: 999,
-                        revert: true,
-                        revertDuration: 0
-                    });
-
-                    $('#external-events').prepend(event);
-                    $('#new-event').val('');
-
-                    calendar.refetchEvents();
-                },
-                error: function(xhr, status, error) {
-                    console.log(xhr);
-                }
-            });
-        }
-
-        function getEventColor(colorId) {
-            $.ajax({
-                url: '<?= base_url() ?>GetEventColor',
-                type: 'POST',
-                data: {
-                    color_id: colorId,
-                },
-                success: function(response) {
-                    var colorData = JSON.parse(response);
-                    var backgroundColor = colorData.background_color;
-                    var borderColor = colorData.border_color;
-
-                    var event = $('<div/>');
-                    event.css({
-                        'background-color': backgroundColor,
-                        'border-color': borderColor,
-                        'color': '#fff'
-                    }).addClass('external-event');
-
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        }
-
-        function updateEventColor(eventElement, colorId) {
-            $.ajax({
-                url: '<?= base_url() ?>GetEventColor',
-                type: 'POST',
-                data: {
-                    color_id: colorId,
-                },
-                success: function(response) {
-                    var colorData = JSON.parse(response);
-                    var backgroundColor = colorData.background_color;
-                    var borderColor = colorData.border_color;
-
-                    eventElement.css({
-                        'background-color': backgroundColor,
-                        'border-color': borderColor,
-                        'color': '#fff'
-                    });
-
-                    var colorLabel = $('<div class="event-color-label"></div>').css({
-                        'background-color': backgroundColor,
-                        'border-color': borderColor,
-                    });
-                    eventElement.prepend(colorLabel);
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        }
-
-        function handleSaveEditEvent() {
-            var eventId = $('#edit-event-id').val();
-            var newTitle = $('#edit-event-title').val();
-            var newColorId = $('#edit-event-color').val();
-            var newStartDate = $('#edit-event-start').val();
-            var newEndDate = $('#edit-event-end').val();
-
-            $.ajax({
-                url: '<?= base_url(); ?>UpdateEvent',
-                type: 'POST',
-                data: {
-                    color_id: newColorId,
-                    event_id: eventId,
-                    start_date: newStartDate,
-                    end_date: newEndDate,
-                    flag: '0',
-                },
-                success: function(response) {
-                    // console.log(response);
-                    var event = calendar.getEventById(eventId);
-                    console.log(event);
-                    event.setProp('title', newTitle);
-                    event.setProp('colorId', newColorId);
-                    event.setStart(newStartDate);
-                    event.setEnd(newEndDate);
-                    updateEventColor(event, newColorId);
-                    $('#editEventModal').modal('hide');
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
         }
 
         function updateEventDates(eventId, startDate, endDate) {
@@ -506,8 +231,7 @@
         }
 
         function handleDeleteEvent() {
-            var eventId = $('#edit-event-id').val();
-
+            var eventId = $('#eventID').val();
             if (confirm('Are you sure you want to delete this event?')) {
                 $.ajax({
                     url: '<?= base_url(); ?>DeleteEvent',
@@ -522,6 +246,7 @@
                             event.remove();
                         }
                         $('#editEventModal').modal('hide');
+                        $('#eventDetailModal').modal('hide');
                     },
                     error: function(xhr, status, error) {
                         console.log(error);
@@ -530,69 +255,40 @@
             }
         }
 
-        // Tampilan isi kalender sekarang
-        $.ajax({
-            url: "<?= base_url() ?>GetEvent",
-            type: "GET",
-            dataType: "json",
-            success: function(response) {
-                // console.log(response);
-                initializeCalendar(response);
-            },
-            error: function(xhr, status, error) {
-                console.log(error + "oke");
-            }
+        $(document).on('click', '#edit-save-event', function() {
+            var eventId = $('#eventID').val();
+            var startDateTime = $('#event-start-date').val();
+            var endDateTime = $('#event-end-date').val();
+
+            // Panggil fungsi untuk memperbarui detail event
+            updateEventDates(eventId, startDateTime, endDateTime);
+            refreshCalendar();
+            $('#eventDetailModal').modal('hide');
         });
 
-        $.ajax({
-            url: "<?= base_url() ?>GetExternalEvent",
-            type: "GET",
-            dataType: "json",
-            success: function(response) {
-                // console.log(response);
-                response.forEach(function(event) {
-                    // console.log(event);
-                    var externalEvent = $('<div class="external-event ui-draggable ui-draggable-handle"></div>');
-                    externalEvent.text(event.title);
-                    externalEvent.data('title', event.title);
-                    externalEvent.data('color-id', event.colorId);
-                    externalEvent.data('backgroundColor', event.backgroundColor);
-                    externalEvent.data('borderColor', event.borderColor);
-                    externalEvent.attr('data-ex_id', event.ex_id);
-                    externalEvent.data('textColor', '#fff');
-                    externalEvent.attr('data-title', event.title);
-                    externalEvent.attr('data-id', event.ex_id);
-
-                    externalEvent.css({
-                        'background-color': event.backgroundColor,
-                        'border-color': event.borderColor,
-                        'color': '#fff',
-                    });
-                    externalEvent.draggable({
-                        zIndex: 999,
-                        revert: true,
-                        revertDuration: 0
-                    });
-
-                    $('#external-events').append(externalEvent);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.log(error);
-            }
-        });
-
-        function handleColorChooserClick(e) {
-            e.preventDefault();
-            $('#color-chooser li a').removeClass('active');
-            $(this).addClass('active');
-            // Ambil warna aktif dari color-chooser
-            var activeColor = $(this).css('color');
-            var activeBorder = $(this).css('border-color');
-            // Ubah warna tombol add-new-event
-            $('#add-new-event').css('background-color', activeColor);
-            $('#add-new-event').css('border-color', activeBorder);
+        function refreshCalendar() {
+            // Hapus kalender yang ada sebelumnya
+            calendar.destroy();
+            // Inisialisasi ulang kalender dengan data yang baru
+            isiCalendar();
         }
+
+
+        function isiCalendar() {
+            $.ajax({
+                url: "<?= base_url() ?>GetEvent",
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    // console.log(response);
+                    initializeCalendar(response);
+                },
+                error: function(xhr, status, error) {
+                    console.log(error + "oke");
+                }
+            });
+        }
+        isiCalendar();
 
         $.ajax({
             url: "<?= base_url() ?>GetEventColor",
@@ -631,6 +327,7 @@
                 dataType: "json",
                 success: function(response) {
                     var colorSelect = $('#edit-external-event-color');
+                    var colorSelectEvent = $('#event-color');
 
                     response.forEach(function(color) {
                         var colorOption = $('<option></option>')
@@ -639,6 +336,7 @@
                             .css('background-color', color.background_color);
 
                         colorSelect.append(colorOption);
+                        colorSelectEvent.append(colorOption);
                     });
                 },
                 error: function(xhr, status, error) {

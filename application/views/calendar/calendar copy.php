@@ -25,18 +25,11 @@
                             </div>
                             <div class="card-body">
                                 <div id="external-events">
-                                    <div class="external-event bg-success ui-draggable ui-draggable-handle" style="position: relative;">Lunch</div>
-                                    <div class="external-event bg-warning ui-draggable ui-draggable-handle" style="position: relative;">Go home</div>
-                                    <div class="external-event bg-info ui-draggable ui-draggable-handle" style="position: relative;">Do homework</div>
-                                    <div class="external-event bg-primary ui-draggable ui-draggable-handle" style="position: relative;">Work on UI design</div>
-                                    <div class="external-event bg-danger ui-draggable ui-draggable-handle" style="position: relative;">Sleep tight</div>
-                                    <div class="checkbox">
-                                        <label for="drop-remove">
-                                            <input type="checkbox" id="drop-remove">
-                                            remove after drop
-                                        </label>
-                                    </div>
                                 </div>
+                                <label for="drop-remove">
+                                    <input type="checkbox" id="drop-remove">
+                                    remove after drop
+                                </label>
                             </div>
                         </div>
                         <div class="card">
@@ -46,11 +39,6 @@
                             <div class="card-body">
                                 <div class="btn-group" style="width: 100%; margin-bottom: 10px;">
                                     <ul class="fc-color-picker" id="color-chooser">
-                                        <li><a class="text-primary" href="#"><i class="fas fa-square"></i></a></li>
-                                        <li><a class="text-warning" href="#"><i class="fas fa-square"></i></a></li>
-                                        <li><a class="text-success" href="#"><i class="fas fa-square"></i></a></li>
-                                        <li><a class="text-danger" href="#"><i class="fas fa-square"></i></a></li>
-                                        <li><a class="text-muted" href="#"><i class="fas fa-square"></i></a></li>
                                     </ul>
                                 </div>
                                 <div class="input-group">
@@ -68,84 +56,8 @@
                     <div class="card card-primary">
                         <div class="card-body p-0">
                             <div id="calendar" class="fc fc-media-screen fc-direction-ltr fc-theme-bootstrap">
-                                <div class="fc-header-toolbar fc-toolbar fc-toolbar-ltr">
-                                    <div class="fc-toolbar-chunk">
-                                        <div class="btn-group"><button type="button" title="" class="fc-prev-button btn btn-primary" aria-label="prev"><span class="fa fa-chevron-left"></span></button><button type="button" title="" class="fc-next-button btn btn-primary" aria-label="next"><span class="fa fa-chevron-right"></span></button></div><button type="button" title="" disabled="" class="fc-today-button btn btn-primary">today</button>
-                                    </div>
-                                    <div class="fc-toolbar-chunk">
-                                        <h2 id="" class="fc-toolbar-title">August 2023</h2>
-                                    </div>
-                                    <div class="fc-toolbar-chunk">
-                                        <div class="btn-group"><button type="button" title="" class="fc-dayGridMonth-button btn btn-primary active">month</button><button type="button" title="" class="fc-timeGridWeek-button btn btn-primary">week</button><button type="button" title="" class="fc-timeGridDay-button btn btn-primary">day</button></div>
-                                    </div>
-                                </div>
-                                <div style="height: 455.556px;" class="fc-view-harness fc-view-harness-active">
-                                    <div class="fc-daygrid fc-dayGridMonth-view fc-view">
-                                        <table role="" class="fc-scrollgrid table-bordered fc-scrollgrid-liquid">
-                                            <thead role="">
-                                                <tr role="" class="fc-scrollgrid-section fc-scrollgrid-section-header ">
-                                                    <td>
-                                                        <div class="fc-scroller-harness">
-                                                            <div class="fc-scroller" style="overflow: hidden;">
-                                                                <table class="fc-col-header " style="width: 201px;">
-                                                                    <colgroup></colgroup>
-                                                                    <tbody>
-                                                                        <tr>
-                                                                            <th class="fc-col-header-cell fc-day fc-day-sun">
-                                                                                <div class="fc-scrollgrid-sync-inner"><a class="fc-col-header-cell-cushion ">Sun</a></div>
-                                                                            </th>
-                                                                            <th class="fc-col-header-cell fc-day fc-day-mon">
-                                                                                <div class="fc-scrollgrid-sync-inner"><a class="fc-col-header-cell-cushion ">Mon</a></div>
-                                                                            </th>
-                                                                            <th class="fc-col-header-cell fc-day fc-day-tue">
-                                                                                <div class="fc-scrollgrid-sync-inner"><a class="fc-col-header-cell-cushion ">Tue</a></div>
-                                                                            </th>
-                                                                            <th class="fc-col-header-cell fc-day fc-day-wed">
-                                                                                <div class="fc-scrollgrid-sync-inner"><a class="fc-col-header-cell-cushion ">Wed</a></div>
-                                                                            </th>
-                                                                            <th class="fc-col-header-cell fc-day fc-day-thu">
-                                                                                <div class="fc-scrollgrid-sync-inner"><a class="fc-col-header-cell-cushion ">Thu</a></div>
-                                                                            </th>
-                                                                            <th class="fc-col-header-cell fc-day fc-day-fri">
-                                                                                <div class="fc-scrollgrid-sync-inner"><a class="fc-col-header-cell-cushion ">Fri</a></div>
-                                                                            </th>
-                                                                            <th class="fc-col-header-cell fc-day fc-day-sat">
-                                                                                <div class="fc-scrollgrid-sync-inner"><a class="fc-col-header-cell-cushion ">Sat</a></div>
-                                                                            </th>
-                                                                        </tr>
-                                                                    </tbody>
-                                                                </table>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </thead>
-                                            <tbody role="">
-                                                <tr role="" class="fc-scrollgrid-section fc-scrollgrid-section-body  fc-scrollgrid-section-liquid">
-                                                    <td role="">
-                                                        <div class="fc-scroller-harness fc-scroller-harness-liquid">
-                                                            <div style="overflow: hidden auto;" class="fc-scroller fc-scroller-liquid-absolute">
-                                                                <div class="fc-daygrid-body fc-daygrid-body-unbalanced ">
-                                                                    <table role="" style="width: 201px; height: 160px;" class="fc-scrollgrid-sync-table">
-                                                                        <colgroup></colgroup>
-                                                                        <tbody role="">
-                                                                            <?php foreach ($EventCal as $event) : ?>
-                                                                                <tr>
-                                                                                    <td><?= $event->event_title; ?></td>
-                                                                                    <td><?= $event->event_date; ?></td>
-                                                                                </tr>
-                                                                            <?php endforeach; ?>
-                                                                        </tbody>
-                                                                    </table>
-                                                                </div>
-                                                            </div>
-                                                        </div>
-                                                    </td>
-                                                </tr>
-                                            </tbody>
-                                        </table>
-                                    </div>
-                                </div>
+                                <!-- Konten kalender akan dirender di sini -->
+
                             </div>
                         </div>
                     </div>
@@ -153,171 +65,589 @@
             </div>
         </div>
     </section>
+    <!-- Edit external event sebelum di drag -->
+    <div class="modal fade" id="editExternalEventModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit External Event</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-external-event-form">
+                        <div class="form-group">
+                            <label for="edit-external-event-title">Event Title</label>
+                            <input type="text" class="form-control" id="edit-external-event-title" name="edit-external-event-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-external-event-color">Event Color</label>
+                            <select class="form-control" id="edit-external-event-color" name="edit-external-event-color" required>
+                                <!-- Options for event colors -->
+                            </select>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Cancel</button>
+                    <button type="button" class="btn btn-primary" id="save-edit-external-event">Save Changes</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="modal fade" id="editEventModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Edit Event</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <form id="edit-event-form">
+                        <div class="form-group">
+                            <label for="edit-event-title">Event Title</label>
+                            <input type="text" class="form-control" id="edit-event-title" name="edit-event-title" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-event-color">Event Color</label>
+                            <select class="form-control" id="edit-event-color" name="edit-event-color" required>
+                                <!-- Options for event colors -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-event-start">Start Date</label>
+                            <input type="text" class="form-control" id="edit-event-start" name="edit-event-start" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="edit-event-end">End Date</label>
+                            <input type="text" class="form-control" id="edit-event-end" name="edit-event-end" required>
+                        </div>
+
+                        <input type="hidden" id="edit-event-id" name="edit-event-id">
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-danger" id="delete-event">Delete</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="save-edit-event">Save Changes</button>
+                </div>
+
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="eventDetailModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h4 class="modal-title">Event Detail</h4>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <p id="event-color-id">Color ID: </p>
+                    <p id="event-start-date">Start Date: </p>
+                    <p id="event-end-date">End Date: </p>
+                </div>
+
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </div>
+        </div>
+    </div>
 </div>
+
 <script src="<?= base_url(); ?>assets/plugins/fullcalendar/main.js"></script>
 <script>
     $(function() {
+        var containerEl = document.getElementById('external-events');
+        var calendarEl = document.getElementById('calendar');
+        var checkbox = document.getElementById('drop-remove');
+        var calendar;
 
-        /* initialize the external events
-         -----------------------------------------------------------------*/
-        function ini_events(ele) {
-            ele.each(function() {
+        function initializeCalendar(eventsData) {
+            // Menangani drag dari external event menuju ke kalender
+            new FullCalendar.Draggable(containerEl, {
+                itemSelector: '.external-event',
+                eventData: function(eventEl) {
 
-                // create an Event Object (https://fullcalendar.io/docs/event-object)
-                // it doesn't need to have a start or end
-                var eventObject = {
-                    title: $.trim($(this).text()) // use the element's text as the event title
+                    return {
+                        id: eventEl.colorId,
+                        title: eventEl.innerText,
+                        backgroundColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
+                        borderColor: window.getComputedStyle(eventEl, null).getPropertyValue('border-color'),
+                        textColor: window.getComputedStyle(eventEl, null).getPropertyValue('color'),
+                    };
                 }
+            });
 
-                // store the Event Object in the DOM element so we can get to it later
-                $(this).data('eventObject', eventObject)
+            calendar = new FullCalendar.Calendar(calendarEl, {
+                headerToolbar: {
+                    left: "prev,next today",
+                    center: "title",
+                    right: "dayGridMonth,timeGridWeek,timeGridDay"
+                },
+                validRange: {
+                    start: '2023-01-01',
+                    end: '2023-12-31'
+                },
+                slotMinTime: '06:00:00',
+                slotMaxTime: '22:00:00',
+                themeSystem: "bootstrap",
+                events: eventsData,
+                editable: true,
+                droppable: true,
+                eventDrop: handlePositionDrop, // Untuk update
+                eventClick: handleEventClick,
+                eventReceive: function(info) {
+                    var event = info.event;
+                    var title = event.title;
+                    var backgroundColor = event.backgroundColor;
+                    var borderColor = event.borderColor;
+                    var startStr = event.startStr;
+                    var endStr = event.endStr;
+                    var allDay = event.allDay;
+                    var backgroundColorHex = rgbToHex(backgroundColor);
+                    var borderColorHex = rgbToHex(borderColor);
 
-                // make the event draggable using jQuery UI
-                $(this).draggable({
-                    zIndex: 1070,
-                    revert: true, // will cause the event to go back to its
-                    revertDuration: 0 //  original position after the drag
-                })
+                    // Ambil informasi dari elemen HTML yang di-drop
+                    var droppedEventTitle = $(info.draggedEl).data('title');
+                    var droppedEventId = $(info.draggedEl).data('ex_id');
 
-            })
+                    $.ajax({
+                        url: '<?= base_url() ?>AddEvent',
+                        type: 'POST',
+                        data: {
+                            title: title,
+                            background_color: backgroundColorHex,
+                            border_color: borderColorHex,
+                            start_date: startStr,
+                            end_date: endStr,
+                            all_day: allDay,
+                        },
+                        success: function(response) {
+                            console.log('Event added successfully:', response);
+                            if ($('#drop-remove').prop('checked')) {
+                                $(info.draggedEl).remove(); // Hapus elemen yang di-drop
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.log('Error adding event:', error);
+                        }
+                    });
+
+                    if (checkbox == 'checked') {
+
+                    }
+                },
+
+            });
+
+            calendar.render();
+
+            $(document).on('click', '#add-new-event', handleAddNewExternalEvent);
+            $(document).on('click', '#color-chooser li a', handleColorChooserClick);
+            $(document).on('click', '#save-edit-event', handleSaveEditEvent);
+            $(document).on('click', '#delete-event', handleDeleteEvent);
+            $('#edit-event-start, #edit-event-end').datepicker({
+                dateFormat: 'yy-mm-dd',
+            });
+
+            // Menadapatkan seluruh tampilan utama
+            // Batas
+            // CRUD
+
+
         }
 
-        ini_events($('#external-events div.external-event'))
+        $(document).on('click', '#external-events .external-event', handleExternalEventClick);
 
-        /* initialize the calendar
-         -----------------------------------------------------------------*/
-        //Date for the calendar events (dummy data)
-        var date = new Date()
-        var d = date.getDate(),
-            m = date.getMonth(),
-            y = date.getFullYear()
+        function handleExternalEventClick() {
+            $('#external-events .external-event').removeClass('active');
+            // Menambahkan kelas .active ke elemen yang diklik
+            $(this).addClass('active');
+            var colorBack = $(this).data('backgroundColor'); // Pastikan ini mengambil nilai yang sesuai
+            var eventTitle = $(this).data('title');
+            var exId = $(this).data('id');
+            // console.log($(this).data());
 
-        var Calendar = FullCalendar.Calendar;
-        var Draggable = FullCalendar.Draggable;
+            // Mengisi nilai modal edit
+            $('#edit-external-event-title').val(eventTitle);
+            $('#edit-external-event-color').val(colorBack); // Set nilai select sesuai colorId
 
-        var containerEl = document.getElementById('external-events');
-        var checkbox = document.getElementById('drop-remove');
-        var calendarEl = document.getElementById('calendar');
+            // Menampilkan modal edit
+            $('#editExternalEventModal').modal('show');
+        }
 
-        // initialize the external events
-        // -----------------------------------------------------------------
+        function handlePositionDrop(eventDropInfo) {
+            // console.log(eventDropInfo)
+            var event = eventDropInfo.event;
+            var newStartDate = event.startStr;
+            var newEndDate = event.endStr;
+            updateEventDates(event.id, newStartDate, newEndDate);
+        }
 
-        new Draggable(containerEl, {
-            itemSelector: '.external-event',
-            eventData: function(eventEl) {
-                return {
-                    title: eventEl.innerText,
-                    backgroundColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
-                    borderColor: window.getComputedStyle(eventEl, null).getPropertyValue('background-color'),
-                    textColor: window.getComputedStyle(eventEl, null).getPropertyValue('color'),
-                };
+        function handleEventClick(info) {
+            console.log(info.event);
+            var id_event = info.event.id;
+            var title = info.event.title;
+            var colorId = info.event.extendedProps.colorId;
+            var startDate = info.event.start;
+            var endDate = info.event.end;
+
+            $('#eventDetailModal .modal-title').text(title);
+            $('#eventDetailModal #event-color-id').text('Color ID: ' + colorId);
+
+            if (startDate) {
+                $('#eventDetailModal #event-start-date').text('Start Date: ' + startDate.toLocaleString());
+            } else {
+                $('#eventDetailModal #event-start-date').text('Start Date: N/A');
+            }
+
+            if (endDate) {
+                $('#eventDetailModal #event-end-date').text('End Date: ' + endDate.toLocaleString());
+            } else {
+                $('#eventDetailModal #event-end-date').text('End Date: N/A');
+            }
+
+            $('#eventDetailModal').modal('show');
+
+        }
+
+        $(document).on('click', '#save-edit-external-event', function() {
+            var newEventTitle = $('#edit-external-event-title').val();
+            var newEventColorId = $('#edit-external-event-color').val();
+            var selectedExternalEvent = $('#external-events .external-event.active');
+
+            // console.log(newEventTitle + "   " + newEventColorId + " Selected:  " + selectedExternalEvent);
+            if (selectedExternalEvent.length > 0) {
+                selectedExternalEvent.text(newEventTitle);
+                selectedExternalEvent.data('title', newEventTitle);
+
+                // Update data-color-id dengan nilai yang dipilih dari elemen select
+                selectedExternalEvent.data('color-id', newEventColorId);
+
+                // Mengambil warna dari elemen select (misalnya Anda memberikan atribut data-color="#FF0000")
+                selectedExternalEvent.css({
+                    'background-color': newEventColorId,
+                    'border-color': newEventColorId,
+                    'color': '#fff',
+                });
+
+                $('#editExternalEventModal').modal('hide');
             }
         });
 
-        var calendar = new Calendar(calendarEl, {
-            headerToolbar: {
-                left: 'prev,next today',
-                center: 'title',
-                right: 'dayGridMonth,timeGridWeek,timeGridDay'
+
+
+        function handleAddNewExternalEvent(e) {
+            e.preventDefault();
+            var val = $('#new-event').val();
+            var backgroundColor = $('#color-chooser li a.active').css('color');
+            var borderColor = $('#color-chooser li a.active').css('border-color');
+            if (val.length === 0) {
+                return;
+            }
+            var backgroundColorHex = rgbToHex(backgroundColor);
+            var borderColorHex = rgbToHex(borderColor);
+
+            $.ajax({
+                url: '<?= base_url() ?>AddExternalEvent',
+                type: 'POST',
+                data: {
+                    eventTitle: val,
+                    background_color: backgroundColorHex,
+                    border_color: borderColorHex,
+                },
+                success: function(response) {
+                    // console.log(response);
+                    var event = $('<div class="external-event ui-draggable ui-draggable-handle"></div>');
+                    event.text(val);
+                    event.css({
+                        'background-color': backgroundColor,
+                        'border-color': backgroundColor,
+                        'color': '#fff'
+                    }).addClass('external-event');
+                    event.data('event', {
+                        title: val,
+                        backgroundColor: backgroundColor,
+                        borderColor: backgroundColor,
+                        colorId: response.colorId // Assuming the response contains the new colorId
+                    });
+                    event.draggable({
+                        zIndex: 999,
+                        revert: true,
+                        revertDuration: 0
+                    });
+
+                    $('#external-events').prepend(event);
+                    $('#new-event').val('');
+
+                    calendar.refetchEvents();
+                },
+                error: function(xhr, status, error) {
+                    console.log(xhr);
+                }
+            });
+        }
+
+        function getEventColor(colorId) {
+            $.ajax({
+                url: '<?= base_url() ?>GetEventColor',
+                type: 'POST',
+                data: {
+                    color_id: colorId,
+                },
+                success: function(response) {
+                    var colorData = JSON.parse(response);
+                    var backgroundColor = colorData.background_color;
+                    var borderColor = colorData.border_color;
+
+                    var event = $('<div/>');
+                    event.css({
+                        'background-color': backgroundColor,
+                        'border-color': borderColor,
+                        'color': '#fff'
+                    }).addClass('external-event');
+
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function updateEventColor(eventElement, colorId) {
+            $.ajax({
+                url: '<?= base_url() ?>GetEventColor',
+                type: 'POST',
+                data: {
+                    color_id: colorId,
+                },
+                success: function(response) {
+                    var colorData = JSON.parse(response);
+                    var backgroundColor = colorData.background_color;
+                    var borderColor = colorData.border_color;
+
+                    eventElement.css({
+                        'background-color': backgroundColor,
+                        'border-color': borderColor,
+                        'color': '#fff'
+                    });
+
+                    var colorLabel = $('<div class="event-color-label"></div>').css({
+                        'background-color': backgroundColor,
+                        'border-color': borderColor,
+                    });
+                    eventElement.prepend(colorLabel);
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function handleSaveEditEvent() {
+            var eventId = $('#edit-event-id').val();
+            var newTitle = $('#edit-event-title').val();
+            var newColorId = $('#edit-event-color').val();
+            var newStartDate = $('#edit-event-start').val();
+            var newEndDate = $('#edit-event-end').val();
+
+            $.ajax({
+                url: '<?= base_url(); ?>UpdateEvent',
+                type: 'POST',
+                data: {
+                    color_id: newColorId,
+                    event_id: eventId,
+                    start_date: newStartDate,
+                    end_date: newEndDate,
+                    flag: '0',
+                },
+                success: function(response) {
+                    // console.log(response);
+                    var event = calendar.getEventById(eventId);
+                    console.log(event);
+                    event.setProp('title', newTitle);
+                    event.setProp('colorId', newColorId);
+                    event.setStart(newStartDate);
+                    event.setEnd(newEndDate);
+                    updateEventColor(event, newColorId);
+                    $('#editEventModal').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function updateEventDates(eventId, startDate, endDate) {
+            $.ajax({
+                url: '<?= base_url(); ?>UpdateEvent',
+                type: 'POST',
+                data: {
+                    event_id: eventId,
+                    start_date: startDate,
+                    end_date: endDate,
+                    flag: '1',
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        function handleDeleteEvent() {
+            var eventId = $('#edit-event-id').val();
+
+            if (confirm('Are you sure you want to delete this event?')) {
+                $.ajax({
+                    url: '<?= base_url(); ?>DeleteEvent',
+                    type: 'POST',
+                    data: {
+                        event_id: eventId,
+                    },
+                    success: function(response) {
+                        // console.log(response);
+                        var event = calendar.getEventById(eventId);
+                        if (event) {
+                            event.remove();
+                        }
+                        $('#editEventModal').modal('hide');
+                    },
+                    error: function(xhr, status, error) {
+                        console.log(error);
+                    }
+                });
+            }
+        }
+
+        // Tampilan isi kalender sekarang
+        $.ajax({
+            url: "<?= base_url() ?>GetEvent",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                // console.log(response);
+                initializeCalendar(response);
             },
-            themeSystem: 'bootstrap',
-            //Random default events
-            events: [{
-                    title: 'All Day Event',
-                    start: new Date(y, m, 1),
-                    backgroundColor: '#f56954', //red
-                    borderColor: '#f56954', //red
-                    allDay: true
-                },
-                {
-                    title: 'Long Event',
-                    start: new Date(y, m, d - 5),
-                    end: new Date(y, m, d - 2),
-                    backgroundColor: '#f39c12', //yellow
-                    borderColor: '#f39c12' //yellow
-                },
-                {
-                    title: 'Meeting',
-                    start: new Date(y, m, d, 10, 30),
-                    allDay: false,
-                    backgroundColor: '#0073b7', //Blue
-                    borderColor: '#0073b7' //Blue
-                },
-                {
-                    title: 'Lunch',
-                    start: new Date(y, m, d, 12, 0),
-                    end: new Date(y, m, d, 14, 0),
-                    allDay: false,
-                    backgroundColor: '#00c0ef', //Info (aqua)
-                    borderColor: '#00c0ef' //Info (aqua)
-                },
-                {
-                    title: 'Birthday Party',
-                    start: new Date(y, m, d + 1, 19, 0),
-                    end: new Date(y, m, d + 1, 22, 30),
-                    allDay: false,
-                    backgroundColor: '#00a65a', //Success (green)
-                    borderColor: '#00a65a' //Success (green)
-                },
-                {
-                    title: 'Click for Google',
-                    start: new Date(y, m, 28),
-                    end: new Date(y, m, 29),
-                    url: 'https://www.google.com/',
-                    backgroundColor: '#3c8dbc', //Primary (light-blue)
-                    borderColor: '#3c8dbc' //Primary (light-blue)
-                }
-            ],
-            editable: true,
-            droppable: true, // this allows things to be dropped onto the calendar !!!
-            drop: function(info) {
-                // is the "remove after drop" checkbox checked?
-                if (checkbox.checked) {
-                    // if so, remove the element from the "Draggable Events" list
-                    info.draggedEl.parentNode.removeChild(info.draggedEl);
-                }
+            error: function(xhr, status, error) {
+                console.log(error + "oke");
             }
         });
 
-        calendar.render();
-        // $('#calendar').fullCalendar()
+        $.ajax({
+            url: "<?= base_url() ?>GetExternalEvent",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                // console.log(response);
+                response.forEach(function(event) {
+                    // console.log(event);
+                    var externalEvent = $('<div class="external-event ui-draggable ui-draggable-handle"></div>');
+                    externalEvent.text(event.title);
+                    externalEvent.data('title', event.title);
+                    externalEvent.data('color-id', event.colorId);
+                    externalEvent.data('backgroundColor', event.backgroundColor);
+                    externalEvent.data('borderColor', event.borderColor);
+                    externalEvent.attr('data-ex_id', event.ex_id);
+                    externalEvent.data('textColor', '#fff');
+                    externalEvent.attr('data-title', event.title);
+                    externalEvent.attr('data-id', event.ex_id);
 
-        /* ADDING EVENTS */
-        var currColor = '#3c8dbc' //Red by default
-        // Color chooser button
-        $('#color-chooser>li>a').click(function(e) {
-            e.preventDefault()
-            // Save color
-            currColor = $(this).css('color')
-            // Add color effect to button
-            $('#add-new-event').css({
-                'background-color': currColor,
-                'border-color': currColor
-            })
-        })
-        $('#add-new-event').click(function(e) {
-            e.preventDefault()
-            // Get value and make sure it is not null
-            var val = $('#new-event').val()
-            if (val.length == 0) {
-                return
+                    externalEvent.css({
+                        'background-color': event.backgroundColor,
+                        'border-color': event.borderColor,
+                        'color': '#fff',
+                    });
+                    externalEvent.draggable({
+                        zIndex: 999,
+                        revert: true,
+                        revertDuration: 0
+                    });
+
+                    $('#external-events').append(externalEvent);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
             }
+        });
 
-            // Create events
-            var event = $('<div/>')
-            event.css({
-                'background-color': currColor,
-                'border-color': currColor,
-                'color': '#fff'
-            }).addClass('external-event')
-            event.text(val)
-            $('#external-events').prepend(event)
+        function handleColorChooserClick(e) {
+            e.preventDefault();
+            $('#color-chooser li a').removeClass('active');
+            $(this).addClass('active');
+            // Ambil warna aktif dari color-chooser
+            var activeColor = $(this).css('color');
+            var activeBorder = $(this).css('border-color');
+            // Ubah warna tombol add-new-event
+            $('#add-new-event').css('background-color', activeColor);
+            $('#add-new-event').css('border-color', activeBorder);
+        }
 
-            // Add draggable funtionality
-            ini_events(event)
+        $.ajax({
+            url: "<?= base_url() ?>GetEventColor",
+            type: "GET",
+            dataType: "json",
+            success: function(response) {
+                response.forEach(function(color) {
+                    var colorOption = $('<li><a href="#"><i class="fas fa-square"></i></a></li>');
+                    colorOption.find('a').css('color', color.background_color);
+                    colorOption.find('a').css('border-color', color.border_color);
+                    colorOption.data('color-id', color.id);
+                    $('#color-chooser').append(colorOption);
+                });
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+            }
+        });
 
-            // Remove event from text input
-            $('#new-event').val('')
-        })
-    })
+        // mengubah RGB to HEX
+        function rgbToHex(rgb) {
+            var parts = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
+            delete(parts[0]);
+            for (var i = 1; i <= 3; ++i) {
+                parts[i] = parseInt(parts[i]).toString(16);
+                if (parts[i].length == 1) parts[i] = '0' + parts[i];
+            }
+            return '#' + parts.join('');
+        }
+
+
+        function getEventColors() {
+            $.ajax({
+                url: "<?= base_url() ?>GetEventColor",
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    var colorSelect = $('#edit-external-event-color');
+
+                    response.forEach(function(color) {
+                        var colorOption = $('<option></option>')
+                            .attr('value', color.background_color)
+                            .text(color.background_color)
+                            .css('background-color', color.background_color);
+
+                        colorSelect.append(colorOption);
+                    });
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
+
+        // Panggil fungsi untuk mendapatkan pilihan warna saat halaman dimuat
+        getEventColors();
+    });
 </script>
