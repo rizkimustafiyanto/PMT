@@ -1,0 +1,14 @@
+2023-06-09 14:04:42 [Delete] New checklist item deleted for checklist ID: WRK0003 with id of member card 907
+2023-06-09 14:04:45 [Delete] New checklist item deleted for checklist ID: WRK0003 with id of member card 907
+2023-06-09 14:04:49 [Delete] New checklist item deleted for checklist ID: WRK0003 with id of member card 907
+2023-06-09 14:05:10 [Create] New checklist item created for workspace ID: WRK0003 with name of member 
+2023-06-09 14:27:28 [Delete] New checklist item deleted for checklist ID: WRK0003 with id of member card 907
+2023-06-09 14:27:45 [Create] New projek item created for workspace ID: WRK0003 with name of member SYSTEM ADMINISTRATOR
+2023-06-09 16:06:31 [Update] New checklist item checked for checklist ID: 911 with id of member card 907
+2023-06-09 16:07:49 [Update] New checklist item checked for checklist ID: 911 with id of member card 907
+2023-06-09 16:33:54 [Update] New checklist item checked for checklist ID: 911 with id of member card 907
+2023-06-09 16:35:59 [Update] New checklist item checked for checklist ID: 911 with id of member card 907
+2023-06-12 13:03:55 [Update] Projek item updated for workspace ID: WRK0003 with id of member card 908
+2023-06-12 13:20:51 [Update] Projek item updated for workspace ID: WRK0003 with id of member card 908
+2023-06-12 13:21:00 [Update] Projek item updated for workspace ID: WRK0003 with id of member card 908
+2023-06-13 15:16:59 [Delete] Workspace member has been deleted for workspace member:  with name of member ASEP HERMAWAN
