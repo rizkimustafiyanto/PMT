@@ -36,8 +36,7 @@ class calendar_controller extends BaseController
                 "colorId" => $key->color_id,
                 "backgroundColor" => $key->background_color,
                 "borderColor" => $key->border_color,
-                "allDay" => (bool)$key->all_day,
-                "ex_id" => $key->ex_id,
+                "allDay" => (bool)$key->all_day
 
             );
             array_push($events, $event);
@@ -186,7 +185,7 @@ class calendar_controller extends BaseController
 
         $response = array(
             'success' => $result, // Menyimpan status berhasil atau tidak
-            'message' => $result ? 'Delete ' . $p_event_id . ' successfully' : 'Delete event failed'
+            'message' => $result ? 'Hapus ' . $p_event_id . ' berhasil' : 'Gagal hapus acara'
         );
 
         echo json_encode($response);
@@ -195,16 +194,11 @@ class calendar_controller extends BaseController
     function AddEvent()
     {
         $eventTitle = $this->input->post("title");
-        $backgroundColor = $this->input->post("background_color");
-        $borderColor = $this->input->post("border_color");
-        $startDate = $this->input->post("start_date");
-        $endDate = $this->input->post("end_date");
-        $allDay = $this->input->post("all_day");
-        if ($allDay == 'true') {
-            $allDay = 1;
-        } else {
-            $allDay = 0;
-        }
+        $backgroundColor = $this->input->post("color");
+        $borderColor = $this->input->post("color");
+        $startDate = $this->input->post("start");
+        $endDate = $this->input->post("end");
+        $allDay = $this->input->post("allDay");
 
         $addEvent = [
             'p_title' => $eventTitle,
@@ -221,12 +215,12 @@ class calendar_controller extends BaseController
         if ($result) {
             $response = array(
                 'success' => true,
-                'message' => 'Warna acara baru berhasil dibuat'
+                'message' => 'Acara baru berhasil dibuat'
             );
         } else {
             $response = array(
                 'success' => false,
-                'message' => 'Pembuatan warna acara baru gagal'
+                'message' => 'Acara baru gagal dibuat'
             );
         }
 

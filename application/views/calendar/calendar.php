@@ -44,12 +44,20 @@
                     <form id="event-form">
                         <div class="form-group">
                             <label for="event-title">Event Title</label>
-                            <input type="text" class="form-control" id="event-title" name="event-title" required>
+                            <input type="text" class="form-control" id="event-title" name="event-title" placeholder="Event Title Here" required>
                         </div>
                         <div class="form-group">
                             <label for="event-color">Event Color</label>
                             <select class="form-control" id="event-color" name="event-color" required>
                                 <!-- Options for event colors -->
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label for="all-day">All Day</label>
+                            <select class="form-control" name="all-day" id="all-day" required>
+                                <option value="" selected disabled>-- Choose Day --</option>
+                                <option value="false">No</option>
+                                <option value="true">Yes</option>
                             </select>
                         </div>
                         <div class="form-group">
@@ -60,13 +68,11 @@
                             <label for="event-end">End Date</label>
                             <input type="datetime-local" class="form-control" id="event-end" name="event-end" required>
                         </div>
-
-                        <input type="hidden" id="event-id" name="event-id">
                     </form>
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                    <button type="button" class="btn btn-primary" id="save-add-event">Save Changes</button>
+                    <button type="button" class="btn btn-primary" id="save-add-event">Add Event</button>
                 </div>
 
             </div>
@@ -112,33 +118,8 @@
         var calendarEl = document.getElementById('calendar');
         var calendar;
 
-        function handleDateClick(info) {
-            var clickedDate = info.date;
-
-            // Menghitung end date dengan menambahkan 1 jam ke start date
-            var endDate = new Date(clickedDate);
-            endDate.setHours(endDate.getHours() + 1);
-
-            // Mengambil komponen tanggal, bulan, tahun, jam, dan menit
-            var year = clickedDate.getFullYear();
-            var month = (clickedDate.getMonth() + 1).toString().padStart(2, '0');
-            var day = clickedDate.getDate().toString().padStart(2, '0');
-            var hours = clickedDate.getHours().toString().padStart(2, '0');
-            var minutes = clickedDate.getMinutes().toString().padStart(2, '0');
-
-            // Format tanggal dan waktu sesuai dengan format datetime-local
-            var formattedStartDate = `${year}-${month}-${day}T${hours}:${minutes}`;
-            var formattedEndDate = `${year}-${month}-${day}T${endDate.getHours()}:${endDate.getMinutes()}`;
-
-            $('#event-start').val(formattedStartDate);
-            $('#event-end').val(formattedEndDate);
-
-            $('#addEventModal').modal('show');
-        }
-
-
         function initializeCalendar(eventsData) {
-            // Menangani drag dari event menuju ke kalender
+            // console.log(eventsData);
             calendar = new FullCalendar.Calendar(calendarEl, {
                 headerToolbar: {
                     left: 'prev,next today',
@@ -160,22 +141,21 @@
             });
 
             calendar.render();
+        }
 
-            $(document).on('click', '#delete-event', handleDeleteEvent);
-            $('#edit-event-start, #edit-event-end').datepicker({
-                dateFormat: 'yy-mm-dd',
-            });
-
-            // Menadapatkan seluruh tampilan utama
-            // Batas
-            // CRUD
-
-
+        function handleDateClick(info) {
+            var clickedDate = info.date;
+            var fullDay = info.allDay;
+            $('#all-day').val(fullDay.toString());
+            $('#event-start').val(formatDate(clickedDate));
+            $('#event-end').prop('readonly', fullDay);
+            $('#addEventModal').modal('show');
         }
 
         function handleEventClick(info) {
             console.log(info.event);
             var id_event = info.event.id;
+            var fullDay = info.event.allDay;
             var title = info.event.title;
             var colorId = info.event.extendedProps.colorId;
             var startDate = info.event.start;
@@ -195,41 +175,12 @@
             } else {
                 $('#eventDetailModal #event-end-date').val('N/A');
             }
-
-
+            $('#eventDetailModal #event-end-date').prop('readonly', fullDay);
             $('#eventDetailModal').modal('show');
 
         }
 
-        function formatDate(date) {
-            var year = date.getFullYear();
-            var month = (date.getMonth() + 1).toString().padStart(2, '0');
-            var day = date.getDate().toString().padStart(2, '0');
-            var hours = date.getHours().toString().padStart(2, '0');
-            var minutes = date.getMinutes().toString().padStart(2, '0');
-
-            return `${year}-${month}-${day}T${hours}:${minutes}`;
-        }
-
-        function updateEventDates(eventId, startDate, endDate) {
-            $.ajax({
-                url: '<?= base_url(); ?>UpdateEvent',
-                type: 'POST',
-                data: {
-                    event_id: eventId,
-                    start_date: startDate,
-                    end_date: endDate,
-                    flag: '1',
-                },
-                success: function(response) {
-                    console.log(response);
-                },
-                error: function(xhr, status, error) {
-                    console.log(error);
-                }
-            });
-        }
-
+        // Delete bro
         function handleDeleteEvent() {
             var eventId = $('#eventID').val();
             if (confirm('Are you sure you want to delete this event?')) {
@@ -254,6 +205,27 @@
                 });
             }
         }
+        // Batas Delete bro
+
+        // Untuk update bro
+        function updateEventDates(eventId, startDate, endDate) {
+            $.ajax({
+                url: '<?= base_url(); ?>UpdateEvent',
+                type: 'POST',
+                data: {
+                    event_id: eventId,
+                    start_date: startDate,
+                    end_date: endDate,
+                    flag: '1',
+                },
+                success: function(response) {
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            });
+        }
 
         $(document).on('click', '#edit-save-event', function() {
             var eventId = $('#eventID').val();
@@ -265,61 +237,47 @@
             refreshCalendar();
             $('#eventDetailModal').modal('hide');
         });
+        // Batas update bro
 
-        function refreshCalendar() {
-            // Hapus kalender yang ada sebelumnya
-            calendar.destroy();
-            // Inisialisasi ulang kalender dengan data yang baru
-            isiCalendar();
-        }
+        // CREATE
+        $(document).on('click', '#save-add-event', function() {
+            var title = $('#event-title').val();
+            var color = $('#event-color').val();
+            var allDay = $('#all-day').val();
+            var startDate = $('#event-start').val();
+            var endDate = $('#event-end').val();
 
+            var eventData = {
+                title: title,
+                color: color,
+                allDay: Boolean(allDay === "true"),
+                start: startDate,
+                end: endDate
+            };
 
-        function isiCalendar() {
+            addEventCalendar(eventData);
+        });
+
+        function addEventCalendar(eventData) {
+            // console.log(eventData.allDay);
             $.ajax({
-                url: "<?= base_url() ?>GetEvent",
-                type: "GET",
-                dataType: "json",
+                url: '<?= base_url(); ?>AddEvent',
+                type: 'POST',
+                data: eventData,
                 success: function(response) {
-                    // console.log(response);
-                    initializeCalendar(response);
+                    console.log(response);
+                    refreshCalendar();
+                    calendar.addEvent(eventData);
+                    $('#addEventModal').modal('hide');
                 },
                 error: function(xhr, status, error) {
-                    console.log(error + "oke");
+                    console.log(error);
                 }
             });
         }
-        isiCalendar();
+        // BATAS CREATE
 
-        $.ajax({
-            url: "<?= base_url() ?>GetEventColor",
-            type: "GET",
-            dataType: "json",
-            success: function(response) {
-                response.forEach(function(color) {
-                    var colorOption = $('<li><a href="#"><i class="fas fa-square"></i></a></li>');
-                    colorOption.find('a').css('color', color.background_color);
-                    colorOption.find('a').css('border-color', color.border_color);
-                    colorOption.data('color-id', color.id);
-                    $('#color-chooser').append(colorOption);
-                });
-            },
-            error: function(xhr, status, error) {
-                console.log(error);
-            }
-        });
-
-        // mengubah RGB to HEX
-        function rgbToHex(rgb) {
-            var parts = rgb.match(/^rgb\((\d+),\s*(\d+),\s*(\d+)\)$/);
-            delete(parts[0]);
-            for (var i = 1; i <= 3; ++i) {
-                parts[i] = parseInt(parts[i]).toString(16);
-                if (parts[i].length == 1) parts[i] = '0' + parts[i];
-            }
-            return '#' + parts.join('');
-        }
-
-
+        // Tools select
         function getEventColors() {
             $.ajax({
                 url: "<?= base_url() ?>GetEventColor",
@@ -344,8 +302,55 @@
                 }
             });
         }
+        // Batas tools select
 
-        // Panggil fungsi untuk mendapatkan pilihan warna saat halaman dimuat
-        getEventColors();
+        // Tools untuk progressing
+        function formatDate(date) {
+            var year = date.getFullYear();
+            var month = (date.getMonth() + 1).toString().padStart(2, '0');
+            var day = date.getDate().toString().padStart(2, '0');
+            var hours = date.getHours().toString().padStart(2, '0');
+            var minutes = date.getMinutes().toString().padStart(2, '0');
+
+            return `${year}-${month}-${day}T${hours}:${minutes}`;
+        }
+
+        function refreshCalendar() {
+            calendar.destroy();
+            isiCalendar();
+        }
+
+        function isiCalendar() {
+            $.ajax({
+                url: "<?= base_url() ?>GetEvent",
+                type: "GET",
+                dataType: "json",
+                success: function(response) {
+                    // console.log(response);
+                    initializeCalendar(response);
+                },
+                error: function(xhr, status, error) {
+                    console.log(error + "oke");
+                }
+            });
+        }
+        // Batas tools untuk progressing
+
+        // Progressing
+        $(document).ready(function() {
+            // Tools Select
+            $('#all-day').on('change', function() {
+                var allDayValue = $(this).val();
+                console.log(allDayValue);
+                $('#event-end').prop('readonly', (allDayValue === 'true'));
+            });
+            // Batas Tools Select
+            // CRUD
+            $(document).on('click', '#delete-event', handleDeleteEvent);
+
+            // Main progress
+            isiCalendar();
+            getEventColors();
+        });
     });
 </script>
