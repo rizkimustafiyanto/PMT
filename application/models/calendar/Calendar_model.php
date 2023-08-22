@@ -6,7 +6,7 @@ class Calendar_model extends CI_Model
 {
     function GetEvent($parameter)
     {
-        $procedure = 'call usp_xt_event_select(?,?)';
+        $procedure = 'call usp_xt_event_select(?,?,?)';
         $sql_query = $this->db->query($procedure, $parameter);
         mysqli_next_result($this->db->conn_id);
         if ($sql_query->num_rows() > 0) {
@@ -16,7 +16,7 @@ class Calendar_model extends CI_Model
 
     function InsertEvent($parameter)
     {
-        $procedure = 'call usp_xt_event_insert(?,?,?,?,?,?,?)';
+        $procedure = 'call usp_xt_event_insert(?,?,?,?,?,?,?,?,?)';
         $result = $this->db->query($procedure, $parameter);
 
         return true;

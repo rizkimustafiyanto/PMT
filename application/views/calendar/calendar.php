@@ -38,7 +38,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <form id="event-form">
+                    <form id="x">
                         <div class="form-group">
                             <label for="event-title">Event Title</label>
                             <input type="text" class="form-control" id="event-title" name="event-title" placeholder="Event Title Here" required>
@@ -64,6 +64,12 @@
                         <div class="form-group">
                             <label for="event-end">End Date</label>
                             <input type="datetime-local" class="form-control" id="event-end" name="event-end" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="share-to">Share With</label>
+                            <select class="form-control" id="share-to" name="shared-members[]" multiple="multiple">
+                                <!-- Options for shared members will be added through Select2 -->
+                            </select>
                         </div>
                     </form>
                 </div>
@@ -246,15 +252,20 @@
             var allDay = $('#all-day').val();
             var startDate = $('#event-start').val();
             var endDate = $('#event-end').val();
+            var shareTo = $('#share-to').val();
+            var groupId = $('#group-id').val();
 
             var eventData = {
                 title: title,
                 color: color,
                 allDay: Boolean(allDay === "true"),
                 start: startDate,
-                end: endDate
+                end: endDate,
+                shareTo: shareTo,
+                groupId: groupId
             };
 
+            // console.log(eventData.shareTo);
             addEventCalendar(eventData);
         });
 
@@ -339,6 +350,18 @@
         // Progressing
         $(document).ready(function() {
             // Tools Select
+            $('#share-to').select2({
+                placeholder: '-- Choose Members --',
+                allowClear: true,
+                minimumInputLength: 0,
+                data: [
+                    <?php foreach ($memberRecords as $key) { ?> {
+                            id: "<?= $key->member_id ?>",
+                            text: "<?= $key->member_name ?>"
+                        },
+                    <?php } ?>
+                ]
+            });
             $('#all-day').on('change', function() {
                 var allDayValue = $(this).val();
                 console.log(allDayValue);

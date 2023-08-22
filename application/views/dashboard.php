@@ -1,3 +1,21 @@
+<style>
+  .fc-header-toolbar {
+    height: 8px;
+    font-size: 12px;
+  }
+
+  .fc-header-toolbar .fc-prev-button {
+    background-color: white;
+    color: black;
+    border: none;
+  }
+
+  .fc-header-toolbar .fc-next-button {
+    background-color: white;
+    color: black;
+    border: none;
+  }
+</style>
 <?php
 $totalProject = '0';
 $doneProject = '0';
@@ -378,146 +396,161 @@ if (!empty($Countable)) {
                 </button>
               </div>
             </div>
-
-            <div class="card-body pt-0" style="margin-top: 5px;">
-              <div style="width: 100%">
-                <div class="bootstrap-datetimepicker-widget usetwentyfour">
-                  <ul class="list-unstyled">
-                    <li class="show">
-                      <div class="datepicker">
-                        <div class="datepicker-days">
-                          <table class="table table-sm table-borderless">
-                            <thead>
-                              <!-- <tr>
-                                 <th class="prev prev-year-btn" data-action="previous"><span class="fa fa-chevron-left" title="Previous Month"></span></th>
-                                 <th class="picker-switch" data-action="pickerSwitch" colspan="5" title="Select Year"><?php echo $year; ?></th>
-                                 <th class="next next-year-btn" data-action="next"><span class="fa fa-chevron-right" title="Next Month"></span></th>
-                               </tr> -->
-                              <tr>
-                                <th class="prev prev-month-btn" data-action="previous"><span class="fa fa-chevron-left" title="Previous Month"></span></th>
-                                <?php foreach (range(1, 12) as $m) : ?>
-                                  <?php if ($m == $month) { ?>
-                                    <th class="picker-switch<?php echo ($m == $month) ? ' bg-warning' : ''; ?>" colspan="5" title="Select Month">
-                                      <?php echo date('M ' . $year, mktime(0, 0, 0, $m, 1)); ?>
-                                    </th>
-                                  <?php } ?>
-                                <?php endforeach; ?>
-                                <th class="next next-month-btn" data-action="next"><span class="fa fa-chevron-right" title="Next Month"></span></th>
-                              </tr>
-                              <tr>
-                                <?php foreach ($days as $day) : ?>
-                                  <th class="dow"><?php echo $day; ?></th>
-                                <?php endforeach; ?>
-                              </tr>
-                            </thead>
-                            <tbody>
-                              <?php echo $calendar; ?>
-                            </tbody>
-                          </table>
-                        </div>
-                      </div>
-                    </li>
-                  </ul>
-                </div>
+            <div class="card-body" style="margin-top: -10px;">
+              <div id="calendarView" class="fc fc-media-screen fc-direction-ltr fc-theme-bootstrap">
+                <!-- Konten kalender akan dirender di sini -->
               </div>
             </div>
           </div>
           <!-- Batas Calender -->
-
         </div>
-        <!-- /.col-md-6 -->
       </div>
-      <!-- /.row -->
-    </div><!-- /.container-fluid -->
+    </div>
   </div>
-  <!-- /.content -->
 </div>
-<!-- /.content-wrapper -->
 
+<!-- Event View -->
+<div class="modal fade" id="eventDetailView">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h4 class="modal-title">Event Detail</h4>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group" style="display: none;">
+          <label for="eventID">ID</label>
+          <input type="text" class="form-control" id="eventID" name="eventID" required readonly>
+        </div>
+        <div class="form-group">
+          <label for="event-start">Start Date</label>
+          <input type="datetime-local" class="form-control" id="event-start-date" name="event-start-date" required readonly>
+        </div>
+        <div class="form-group">
+          <label for="event-end">End Date</label>
+          <input type="datetime-local" class="form-control" id="event-end-date" name="event-end-date" required readonly>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- Batas Event View -->
 <!-- Control Sidebar -->
 <aside class="control-sidebar control-sidebar-dark">
-  <!-- Control sidebar content goes here -->
   <div class="p-3">
     <h5>Title</h5>
     <p>Sidebar content</p>
   </div>
 </aside>
-<!-- /.control-sidebar -->
-<!-- <script src="https://cdn.jsdelivr.net/npm/chart.js"></script> -->
-<!-- <script>
-  $(document).ready(function() {
-    var areaChartData = {
-      labels: ['January', 'February', 'March', 'April', 'May', 'June', 'July'],
-      datasets: [{
-          label: 'Digital Goods',
-          backgroundColor: 'rgba(60,141,188,0.9)',
-          borderColor: 'rgba(60,141,188,0.8)',
-          pointRadius: false,
-          pointColor: '#3b8bba',
-          pointStrokeColor: 'rgba(60,141,188,1)',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: 'rgba(60,141,188,1)',
-          data: [28, 48, 40, 19, 86, 27, 90]
-        },
-        {
-          label: 'Electronics',
-          backgroundColor: 'rgba(210, 214, 222, 1)',
-          borderColor: 'rgba(210, 214, 222, 1)',
-          pointRadius: false,
-          pointColor: 'rgba(210, 214, 222, 1)',
-          pointStrokeColor: '#c1c7d1',
-          pointHighlightFill: '#fff',
-          pointHighlightStroke: 'rgba(220,220,220,1)',
-          data: [65, 59, 80, 81, 56, 55, 40]
-        }
-      ]
-    };
-
-    var barChartCanvas = $('#barChart');
-    var barChartData = JSON.parse(JSON.stringify(areaChartData));
-    
-    var barChartOptions = {
-      responsive: true,
-      maintainAspectRatio: false,
-      datasetFill: false
-    };
-
-    new Chart(barChartCanvas, {
-      type: 'bar',
-      data: barChartData,
-      options: barChartOptions
-    });
-  });
-</script> -->
+<script src="<?= base_url(); ?>assets/plugins/fullcalendar/main.js"></script>
 <script>
   // Panggil fungsi draggable pada elemen card dengan class card-warning
   $(document).ready(function() {
     // Membuat elemen dengan class 'ui-sortable-handle' menjadi dragable
     $(".ui-sortable").sortable({
       // Tentukan opsi tambahan jika diperlukan
-
     });
   });
+</script>
+<script>
+  $(function() {
+    var calendarEl = document.getElementById('calendarView');
+    var calendar;
 
-  document.querySelector('.prev-month-btn').addEventListener('click', function() {
-    var prevMonth = <?php echo ($month == 1) ? 12 : $month - 1; ?>;
-    var prevYear = <?php echo ($month == 1) ? $year - 1 : $year; ?>;
-    window.location.href = "<?php echo base_url('Dashboard/') ?>" + prevMonth + "/" + prevYear;
+    function initializeCalendar(eventsData) {
+      // console.log(eventsData);
+      calendar = new FullCalendar.Calendar(calendarEl, {
+        headerToolbar: {
+          start: 'prev',
+          center: 'title',
+          end: 'next'
+        },
+        validRange: {
+          start: '2023-01-01',
+          end: '2023-12-31'
+        },
+        slotMinTime: '06:00:00',
+        slotMaxTime: '22:00:00',
+        themeSystem: 'bootstrap',
+        events: eventsData,
+        editable: false,
+        droppable: false,
+        eventClick: handleEventClick,
+        aspectRatio: 2,
+      });
+      console.log(calendar)
+      calendar.render();
+    }
+
+    // Untuk click clik calendar
+    function handleEventClick(info) {
+      console.log(info.event);
+      var id_event = info.event.id;
+      var fullDay = info.event.allDay;
+      var title = info.event.title;
+      var colorId = info.event.extendedProps.colorId;
+      var startDate = info.event.start;
+      var endDate = info.event.end;
+
+      $('#eventDetailView .modal-title').text(title);
+      $('#eventDetailView #eventID').val(id_event);
+
+      if (startDate) {
+        $('#eventDetailView #event-start-date').val(formatDate(startDate));
+      } else {
+        $('#eventDetailView #event-start-date').val('N/A');
+      }
+
+      if (endDate) {
+        $('#eventDetailView #event-end-date').val(formatDate(endDate));
+      } else {
+        $('#eventDetailView #event-end-date').val('N/A');
+      }
+      $('#eventDetailView #event-end-date').prop('readonly', fullDay);
+      $('#eventDetailView').modal('show');
+
+    }
+    // Batas click calendar
+    // Tools untuk progressing
+    function formatDate(date) {
+      var year = date.getFullYear();
+      var month = (date.getMonth() + 1).toString().padStart(2, '0');
+      var day = date.getDate().toString().padStart(2, '0');
+      var hours = date.getHours().toString().padStart(2, '0');
+      var minutes = date.getMinutes().toString().padStart(2, '0');
+
+      return `${year}-${month}-${day}T${hours}:${minutes}`;
+    }
+
+    function refreshCalendar() {
+      calendar.destroy();
+      isiCalendar();
+    }
+
+    function isiCalendar() {
+      $.ajax({
+        url: "<?= base_url() ?>GetEvent",
+        type: "GET",
+        dataType: "json",
+        success: function(response) {
+          // console.log(response);
+          initializeCalendar(response);
+        },
+        error: function(xhr, status, error) {
+          console.log(error + "oke");
+        }
+      });
+    }
+    // Batas tools untuk progressing
+
+    // Progressing
+    $(document).ready(function() {
+      isiCalendar();
+    });
   });
-
-  document.querySelector('.next-month-btn').addEventListener('click', function() {
-    var nextMonth = <?php echo ($month == 12) ? 1 : $month + 1; ?>;
-    var nextYear = <?php echo ($month == 12) ? $year + 1 : $year; ?>;
-    window.location.href = "<?php echo base_url('Dashboard/') ?>" + nextMonth + "/" + nextYear;
-  });
-
-  // document.querySelector('.prev-year-btn').addEventListener('click', function() {
-  //   var prevYear = <?php echo $year - 1; ?>;
-  //   window.location.href = "<?php echo base_url('Dashboard/') ?>" + <?php echo $month; ?> + "/" + prevYear;
-  // });
-
-  // document.querySelector('.next-year-btn').addEventListener('click', function() {
-  //   var nextYear = <?php echo $year + 1; ?>;
-  //   window.location.href = "<?php echo base_url('Dashboard/') ?>" + <?php echo $month; ?> + "/" + nextYear;
-  // });
 </script>

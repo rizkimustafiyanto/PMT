@@ -10,19 +10,24 @@ class calendar_controller extends BaseController
     {
         parent::__construct();
         $this->load->model('calendar/Calendar_model');
+        $this->load->model('master/member_model');
 
         $this->IsLoggedIn();
     }
 
     function index()
     {
+        $parammember = [0, 0];
+        $data['memberRecords'] = $this->member_model->Get($parammember);
         $this->global['pageTitle'] = 'CodeInsect : List Events';
-        $this->loadViews('calendar/calendar', $this->global, null, null);
+        $this->loadViews('calendar/calendar', $this->global, $data, null);
     }
 
     function GetEvent()
     {
-        $result = $this->Calendar_model->GetEvent([0, 0]);
+        $memberId = $this->session->userdata('member_id');
+        $roleId = $this->session->userdata('role_id');
+        $result = $this->Calendar_model->GetEvent([0, $memberId, ($roleId == '1') ? 0 : 1]);
         $events = array();
 
         if ($result !== null) { // Tambahkan penanganan jika $result bukan null
@@ -84,6 +89,9 @@ class calendar_controller extends BaseController
         $startDate = $this->input->post("start");
         $endDate = $this->input->post("end");
         $allDay = $this->input->post("allDay");
+        $share_to = $this->input->post("shareTo");
+        $group_id = $this->input->post("groupId");
+        $creator = $this->session->userdata('member_id');
 
         $addEvent = [
             'p_title' => $eventTitle,
@@ -92,7 +100,9 @@ class calendar_controller extends BaseController
             'p_all_day' => $allDay,
             'p_background_color' => $backgroundColor,
             'p_border_color' => $borderColor,
-            'p_color_id' => '',
+            'p_share_to' => $share_to,
+            'p_group_id' => $group_id,
+            'p_creation_user_id' => $creator
         ];
 
         $result = $this->Calendar_model->InsertEvent($addEvent);
