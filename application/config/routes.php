@@ -225,15 +225,10 @@ $route['Profile'] = 'profile/Profile_Controller';
 //Calendar
 $route['Calendar'] = 'calendar/calendar_controller';
 $route['GetEvent'] = 'calendar/calendar_controller/GetEvent';
-$route['GetExternalEvent'] = 'calendar/calendar_controller/GetExternalEvent';
 $route['UpdateEvent'] = 'calendar/calendar_controller/UpdateEvent';
 $route['DeleteEvent'] = 'calendar/calendar_controller/DeleteEvent';
 $route['GetEventColor'] = 'calendar/calendar_controller/GetEventColor';
 $route['AddEvent'] = 'calendar/calendar_controller/AddEvent';
-$route['AddEventColor'] = 'calendar/calendar_controller/AddEventColor';
-$route['AddExternalEvent'] = 'calendar/calendar_controller/AddExternalEvent';
-$route['UpdateEventColor'] = 'calendar/calendar_controller/UpdateEventColor';
-$route['DeleteExternalEvent'] = 'calendar/calendar_controller/DeleteExternalEvent';
 
 
 //Meesagaes

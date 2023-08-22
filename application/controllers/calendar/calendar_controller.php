@@ -16,57 +16,32 @@ class calendar_controller extends BaseController
 
     function index()
     {
-
-
         $this->global['pageTitle'] = 'CodeInsect : List Events';
         $this->loadViews('calendar/calendar', $this->global, null, null);
     }
 
     function GetEvent()
     {
-
         $result = $this->Calendar_model->GetEvent([0, 0]);
         $events = array();
-        foreach ($result as $key) {
-            $event = array(
-                "id" => $key->id,
-                "title" => $key->title,
-                "start" => $key->start_date,
-                "end" => $key->end_date,
-                "colorId" => $key->color_id,
-                "backgroundColor" => $key->background_color,
-                "borderColor" => $key->border_color,
-                "allDay" => (bool)$key->all_day
 
-            );
-            array_push($events, $event);
+        if ($result !== null) { // Tambahkan penanganan jika $result bukan null
+            foreach ($result as $key) {
+                $event = array(
+                    "id" => $key->id,
+                    "title" => $key->title,
+                    "start" => $key->start_date,
+                    "end" => $key->end_date,
+                    "colorId" => $key->color_id,
+                    "backgroundColor" => $key->background_color,
+                    "borderColor" => $key->border_color,
+                    "allDay" => (bool)$key->all_day
+                );
+                array_push($events, $event);
+            }
         }
-        echo json_encode($events);
-    }
-    function GetExternalEvent()
-    {
-        $result = $this->Calendar_model->GetEventExternal([0, 0]);
-        $events = array();
-        foreach ($result as $key) {
-            $event = array(
-                "ex_id" => $key->id,
-                "title" => $key->title,
-                "colorId" => $key->color_id,
-                "backgroundColor" => $key->background_color,
-                "borderColor" => $key->border_color,
-                "colorId" => $key->color_id
-            );
-            array_push($events, $event);
-        }
-        echo json_encode($events);
-    }
 
-    function DeleteEvent()
-    {
-        $p_event_id = $this->input->post('event_id');
-        $result = $this->Calendar_model->DeleteEvent([$p_event_id]);
-
-        echo json_encode($result);
+        echo json_encode($events);
     }
 
     public function UpdateEvent()
@@ -99,96 +74,6 @@ class calendar_controller extends BaseController
         );
 
         $this->output->set_content_type('application/json')->set_output(json_encode($response));
-    }
-
-    function GetEventColor()
-    {
-
-        $p_color_id = $this->input->post('color_id');
-        // $p_color_id = '';
-        if (!empty($p_color_id) || $p_color_id = '') {
-            $p_flag = 1;
-        } else {
-            $p_flag = 0;
-        }
-        $result = $this->Calendar_model->GetEventColor([$p_color_id, $p_flag]);
-
-        echo json_encode($result);
-    }
-
-    function AddEventColor()
-    {
-        $eventTitle = $this->input->post("eventTitle");
-        $backgroundColor = $this->input->post("backgroundColor");
-        $borderColor = $this->input->post("borderColor");
-
-        $addColors = [
-            'background_color' => $backgroundColor,
-            'border_color' => $borderColor,
-        ];
-
-        // Panggil model Anda untuk melakukan operasi INSERT
-        $result = $this->Messages_model->InsertEventColor($addColors);
-
-        if ($result) {
-            // Gunakan response JSON untuk memberikan feedback ke frontend
-            $response = array(
-                'success' => true,
-                'message' => 'New event color created successfully'
-            );
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'New event color creation failed'
-            );
-        }
-
-        header('Content-Type: application/json');
-        echo json_encode($response);
-    }
-
-    function UpdateEventColor()
-    {
-        $eventTitle = $this->input->post("eventTitle");
-        $backgroundColor = $this->input->post("backgroundColor");
-        $borderColor = $this->input->post("borderColor");
-
-        $addColors = [
-            'background_color' => $backgroundColor,
-            'border_color' => $borderColor,
-        ];
-
-        // Panggil model Anda untuk melakukan operasi INSERT
-        $result = $this->Messages_model->UpdateEventColor($addColors);
-
-        if ($result) {
-            // Gunakan response JSON untuk memberikan feedback ke frontend
-            $response = array(
-                'success' => true,
-                'message' => 'New event color created successfully'
-            );
-        } else {
-            $response = array(
-                'success' => false,
-                'message' => 'New event color creation failed'
-            );
-        }
-
-        header('Content-Type: application/json');
-        echo json_encode($response);
-    }
-
-    function DeleteExternalEvent()
-    {
-        $p_event_id = $this->input->post('event_id');
-        $result = $this->Calendar_model->DeleteEventExternal([$p_event_id, 0, 0]);
-
-        $response = array(
-            'success' => $result, // Menyimpan status berhasil atau tidak
-            'message' => $result ? 'Hapus ' . $p_event_id . ' berhasil' : 'Gagal hapus acara'
-        );
-
-        echo json_encode($response);
     }
 
     function AddEvent()
@@ -227,34 +112,27 @@ class calendar_controller extends BaseController
         header('Content-Type: application/json');
         echo json_encode($response);
     }
-    function AddExternalEvent()
+
+    function DeleteEvent()
     {
-        $eventTitle = $this->input->post("eventTitle");
-        $backgroundColor = $this->input->post("background_color");
-        $borderColor = $this->input->post("border_color");
+        $p_event_id = $this->input->post('event_id');
+        $result = $this->Calendar_model->DeleteEvent([$p_event_id]);
 
-        $addExternalEvent = [
-            'p_title' => $eventTitle,
-            'background_color' => $backgroundColor,
-            'border_color' => $borderColor,
-            'color_id' => '',
-        ];
+        echo json_encode($result);
+    }
 
-        $result = $this->Calendar_model->InsertEventExternal($addExternalEvent);
+    function GetEventColor()
+    {
 
-        if ($result) {
-            $response = array(
-                'success' => true,
-                'message' => 'Warna acara baru berhasil dibuat'
-            );
+        $p_color_id = $this->input->post('color_id');
+        // $p_color_id = '';
+        if (!empty($p_color_id) || $p_color_id = '') {
+            $p_flag = 1;
         } else {
-            $response = array(
-                'success' => false,
-                'message' => 'Pembuatan warna acara baru gagal'
-            );
+            $p_flag = 0;
         }
+        $result = $this->Calendar_model->GetEventColor([$p_color_id, $p_flag]);
 
-        header('Content-Type: application/json');
-        echo json_encode($response);
+        echo json_encode($result);
     }
 }

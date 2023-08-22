@@ -15,22 +15,19 @@
         </div>
     </section>
     <section class="content">
-        <div class="container-fluid">
-            <div class="row">
-                <div class="col-md-9">
-                    <div class="card card-primary">
-                        <div class="card-body p-0">
-                            <div id="calendar" class="fc fc-media-screen fc-direction-ltr fc-theme-bootstrap">
-                                <!-- Konten kalender akan dirender di sini -->
-
-                            </div>
+        <div class="container-fluid d-flex justify-content-center align-items-center" style="min-height: calc(100vh - 56px);">
+            <div class="col-md-9">
+                <div class="card card-primary">
+                    <div class="card-body">
+                        <div id="calendar" class="fc fc-media-screen fc-direction-ltr fc-theme-bootstrap">
+                            <!-- Konten kalender akan dirender di sini -->
                         </div>
                     </div>
                 </div>
             </div>
         </div>
     </section>
-    <!-- Edit external event sebelum di drag -->
+    <!-- Untuk Add Event -->
     <div class="modal fade" id="addEventModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -79,6 +76,7 @@
         </div>
     </div>
 
+    <!-- Untuk edit dan detail event -->
     <div class="modal fade" id="eventDetailModal">
         <div class="modal-dialog">
             <div class="modal-content">
@@ -89,7 +87,7 @@
                     </button>
                 </div>
                 <div class="modal-body">
-                    <div class="form-group">
+                    <div class="form-group" style="display: none;">
                         <label for="eventID">ID</label>
                         <input type="text" class="form-control" id="eventID" name="eventID" required readonly>
                     </div>
@@ -143,6 +141,7 @@
             calendar.render();
         }
 
+        // Untuk click clik calendar
         function handleDateClick(info) {
             var clickedDate = info.date;
             var fullDay = info.allDay;
@@ -179,6 +178,7 @@
             $('#eventDetailModal').modal('show');
 
         }
+        // Batas click calendar
 
         // Delete bro
         function handleDeleteEvent() {

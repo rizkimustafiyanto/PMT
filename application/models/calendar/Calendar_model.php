@@ -37,40 +37,6 @@ class Calendar_model extends CI_Model
         return true;
     }
 
-    // External ---------------------------------------------------------------------------
-    function GetEventExternal($parameter)
-    {
-        $procedure = 'call usp_xt_event_external_select(?,?)';
-        $sql_query = $this->db->query($procedure, $parameter);
-        mysqli_next_result($this->db->conn_id);
-        if ($sql_query->num_rows() > 0) {
-            return $sql_query->result();
-        }
-    }
-
-    function InsertEventExternal($parameter)
-    {
-        $procedure = 'call usp_xt_event_external_insert(?,?,?,?)';
-        $result = $this->db->query($procedure, $parameter);
-
-        return true;
-    }
-
-    function UpdateEventExternal($parameter)
-    {
-        $procedure = 'call usp_xt_event_external_update(?,?,?)';
-        $result = $this->db->query($procedure, $parameter);
-
-        return true;
-    }
-
-    function DeleteEventExternal($parameter)
-    {
-        $procedure = 'call usp_xt_event_external_delete(?,?,?)';
-        $sql_query = $this->db->query($procedure, $parameter);
-        return true;
-    }
-
     // Colornya -------------------------------------------------------------------------------------
     function GetEventColor($parameter)
     {
