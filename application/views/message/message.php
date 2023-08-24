@@ -22,6 +22,13 @@ if (!empty($profiles)) {
         overflow: hidden;
         text-overflow: ellipsis;
     }
+
+    #select_sender:hover {
+        background-color: #f4f4f4;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+    }
 </style>
 
 <div class="content-wrapper" style="min-height: 1604.71px;">
@@ -218,7 +225,7 @@ if (!empty($profiles)) {
                                 var potoBox = row.gender_id === 'GR-001' ? '5.png' : '3.png';
                                 var rowHtml = `
                                             <div class="container mt-2">
-                                                <a id="select_sender" data-sender="${row.sender_id}" class="col-md-12 btn btn-secondary" style="display: flex; align-items: center;">
+                                                <div id="select_sender" data-sender="${row.sender_id}" class="col-md-12">
                                                     <div style="display: flex;">
                                                         <div style="overflow-y: auto; max-height: 60px; flex: 1;">
                                                             <img src="<?= base_url(); ?>assets/dist/img/avatar${potoBox}" class="mr-3 img-circle" alt="User Avatar" style="width: 50px; height: 50px;">
@@ -232,7 +239,7 @@ if (!empty($profiles)) {
                                                             <p style="margin:0px;">${row.created_at}</p>
                                                         </div>
                                                     </div>
-                                                </a>
+                                                </div>
                                             </div>
                                         `;
                                 messagesContainer.append(rowHtml);
@@ -260,7 +267,6 @@ if (!empty($profiles)) {
 
         // Atur interval untuk memanggil fungsi columnMessages setiap 3000 milidetik (3 detik)
         setInterval(function() {
-            console.log("Calling columnMessages()");
             columnMessages();
         }, 3000);
 

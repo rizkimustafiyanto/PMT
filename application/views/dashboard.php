@@ -111,7 +111,9 @@ if (!empty($Countable)) {
           <!-- Daily Task -->
           <div class="card card-warning">
             <div class="card-header border-tranparent">
-              <div class="card-title"><strong>Daily Task</strong></div>
+              <div class="card-title">
+                <strong>Daily Task</strong> (<span style="border-radius: 20px;"><?= date('d M Y') ?></span>)
+              </div>
               <div class="card-tools">
                 <button type="button" class="btn btn-tool" data-card-widget="collapse">
                   <i class="fas fa-minus"></i>
@@ -121,76 +123,9 @@ if (!empty($Countable)) {
                 </button>
               </div>
             </div>
-            <div class="card-body">
-              <div class="direct-chat-messages overflow-auto">
-                <div class="text-center" style="padding-bottom: 20px;">
-                  <span class="bg-red" style="border-radius: 20px; padding: 10px;"><?= date('d M Y') ?></span>
-                </div>
-                <div class="timeline">
-                  <div>
-                    <i class="fas fa-envelope bg-blue"></i>
-                    <div class="timeline-item">
-                      <span class="time"><i class="fas fa-clock"></i> 12:05</span>
-                      <h3 class="timeline-header"><a href="#">Support Team</a> sent you an email</h3>
-                      <div class="timeline-body">
-                        Etsy doostang zoodles disqus groupon greplin oooj voxy zoodles,
-                        weebly ning heekya handango imeem plugg dopplr jibjab.
-                      </div>
-                    </div>
-                  </div>
-                  <div>
-                    <i class="fas fa-comments bg-yellow"></i>
-                    <div class="timeline-item">
-                      <span class="time"><i class="fas fa-clock"></i> 27 mins ago</span>
-                      <h3 class="timeline-header"><a href="#">Jay White</a> commented on your post</h3>
-                      <div class="timeline-body">
-                        Take me to your leader!
-                        Switzerland is small and neutral!
-                        We are more like Germany, ambitious and misunderstood!
-                      </div>
-                    </div>
-                  </div>
-
-                  <div class="time-label">
-                    <span class="bg-green">3 Jan. 2014</span>
-                  </div>
-
-                  <div>
-                    <i class="fa fa-camera bg-purple"></i>
-                    <div class="timeline-item">
-                      <span class="time"><i class="fas fa-clock"></i> 2 days ago</span>
-                      <h3 class="timeline-header"><a href="#">Mina Lee</a> uploaded new photos</h3>
-                      <div class="timeline-body">
-                        <img src="https://placehold.it/150x100" alt="...">
-                        <img src="https://placehold.it/150x100" alt="...">
-                        <img src="https://placehold.it/150x100" alt="...">
-                        <img src="https://placehold.it/150x100" alt="...">
-                        <img src="https://placehold.it/150x100" alt="...">
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <i class="fas fa-video bg-maroon"></i>
-                    <div class="timeline-item">
-                      <span class="time"><i class="fas fa-clock"></i> 5 days ago</span>
-                      <h3 class="timeline-header"><a href="#">Mr. Doe</a> shared a video</h3>
-                      <div class="timeline-body">
-                        <div class="embed-responsive embed-responsive-16by9">
-                          <iframe class="embed-responsive-item" src="https://www.youtube.com/embed/tMWkeBIohBs" allowfullscreen=""></iframe>
-                        </div>
-                      </div>
-                      <div class="timeline-footer">
-                        <a href="#" class="btn btn-sm bg-maroon">See comments</a>
-                      </div>
-                    </div>
-                  </div>
-
-                  <div>
-                    <i class="fas fa-clock bg-gray"></i>
-                  </div>
-
-                </div>
+            <div class="card-body overflow-auto">
+              <div class="timeline" id="event-timeline">
+                <!-- Placeholder for event items -->
               </div>
             </div>
           </div>
@@ -319,7 +254,6 @@ if (!empty($Countable)) {
                 </li>
               </ul>
             </div>
-
             <div class="card-footer clearfix">
               <button type="button" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Add item</button>
             </div>
@@ -379,9 +313,8 @@ if (!empty($Countable)) {
             </div>
           </div>
           <!-- Batas Project Progress -->
-
         </div>
-        <!-- /.col-md-6 -->
+
         <div class="col-md-6">
           <!-- Calender -->
           <div class="card card-warning">
@@ -422,15 +355,23 @@ if (!empty($Countable)) {
       <div class="modal-body">
         <div class="form-group" style="display: none;">
           <label for="eventID">ID</label>
-          <input type="text" class="form-control" id="eventID" name="eventID" required readonly>
+          <p class="text-muted" id="eventID" name="eventID"></p>
         </div>
         <div class="form-group">
-          <label for="event-start">Start Date</label>
-          <input type="datetime-local" class="form-control" id="event-start-date" name="event-start-date" required readonly>
+          <strong><i class="far fa-calendar mr-1"></i> Start Date</strong>
+          <p class="text-muted" id="event-start-date" name="event-start-date"> </p>
+        </div>
+        <div class="form-group" id="event-end-date-div">
+          <strong><i class="far fa-calendar mr-1"></i> End Date</strong>
+          <p class="text-muted" id="event-end-date" name="event-end-date"> </p>
         </div>
         <div class="form-group">
-          <label for="event-end">End Date</label>
-          <input type="datetime-local" class="form-control" id="event-end-date" name="event-end-date" required readonly>
+          <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
+          <p class="text-muted" id="event-note-date" name="event-note-date"> </p>
+        </div>
+        <div class="form-group" id="event-location-date-div">
+          <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
+          <p class="text-muted" id="event-location-date" name="event-location-date"> </p>
         </div>
       </div>
       <div class="modal-footer">
@@ -449,11 +390,10 @@ if (!empty($Countable)) {
 </aside>
 <script src="<?= base_url(); ?>assets/plugins/fullcalendar/main.js"></script>
 <script>
-  // Panggil fungsi draggable pada elemen card dengan class card-warning
   $(document).ready(function() {
     // Membuat elemen dengan class 'ui-sortable-handle' menjadi dragable
     $(".ui-sortable").sortable({
-      // Tentukan opsi tambahan jika diperlukan
+      // Opsi untuk CRUD
     });
   });
 </script>
@@ -461,6 +401,45 @@ if (!empty($Countable)) {
   $(function() {
     var calendarEl = document.getElementById('calendarView');
     var calendar;
+
+    function initializeTimeline(dataTime) {
+      const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
+      const filteredEvents = dataTime.filter(event => {
+        const eventStartDate = event.start.split(' ')[0]; // Extract date portion from start
+        return eventStartDate === currentDate;
+      });
+
+      const timeline = document.getElementById('event-timeline');
+
+      if (filteredEvents.length === 0) {
+        const noEventsMessage = document.createElement('div');
+        noEventsMessage.innerHTML = `
+        <div class="timeline-item">
+          <div class="timeline-body">
+            No events for today.
+          </div>
+        </div>
+        `;
+        timeline.appendChild(noEventsMessage);
+      } else {
+        // Loop through filtered events and create timeline items
+        filteredEvents.forEach(event => {
+          const timelineItem = document.createElement('div');
+          const linkNotes = formatNotes(event.notes);
+          timelineItem.innerHTML = `
+          <i class="fas fa-calendar-alt bg-green"></i>
+          <div class="timeline-item">
+            <span class="time"><i class="fas fa-clock"></i> ${event.start}</span>
+            <h3 class="timeline-header">${event.title}</h3>
+            <div class="timeline-body">
+            ${linkNotes}
+            </div>
+          </div>
+          `;
+          timeline.appendChild(timelineItem);
+        });
+      }
+    }
 
     function initializeCalendar(eventsData) {
       // console.log(eventsData);
@@ -483,40 +462,59 @@ if (!empty($Countable)) {
         eventClick: handleEventClick,
         aspectRatio: 2,
       });
-      console.log(calendar)
+      // console.log(calendar)
       calendar.render();
     }
 
     // Untuk click clik calendar
     function handleEventClick(info) {
-      console.log(info.event);
+      // console.log(info.event);
       var id_event = info.event.id;
       var fullDay = info.event.allDay;
       var title = info.event.title;
       var colorId = info.event.extendedProps.colorId;
       var startDate = info.event.start;
       var endDate = info.event.end;
+      var eventNote = info.event.extendedProps.notes;
+      var eventLoc = info.event.extendedProps.location;
+      var creationDate = info.event.extendedProps.creationDate;
+      var linkNotes = formatNotes(eventNote);
 
       $('#eventDetailView .modal-title').text(title);
-      $('#eventDetailView #eventID').val(id_event);
+      $('#eventDetailView #eventID').text(id_event);
+      $('#eventDetailView #creationDate').text(creationDate);
+      $('#eventDetailView #event-note-date').val(linkNotes);
+      $('#eventDetailView #event-note-date').replaceWith(`<p class="text-muted">${$('#eventDetailView #event-note-date').val()}</p><hr>`);
 
       if (startDate) {
-        $('#eventDetailView #event-start-date').val(formatDate(startDate));
+        $('#eventDetailView #event-start-date').text(formatDate(startDate));
       } else {
-        $('#eventDetailView #event-start-date').val('N/A');
+        $('#eventDetailView #event-start-date').text('N/A');
       }
 
       if (endDate) {
-        $('#eventDetailView #event-end-date').val(formatDate(endDate));
+        $('#eventDetailView #event-end-date').text(formatDate(endDate));
       } else {
-        $('#eventDetailView #event-end-date').val('N/A');
+        $('#eventDetailView #event-end-date').text('N/A');
+        $('#eventDetailView #event-end-date-div').hide();
       }
-      $('#eventDetailView #event-end-date').prop('readonly', fullDay);
-      $('#eventDetailView').modal('show');
 
+      if (eventLoc) {
+        $('#eventDetailView #event-location-date').text(eventLoc);
+      } else {
+        $('#eventDetailView #event-location-date').text('N/A');
+        $('#eventDetailView #event-location-date-div').hide();
+      }
+
+      $('#eventDetailView').modal('show');
     }
     // Batas click calendar
     // Tools untuk progressing
+    function formatNotes(notes) {
+      const urlRegex = /(https?:\/\/[^\s]+)/g; // Regular expression to match URLs
+      return notes.replace(urlRegex, '<a href="$&" target="_blank">$&</a>');
+    }
+
     function formatDate(date) {
       var year = date.getFullYear();
       var month = (date.getMonth() + 1).toString().padStart(2, '0');
@@ -527,11 +525,6 @@ if (!empty($Countable)) {
       return `${year}-${month}-${day}T${hours}:${minutes}`;
     }
 
-    function refreshCalendar() {
-      calendar.destroy();
-      isiCalendar();
-    }
-
     function isiCalendar() {
       $.ajax({
         url: "<?= base_url() ?>GetEvent",
@@ -539,6 +532,7 @@ if (!empty($Countable)) {
         dataType: "json",
         success: function(response) {
           // console.log(response);
+          initializeTimeline(response);
           initializeCalendar(response);
         },
         error: function(xhr, status, error) {

@@ -16,7 +16,7 @@ class Calendar_model extends CI_Model
 
     function InsertEvent($parameter)
     {
-        $procedure = 'call usp_xt_event_insert(?,?,?,?,?,?,?,?,?)';
+        $procedure = 'call usp_xt_event_insert(?,?,?,?,?,?,?,?,?,?,?)';
         $result = $this->db->query($procedure, $parameter);
 
         return true;
@@ -24,7 +24,7 @@ class Calendar_model extends CI_Model
 
     function UpdateEvent($parameter)
     {
-        $procedure = 'call usp_xt_event_update(?,?,?,?,?,?,?)';
+        $procedure = 'call usp_xt_event_update(?,?,?,?,?,?,?,?,?)';
         $result = $this->db->query($procedure, $parameter);
 
         return true;
@@ -32,7 +32,7 @@ class Calendar_model extends CI_Model
 
     function DeleteEvent($parameter)
     {
-        $procedure = 'call usp_xt_event_delete(?)';
+        $procedure = 'call usp_xt_event_delete(?,?,?,?,?)';
         $sql_query = $this->db->query($procedure, $parameter);
         return true;
     }
