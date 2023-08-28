@@ -361,21 +361,21 @@ if (!empty($Countable)) {
           <strong><i class="far fa-calendar mr-1"></i> Start Date</strong>
           <p class="text-muted" id="event-start-date" name="event-start-date"> </p>
         </div>
+        <hr>
         <div class="form-group" id="event-end-date-div">
           <strong><i class="far fa-calendar mr-1"></i> End Date</strong>
           <p class="text-muted" id="event-end-date" name="event-end-date"> </p>
         </div>
+        <hr>
         <div class="form-group">
           <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
           <p class="text-muted" id="event-note-date" name="event-note-date"> </p>
         </div>
+        <hr>
         <div class="form-group" id="event-location-date-div">
           <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
           <p class="text-muted" id="event-location-date" name="event-location-date"> </p>
         </div>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
       </div>
     </div>
   </div>
@@ -391,59 +391,18 @@ if (!empty($Countable)) {
 <script src="<?= base_url(); ?>assets/plugins/fullcalendar/main.js"></script>
 <script>
   $(document).ready(function() {
-    // Membuat elemen dengan class 'ui-sortable-handle' menjadi dragable
     $(".ui-sortable").sortable({
       // Opsi untuk CRUD
     });
   });
 </script>
 <script>
-  $(function() {
+  $(document).ready(function() {
     var calendarEl = document.getElementById('calendarView');
-    var calendar;
-
-    function initializeTimeline(dataTime) {
-      const currentDate = new Date().toISOString().split('T')[0]; // Get current date in YYYY-MM-DD format
-      const filteredEvents = dataTime.filter(event => {
-        const eventStartDate = event.start.split(' ')[0]; // Extract date portion from start
-        return eventStartDate === currentDate;
-      });
-
-      const timeline = document.getElementById('event-timeline');
-
-      if (filteredEvents.length === 0) {
-        const noEventsMessage = document.createElement('div');
-        noEventsMessage.innerHTML = `
-        <div class="timeline-item">
-          <div class="timeline-body">
-            No events for today.
-          </div>
-        </div>
-        `;
-        timeline.appendChild(noEventsMessage);
-      } else {
-        // Loop through filtered events and create timeline items
-        filteredEvents.forEach(event => {
-          const timelineItem = document.createElement('div');
-          const linkNotes = formatNotes(event.notes);
-          timelineItem.innerHTML = `
-          <i class="fas fa-calendar-alt bg-green"></i>
-          <div class="timeline-item">
-            <span class="time"><i class="fas fa-clock"></i> ${event.start}</span>
-            <h3 class="timeline-header">${event.title}</h3>
-            <div class="timeline-body">
-            ${linkNotes}
-            </div>
-          </div>
-          `;
-          timeline.appendChild(timelineItem);
-        });
-      }
-    }
+    var timelineEl = document.getElementById('event-timeline');
 
     function initializeCalendar(eventsData) {
-      // console.log(eventsData);
-      calendar = new FullCalendar.Calendar(calendarEl, {
+      var calendar = new FullCalendar.Calendar(calendarEl, {
         headerToolbar: {
           start: 'prev',
           center: 'title',
@@ -462,56 +421,144 @@ if (!empty($Countable)) {
         eventClick: handleEventClick,
         aspectRatio: 2,
       });
-      // console.log(calendar)
       calendar.render();
     }
 
-    // Untuk click clik calendar
-    function handleEventClick(info) {
-      // console.log(info.event);
-      var id_event = info.event.id;
-      var fullDay = info.event.allDay;
-      var title = info.event.title;
-      var colorId = info.event.extendedProps.colorId;
-      var startDate = info.event.start;
-      var endDate = info.event.end;
-      var eventNote = info.event.extendedProps.notes;
-      var eventLoc = info.event.extendedProps.location;
-      var creationDate = info.event.extendedProps.creationDate;
-      var linkNotes = formatNotes(eventNote);
+    function initializeTimeline(dataTime) {
+      const currentDate = new Date().toISOString().split('T')[0];
+      const filteredEvents = dataTime.filter(event => event.start.split(' ')[0] === currentDate);
+      const timeline = document.getElementById('event-timeline');
+      let timelineContent = '';
+
+      if (filteredEvents.length === 0) {
+        const timelineItem = document.createElement('div');
+        const linkNotes = "No Event Yet";
+        const timeDate = "--:--";
+
+        timelineItem.innerHTML =
+          '<i class="fas fa-ban" style="background-color: #f56954;"></i>' +
+          '<div class="timeline-item">' +
+          '<span class="time"><i class="fas fa-clock"></i> ' + timeDate + '</span>' +
+          '<div class="timeline-body">' + linkNotes + '</div>' +
+          '</div>';
+
+        timelineContent += timelineItem.outerHTML;
+      } else {
+        filteredEvents.forEach(event => {
+          const colorS = event.backgroundColor;
+          const timelineItem = document.createElement('div');
+          const linkNotes = formatNotes(event.notes);
+          const getLoc = event.location;
+          const getStart = new Date(event.start);
+          const getEnd = new Date(event.end);
+          const hoursStart = String(getStart.getHours()).padStart(2, '0') + ':' + String(getStart.getMinutes()).padStart(2, '0');
+          const hoursEnd = String(getEnd.getHours()).padStart(2, '0') + ':' + String(getEnd.getMinutes()).padStart(2, '0');
+          const timeDate = (hoursStart === hoursEnd) || (hoursEnd === 'NaN:NaN') ? 'FullDay' : hoursStart + " - " + hoursEnd;
+
+          timelineItem.innerHTML =
+            '<i class="fas fa-calendar-alt" style="background-color: ' + colorS + ';"></i>' +
+            '<div class="timeline-item">' +
+            '<span class="time"><i class="fas fa-clock"></i> ' + timeDate + '</span>' +
+            '<h3 class="timeline-header" data-title="' + event.title +
+            '"data-start="' + event.start +
+            '"data-end="' + event.end +
+            '"data-notes="' + linkNotes +
+            '"data-loc="' + getLoc +
+            '">' + event.title + '</h3>' +
+            '<div class="timeline-body">' + linkNotes + '</div>' +
+            '</div>';
+
+          timelineContent += timelineItem.outerHTML;
+        });
+      }
+
+      timeline.innerHTML = timelineContent;
+      const timelineHeaders = document.querySelectorAll('.timeline-header');
+      timelineHeaders.forEach(header => {
+        header.addEventListener('click', function() {
+          const eventData = {
+            title: this.getAttribute('data-title'),
+            start: this.getAttribute('data-start'),
+            end: this.getAttribute('data-end'),
+            extendedProps: {
+              notes: this.getAttribute('data-notes'),
+              location: this.getAttribute('data-loc')
+            }
+          };
+          handleEventHeader(eventData);
+        });
+      });
+    }
+
+    function handleEventHeader(eventData) {
+      console.log(eventData);
+      var title = eventData.title;
+      var start = eventData.start;
+      var end = eventData.end;
+      var notes = eventData.extendedProps.notes;
+      var location = eventData.extendedProps.location;
+      var linkNotes = formatNotes(notes);
+      var startDate = new Date(start).toLocaleDateString('en-US');
+      var endDate = new Date(end).toLocaleDateString('en-US');
 
       $('#eventDetailView .modal-title').text(title);
-      $('#eventDetailView #eventID').text(id_event);
+      $('#eventDetailView #event-note-date').replaceWith('<p class="text-muted">' + linkNotes + '</p><hr>');
+      $('#eventDetailView #event-start-date').text(startDate || '').toggle(!!startDate);
+      $('#eventDetailView #event-end-date-div').text(endDate || '').toggle(!isNaN(new Date(end)));
+      $('#eventDetailView #event-location-date-div').text(location || '').toggle(!!location);
+      $('#eventDetailView').modal('show');
+    }
+
+    function handleEventClick(info) {
+      var id = info.event.id;
+      var allDay = info.event.allDay;
+      var title = info.event.title;
+      var colorId = info.event.extendedProps.colorId;
+      var start = info.event.start;
+      var startDateStr = info.event.startStr;
+      var end = info.event.end;
+      var notes = info.event.extendedProps.notes;
+      var location = info.event.extendedProps.location;
+      var creationDate = info.event.extendedProps.creationDate;
+      var linkNotes = formatNotes(notes);
+
+      $('#eventDetailView .modal-title').text(title);
+      $('#eventDetailView #eventID').text(id);
       $('#eventDetailView #creationDate').text(creationDate);
-      $('#eventDetailView #event-note-date').val(linkNotes);
-      $('#eventDetailView #event-note-date').replaceWith(`<p class="text-muted">${$('#eventDetailView #event-note-date').val()}</p><hr>`);
+      $('#eventDetailView #event-note-date').html(linkNotes);
 
-      if (startDate) {
-        $('#eventDetailView #event-start-date').text(formatDate(startDate));
+      if (allDay) {
+        if (startDateStr) {
+          $('#eventDetailView #event-start-date').text(startDateStr);
+          $('#eventDetailView #event-end-date').text(startDateStr);
+        } else {
+          $('#eventDetailView #event-start-date-div').hide();
+        }
       } else {
-        $('#eventDetailView #event-start-date').text('N/A');
+        if (start) {
+          $('#eventDetailView #event-start-date').text(formatDate(start));
+        } else {
+          $('#eventDetailView #event-start-date-div').hide();
+        }
+
+        if (end) {
+          $('#eventDetailView #event-end-date').text(formatDate(end));
+        } else {
+          $('#eventDetailView #event-end-date-div').hide();
+        }
       }
 
-      if (endDate) {
-        $('#eventDetailView #event-end-date').text(formatDate(endDate));
+      if (location) {
+        $('#eventDetailView #event-location-date').text(location);
       } else {
-        $('#eventDetailView #event-end-date').text('N/A');
-        $('#eventDetailView #event-end-date-div').hide();
-      }
-
-      if (eventLoc) {
-        $('#eventDetailView #event-location-date').text(eventLoc);
-      } else {
-        $('#eventDetailView #event-location-date').text('N/A');
         $('#eventDetailView #event-location-date-div').hide();
       }
 
       $('#eventDetailView').modal('show');
     }
-    // Batas click calendar
-    // Tools untuk progressing
+
     function formatNotes(notes) {
-      const urlRegex = /(https?:\/\/[^\s]+)/g; // Regular expression to match URLs
+      var urlRegex = /(https?:\/\/[^\s]+)/g;
       return notes.replace(urlRegex, '<a href="$&" target="_blank">$&</a>');
     }
 
@@ -522,29 +569,20 @@ if (!empty($Countable)) {
       var hours = date.getHours().toString().padStart(2, '0');
       var minutes = date.getMinutes().toString().padStart(2, '0');
 
-      return `${year}-${month}-${day}T${hours}:${minutes}`;
+      return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
     }
 
-    function isiCalendar() {
-      $.ajax({
-        url: "<?= base_url() ?>GetEvent",
-        type: "GET",
-        dataType: "json",
-        success: function(response) {
-          // console.log(response);
-          initializeTimeline(response);
-          initializeCalendar(response);
-        },
-        error: function(xhr, status, error) {
-          console.log(error + "oke");
-        }
-      });
-    }
-    // Batas tools untuk progressing
-
-    // Progressing
-    $(document).ready(function() {
-      isiCalendar();
+    $.ajax({
+      url: "<?= base_url() ?>GetEvent",
+      type: "GET",
+      dataType: "json",
+      success: function(response) {
+        initializeTimeline(response);
+        initializeCalendar(response);
+      },
+      error: function(xhr, status, error) {
+        console.log(error);
+      },
     });
   });
 </script>

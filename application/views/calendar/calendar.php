@@ -1,39 +1,25 @@
 <style>
-    .toggle-checkbox {
-        display: none;
+    body {
+        height: 100%;
     }
 
-    .toggle-label {
-        display: block;
-        width: 60px;
-        height: 30px;
-        background-color: #ccc;
-        border-radius: 15px;
-        position: relative;
-        cursor: pointer;
-    }
-
-    .toggle-label::before {
-        content: '';
-        position: absolute;
-        width: 26px;
-        height: 26px;
-        background-color: white;
-        border-radius: 50%;
-        top: 2px;
-        left: 2px;
-        transition: 0.2s;
-    }
-
-    .toggle-checkbox:checked+.toggle-label {
-        background-color: #66bb6a;
-        /* Background color when checked */
-    }
-
-    .toggle-checkbox:checked+.toggle-label::before {
-        left: calc(100% - 28px);
+    .overlay {
+        display: flex;
+        position: fixed;
+        z-index: 9999;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(255, 255, 255, 0.8);
+        justify-content: center;
+        align-items: center;
     }
 </style>
+<div class="overlay" id="loading-overlay">
+    <i class="fas fa-2x fa-sync-alt fa-spin"></i>
+</div>
+
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">
@@ -79,25 +65,29 @@
                             <label for="event-title">Event Title</label>
                             <input type="text" class="form-control" id="event-title" name="event-title" placeholder="Event Title Here" required>
                         </div>
-                        <div class="form-group">
-                            <label for="event-color">Event Color</label>
-                            <select class="form-control" id="event-color" name="event-color" required></select>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="all-day">All Day</label>
+                                <select class="form-control" name="all-day" id="all-day" required>
+                                    <option value="" selected disabled>-- Choose Day --</option>
+                                    <option value="false">No</option>
+                                    <option value="true">Yes</option>
+                                </select>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="event-color">Event Color</label>
+                                <select class="form-control" id="event-color" name="event-color" required></select>
+                            </div>
                         </div>
-                        <div class="form-group">
-                            <label for="all-day">All Day</label>
-                            <select class="form-control" name="all-day" id="all-day" required>
-                                <option value="" selected disabled>-- Choose Day --</option>
-                                <option value="false">No</option>
-                                <option value="true">Yes</option>
-                            </select>
-                        </div>
-                        <div class="form-group">
-                            <label for="event-start">Start Date</label>
-                            <input type="datetime-local" class="form-control" id="event-start" name="event-start" required>
-                        </div>
-                        <div class="form-group" id="event-end-div">
-                            <label for="event-end">End Date</label>
-                            <input type="datetime-local" class="form-control" id="event-end" name="event-end" required>
+                        <div class="form-group row">
+                            <div class="col-md-6">
+                                <label for="event-start">Start Date</label>
+                                <input class="form-control" id="event-start" name="event-start" required>
+                            </div>
+                            <div class="col-md-6">
+                                <label for="event-end">End Date</label>
+                                <input class="form-control" id="event-end" name="event-end" required>
+                            </div>
                         </div>
                         <div class="form-group">
                             <label for="event-note">Event Note</label>
@@ -113,8 +103,6 @@
                             <div id="shared-member-div">
                                 <select class="form-control" id="shared-members" name="shared-members[]" multiple="multiple"></select>
                             </div>
-                        </div>
-                        <div class="form-group">
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" id="location-checkbox">
@@ -127,7 +115,6 @@
                         </div>
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                         <button type="button" class="btn btn-primary" id="save-add-event">Add Event</button>
                     </div>
                 </form>
@@ -146,7 +133,7 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <div class="modal-body">
+                <div class="modal-body" id="creatorDiv">
                     <div class="form-group" style="display: none;">
                         <label for="eventID">ID</label>
                         <input type="text" class="form-control" id="eventID" name="eventID" required readonly>
@@ -154,25 +141,49 @@
                     </div>
                     <div class="form-group">
                         <strong><i class="far fa-calendar mr-1"></i> Start Date</strong>
-                        <input type="datetime-local" class="form-control" id="event-start-date" name="event-start-date" required>
+                        <input class="form-control" id="event-start-date" name="event-start-date" required>
                     </div>
-                    <div class="form-group" id="event-end-date-div">
+                    <div class="form-group">
                         <strong><i class="far fa-calendar mr-1"></i> End Date</strong>
-                        <input type="datetime-local" class="form-control" id="event-end-date" name="event-end-date" required>
+                        <input class="form-control" id="event-end-date" name="event-end-date" required>
                     </div>
                     <div class="form-group">
                         <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
                         <textarea type="text" class="form-control" id="event-note-date" name="event-note-date" placeholder="Event Note Here" required></textarea>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group" id="event-location-date-div">
                         <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
                         <textarea type="text" class="form-control" id="event-location-date" name="event-location-date" placeholder="Event Location Here" required></textarea>
                     </div>
                 </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-primary" id="edit-save-event">Save Changes</button>
+                <div class="modal-body" id="notcreatorDiv">
+                    <div class="form-group" style="display: none;">
+                        <label for="eventIDOther">ID</label>
+                        <p class="text-muted" id="eventIDOther" name="eventIDOther"></p>
+                    </div>
+                    <div class="form-group">
+                        <strong><i class="far fa-calendar mr-1"></i> Start Date</strong>
+                        <p class="text-muted" id="event-start-other" name="event-start-other"> </p>
+                    </div>
+                    <hr>
+                    <div class="form-group" id="event-end-date-div">
+                        <strong><i class="far fa-calendar mr-1"></i> End Date</strong>
+                        <p class="text-muted" id="event-end-other" name="event-end-other"> </p>
+                    </div>
+                    <hr>
+                    <div class="form-group">
+                        <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
+                        <p class="text-muted" id="event-note-other" name="event-note-other"> </p>
+                    </div>
+                    <hr>
+                    <div class="form-group" id="event-location-other-div">
+                        <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
+                        <p class="text-muted" id="event-location-other" name="event-location-other"> </p>
+                    </div>
+                </div>
+                <div class="modal-footer" id="footerDetail">
                     <button type="button" class="btn btn-danger" id="delete-event">Delete</button>
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-primary" id="edit-save-event">Save Changes</button>
                 </div>
             </div>
         </div>
@@ -181,8 +192,10 @@
 
 <script src="<?= base_url(); ?>assets/plugins/fullcalendar/main.js"></script>
 <script>
+    $('#loading-overlay').show();
+
     var memberID = <?= json_encode($this->session->userdata('member_id')) ?>;
-    $(function() {
+    $(document).ready(function() {
         var calendarEl = document.getElementById('calendar');
         var calendar;
 
@@ -213,14 +226,18 @@
 
         // Untuk click clik calendar
         function handleDateClick(info) {
+            $('#loading-overlay').show();
             var clickedDate = info.date;
             var fullDay = info.allDay;
+            console.log(info);
 
             $('#event-title').val('');
             $('#event-start').val(formatDate(clickedDate));
             $('#all-day').val(fullDay.toString());
-            $('#all-day').on('change', toogleAllDay);
-            toogleAllDay();
+            $('#all-day').on('change', function() {
+                checkAllDay(info);
+            });
+            checkAllDay(info);
             $('#event-note').val('');
             $('#location-checkbox').on('change', toogleLocDiv);
             toogleLocDiv();
@@ -240,77 +257,117 @@
                     <?php } ?>
                 ]
             });
-
+            $('#loading-overlay').hide();
             $('#addEventModal').modal('show');
         }
 
         function handleEventClick(info) {
-            console.log(info.event);
-            var id_event = info.event.id;
-            var fullDay = info.event.allDay;
-            var title = info.event.title;
-            var startDate = info.event.start;
-            var endDate = info.event.end;
-            var eventNote = info.event.extendedProps.notes;
-            var eventLoc = info.event.extendedProps.location;
-            var creator = info.event.extendedProps.creator;
-            var creationDate = info.event.extendedProps.creationDate;
-            var cekCreator = (memberID === creator);
-            var linkNotes = formatNotes(eventNote);
+            const {
+                id,
+                allDay,
+                title,
+                start,
+                startStr,
+                end,
+                endStr,
+                extendedProps: {
+                    notes,
+                    location,
+                    creator,
+                    creationDate
+                }
+            } = info.event;
 
+            const isCreator = (memberID === creator);
+            const linkNotes = formatNotes(notes);
+
+            $('#loading-overlay').show();
             $('#eventDetailModal .modal-title').text(title);
-            $('#eventDetailModal #eventID').val(id_event);
             $('#eventDetailModal #creationDate').val(creationDate);
-            $('#eventDetailModal #event-note-date').val(linkNotes);
-            $('#eventDetailModal #event-location-date').val(eventLoc);
 
-            if (startDate) {
-                $('#eventDetailModal #event-start-date').val(formatDate(startDate));
+            if (isCreator) {
+                $('#eventDetailModal #creatorDiv').show();
+                $('#eventDetailModal #notcreatorDiv').hide();
+                $('#eventDetailModal #eventID').val(id);
+
+                if (allDay) {
+                    $('#eventDetailModal #event-start-date, #eventDetailModal #event-end-date').attr('type', 'date');
+                    if (startStr) {
+                        $('#eventDetailModal #event-start-date, #eventDetailModal #event-end-date').val(startStr);
+                    } else {
+                        $('#eventDetailModal #event-start-date').hide();
+                    }
+                } else {
+                    $('#eventDetailModal #event-start-date, #eventDetailModal #event-end-date').attr('type', 'datetime-local');
+                    if (start) {
+                        $('#eventDetailModal #event-start-date').val(formatDate(start));
+                    } else {
+                        $('#eventDetailModal #event-start-date').hide();
+                    }
+
+                    if (end) {
+                        $('#eventDetailModal #event-end-date').val(formatDate(end));
+                    } else {
+                        $('#eventDetailModal #event-end-date').hide();
+                    }
+                }
+
+                if (location) {
+                    $('#eventDetailModal #event-location-date').val(location);
+                } else {
+                    $('#eventDetailModal #event-location-date-div').hide();
+                }
+                $('#eventDetailModal #event-note-date').val(notes);
+                $('#eventDetailModal #footerDetail').show();
             } else {
-                $('#eventDetailModal #event-start-date').val('N/A');
+                $('#eventDetailModal #notcreatorDiv').show();
+                $('#eventDetailModal #creatorDiv').hide();
+                $('#eventDetailModal #footerDetail').hide();
+                $('#eventDetailModal #eventIDOther').text(id);
+
+                if (allDay) {
+                    $('#eventDetailModal #event-start-other, #eventDetailModal #event-end-other').text(startStr);
+                } else {
+                    $('#eventDetailModal #event-start-other, #eventDetailModal #event-end-other').attr('type', 'datetime-local');
+                    if (start) {
+                        $('#eventDetailModal #event-start-other').text(formatDate(start));
+                    } else {
+                        $('#eventDetailModal #event-start-other').hide();
+                    }
+
+                    if (end) {
+                        $('#eventDetailModal #event-end-other').text(formatDate(end));
+                    } else {
+                        $('#eventDetailModal #event-end-other').hide();
+                    }
+                }
+
+                if (location) {
+                    $('#eventDetailModal #event-location-other').text(location);
+                } else {
+                    $('#eventDetailModal #event-location-other-div').hide();
+                }
+                $('#eventDetailModal #event-note-other').html(linkNotes);
             }
 
-            if (endDate) {
-                $('#eventDetailModal #event-end-date').val(formatDate(endDate));
-            } else {
-                $('#eventDetailModal #event-end-date').val('N/A');
-            }
-
-            if (fullDay) {
-                $('#eventDetailModal #event-end-date-div').hide();
-            } else {
-                $('#eventDetailModal #event-end-date-div').show();
-            }
-
-            if (cekCreator) {
-                $('#eventDetailModal #edit-save-event').show();
-                $('#eventDetailModal #delete-event').show();
-            } else {
-                $('#eventDetailModal #edit-save-event').hide();
-                $('#eventDetailModal #delete-event').hide();
-                $('#eventDetailModal #event-start-date').replaceWith(`<p class="text-muted">${$('#eventDetailModal #event-start-date').val()}</p><hr>`);
-                $('#eventDetailModal #event-end-date').replaceWith(`<p class="text-muted">${$('#eventDetailModal #event-end-date').val()}</p><hr>`);
-                $('#eventDetailModal #event-note-date').replaceWith(`<p class="text-muted">${$('#eventDetailModal #event-note-date').val()}</p><hr>`);
-                $('#eventDetailModal #event-location-date').replaceWith(`<p class="text-muted">${$('#eventDetailModal #event-location-date').val()}</p><hr>`);
-            }
-
-            $('#eventDetailModal #event-start-date').prop('readonly', !cekCreator);
-            $('#eventDetailModal #event-end-date').prop('readonly', !cekCreator);
-            $('#eventDetailModal #event-note-date').prop('readonly', !cekCreator);
-            $('#eventDetailModal #event-location-date').prop('readonly', !cekCreator);
-
+            $('#loading-overlay').hide();
             $('#eventDetailModal').modal('show');
-
         }
+
         // Batas click calendar
 
         // Delete bro
-        function handleDeleteEvent() {
-            var eventId = $('#eventDetailModal #eventID').val();
+        $(document).on('click', '#delete-event', function() {
             var eventTitle = $('#eventDetailModal .modal-title').text();
             var startDate = $('#eventDetailModal #event-start-date').val();
             var eventNote = $('#eventDetailModal #event-note-date').val();
 
+            var eventDel = {
+                eventTitle: eventTitle,
+                start: startDate,
+                eventNote: eventNote,
+                p_flag: 1,
+            }
             Swal.fire({
                 title: 'Are you sure?',
                 text: 'You won\'t be able to revert this!',
@@ -322,35 +379,42 @@
                 cancelButtonText: 'Cancel'
             }).then((result) => {
                 if (result.isConfirmed) {
-                    $.ajax({
-                        url: '<?= base_url(); ?>DeleteEvent',
-                        type: 'POST',
-                        data: {
-                            eventTitle: eventTitle,
-                            start: startDate,
-                            eventNote: eventNote,
-                            p_flag: 1,
-                        },
-                        success: function(response) {
-                            // console.log(response);
-                            var event = calendar.getEventById(eventId);
-                            if (event) {
-                                event.remove();
-                            }
-                            $('#eventDetailModal').modal('hide');
-                        },
-                        error: function(xhr, status, error) {
-                            console.log(error);
-                        }
-                    });
+                    $('#loading-overlay').show();
+                    handleDeleteEvent(eventDel);
                 }
             });
+        })
+
+        function handleDeleteEvent(eventDel) {
+            var eventId = $('#eventDetailModal #eventID').val();
+            $.ajax({
+                url: '<?= base_url(); ?>DeleteEvent',
+                type: 'POST',
+                data: eventDel,
+                success: function(response) {
+                    console.log(calendar);
+                    var event = calendar.getEventById(eventId);
+                    if (event) {
+                        event.remove();
+                    }
+                    $('#eventDetailModal').modal('hide');
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                },
+                complete: function() {
+                    $('#loading-overlay').hide();
+                }
+            });
+
         }
 
         // Batas Delete bro
 
         // Untuk update bro
         $(document).on('click', '#edit-save-event', function() {
+            $('#edit-save-event').prop('disabled', true);
+            $('#loading-overlay').show();
             var eventId = $('#eventID').val();
             var eventTitle = $('#eventDetailModal .modal-title').text();
             var creationDate = $('#creationDate').val();
@@ -368,10 +432,7 @@
                 eventLoc: locDate,
                 flag: 2
             };
-
-            // Panggil fungsi untuk memperbarui detail event
             updateEventDates(eventUpdate);
-            $('#eventDetailModal').modal('hide');
         });
 
         function updateEventDates(eventUpdate) {
@@ -380,11 +441,14 @@
                 type: 'POST',
                 data: eventUpdate,
                 success: function(response) {
-                    console.log(response);
                     refreshCalendar();
+                    $('#eventDetailModal').modal('hide');
                 },
                 error: function(xhr, status, error) {
                     console.log(error);
+                },
+                complete: function() {
+                    $('#loading-overlay').hide();
                 }
             });
         }
@@ -392,6 +456,9 @@
 
         // CREATE
         $(document).on('click', '#save-add-event', function() {
+            $('#save-add-event').prop('disabled', true);
+            $('#loading-overlay').show();
+
             var title = $('#event-title').val();
             var color = $('#event-color').val();
             var allDay = $('#all-day').val();
@@ -414,9 +481,9 @@
                 groupId: groupId
             };
 
-            // console.log(eventData);
             addEventCalendar(eventData);
         });
+
 
         function addEventCalendar(eventData) {
             // console.log(eventData);
@@ -432,14 +499,28 @@
                 },
                 error: function(xhr, status, error) {
                     console.log(error);
+                },
+                complete: function() {
+                    $('#loading-overlay').hide();
                 }
             });
         }
         // BATAS CREATE
 
         // Tools select
-        function toogleAllDay() {
-            $('#event-end-div').toggle($('#all-day').val() !== 'true');
+        function checkAllDay(info) {
+            var theDay = $('#all-day').val() === 'true';
+            if (theDay) {
+                $('#addEventModal #event-start').attr('type', 'date');
+                $('#addEventModal #event-end').attr('type', 'date');
+                $('#addEventModal #event-start').val(info.dateStr);
+                $('#addEventModal #event-end').val('');
+            } else {
+                $('#addEventModal #event-start').attr('type', 'datetime-local');
+                $('#addEventModal #event-end').attr('type', 'datetime-local');
+                $('#addEventModal #event-start').val(formatDate(info.date));
+                $('#addEventModal #event-end').val(formatDate(info.date));
+            }
         }
 
         function toogleShareDiv() {
@@ -470,21 +551,27 @@
                 type: "GET",
                 dataType: "json",
                 success: function(response) {
-                    var colorSelect = $('#edit-external-event-color');
                     var colorSelectEvent = $('#event-color');
-
                     response.forEach(function(color) {
                         var colorOption = $('<option></option>')
                             .attr('value', color.background_color)
-                            .text(color.background_color)
+                            .text(color.name_color)
                             .css('background-color', color.background_color);
-
-                        colorSelect.append(colorOption);
                         colorSelectEvent.append(colorOption);
+                    });
+
+                    colorSelectEvent.on('change', function() {
+                        var selectedColor = $(this).val();
+                        $('#save-add-event').css('background-color', selectedColor);
+                        $('#save-add-event').css('border-color', selectedColor);
                     });
                 },
                 error: function(xhr, status, error) {
                     console.log(error);
+                },
+                complete: function() {
+                    // Setelah permintaan AJAX selesai, termasuk jika terjadi error
+                    $('#loading-overlay').hide();
                 }
             });
         }
@@ -503,7 +590,7 @@
             var hours = date.getHours().toString().padStart(2, '0');
             var minutes = date.getMinutes().toString().padStart(2, '0');
 
-            return `${year}-${month}-${day}T${hours}:${minutes}`;
+            return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
         }
 
         function refreshCalendar() {
@@ -522,20 +609,18 @@
                 },
                 error: function(xhr, status, error) {
                     console.log(error + "oke");
+                },
+                complete: function() {
+                    // Setelah permintaan AJAX selesai, termasuk jika terjadi error
+                    $('#loading-overlay').hide();
                 }
             });
         }
         // Batas tools untuk progressing
 
-        // Progressing
-        $(document).ready(function() {
-            // CRUD
-            $(document).on('click', '#delete-event', handleDeleteEvent);
-
-            // Main progress
-            isiCalendar();
-            getEventColors();
-        });
+        // Main progress
+        isiCalendar();
+        getEventColors();
     });
 </script>
 

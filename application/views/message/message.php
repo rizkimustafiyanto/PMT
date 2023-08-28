@@ -223,25 +223,25 @@ if (!empty($profiles)) {
                         $.each(response.ColumnMessages, function(index, row) {
                             if (row.sender_id.trim() !== '') {
                                 var potoBox = row.gender_id === 'GR-001' ? '5.png' : '3.png';
-                                var rowHtml = `
-                                            <div class="container mt-2">
-                                                <div id="select_sender" data-sender="${row.sender_id}" class="col-md-12">
-                                                    <div style="display: flex;">
-                                                        <div style="overflow-y: auto; max-height: 60px; flex: 1;">
-                                                            <img src="<?= base_url(); ?>assets/dist/img/avatar${potoBox}" class="mr-3 img-circle" alt="User Avatar" style="width: 50px; height: 50px;">
-                                                        </div>
-                                                        <div style="overflow-y: auto; max-height: 60px; max-width: 160px;" class="text-left">
-                                                            <p class="text-nowrap" style="margin:0px; max-width:150px;">${row.sender_name} `;
+                                var rowHtml =
+                                    '<div class="container mt-2">' +
+                                    '<div id="select_sender" data-sender="' + row.sender_id + '" class="col-md-12">' +
+                                    '<div style="display: flex;">' +
+                                    '<div style="overflow-y: auto; max-height: 60px; flex: 1;">' +
+                                    '<img src="<?= base_url(); ?>assets/dist/img/avatar' + potoBox + '" class="mr-3 img-circle" alt="User Avatar" style="width: 50px; height: 50px;">' +
+                                    '</div>' +
+                                    '<div style="overflow-y: auto; max-height: 60px; max-width: 160px;" class="text-left">' +
+                                    '<p class="text-nowrap" style="margin:0px; max-width:150px;">' + row.sender_name + ' ';
                                 if (row.new_message !== '0') {
-                                    rowHtml += `<span class="badge badge-info right">${row.new_message}</span>`;
+                                    rowHtml += '<span class="badge badge-info right">' + row.new_message + '</span>';
                                 }
-                                rowHtml += `</p>
-                                                            <p style="margin:0px;">${row.created_at}</p>
-                                                        </div>
-                                                    </div>
-                                                </div>
-                                            </div>
-                                        `;
+                                rowHtml +=
+                                    '</p>' +
+                                    '<p style="margin:0px;">' + row.created_at + '</p>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>' +
+                                    '</div>';
                                 messagesContainer.append(rowHtml);
                             }
                         });
@@ -257,6 +257,7 @@ if (!empty($profiles)) {
                 }
             });
         }
+
 
         messagesContainer.on('scroll', function() {
             scrollingC = messagesContainer.scrollTop() + messagesContainer.innerHeight() < messagesContainer[0].scrollHeight;
