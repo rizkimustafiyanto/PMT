@@ -40,10 +40,9 @@ class Card_controller extends BaseController
 
         $card_member_parameter = [
             'p_card_member_id' => '',
-            'p_card_id' => $card_id,
+            'p_project_id' => $project_id,
             'p_member_id' => '',
             'p_flag' => 2,
-            'p_project_id' => $project_id,
         ];
 
         $data['CardMemberRecord'] = $this->Card_member_model->Get(
@@ -64,10 +63,9 @@ class Card_controller extends BaseController
 
         $Card_member_parameter_total = [
             'p_card_member_id' => '',
-            'p_card_id' => $card_id,
+            'p_card_id' => $project_id,
             'p_member_id' => '',
             'p_flag' => 3,
-            'p_project_id' => '',
         ];
 
         $data['CardMemberTotalRecords'] = $this->Card_member_model->Get(

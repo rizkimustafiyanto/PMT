@@ -78,8 +78,7 @@ $route['DeleteMenu/(:num)'] = 'master/menu_controller/DeleteMenu/$1';
 // Sub Menu
 $route['SubMenu'] = 'master/sub_menu_controller/GetSubMenu';
 $route['InsertSubMenu'] = 'master/sub_menu_controller/InsertSubMenu';
-$route['GetSubMenuById/(:num)'] =
-    'master/sub_menu_controller/GetSubMenuById/$1';
+$route['GetSubMenuById/(:num)'] = 'master/sub_menu_controller/GetSubMenuById/$1';
 $route['GetSubMenuByMenuId'] = 'master/sub_menu_controller/GetSubMenuByMenuId';
 $route['UpdateSubMenu'] = 'master/sub_menu_controller/UpdateSubMenu';
 $route['DeleteSubMenu/(:num)'] = 'master/sub_menu_controller/DeleteSubMenu/$1';
@@ -87,113 +86,103 @@ $route['DeleteSubMenu/(:num)'] = 'master/sub_menu_controller/DeleteSubMenu/$1';
 // Menu Role
 $route['MenuRole'] = 'master/menu_role_controller/GetMenuRole';
 $route['InsertMenuRole'] = 'master/menu_role_controller/InsertMenuRole';
-$route['GetMenuRoleById/(:num)'] =
-    'master/menu_role_controller/GetMenuRoleById/$1';
+$route['GetMenuRoleById/(:num)'] = 'master/menu_role_controller/GetMenuRoleById/$1';
 $route['UpdateMenuRole'] = 'master/menu_role_controller/UpdateMenuRole';
-$route['DeleteMenuRole/(:num)'] =
-    'master/menu_role_controller/DeleteMenuRole/$1';
+$route['DeleteMenuRole/(:num)'] = 'master/menu_role_controller/DeleteMenuRole/$1';
 
 // variable
 $route['Variable'] = 'master/variable_controller/GetVariable';
 $route['InsertVariable'] = 'master/variable_controller/InsertVariable';
-$route['GetVariableById/(:any)'] =
-    'master/variable_controller/GetVariableById/$1';
+$route['GetVariableById/(:any)'] = 'master/variable_controller/GetVariableById/$1';
 $route['UpdateVariable'] = 'master/variable_controller/UpdateVariable';
-$route['DeleteVariable/(:any)'] =
-    'master/variable_controller/DeleteVariable/$1';
+$route['DeleteVariable/(:any)'] = 'master/variable_controller/DeleteVariable/$1';
 
 
 // --------------------- The transactions are below --------------------------------
 
-// Project
-$route['Project'] = 'transaction/Project_controller/GetProject';
-$route['InsertProject'] = 'transaction/Project_controller/InsertProject';
-$route['UpdateProject'] = 'transaction/Project_controller/UpdateProject';
-$route['DeleteProject/(:any)'] =
-    'transaction/Project_controller/DeleteProject/$1';
-$route['DetailProject/(:any)'] =
-    'transaction/Project_controller/DetailProject/$1';
-$route['ChangeStatusProjectProject'] =
-    'transaction/Project_controller/ChangeStatusProjectProject';
-$route['KanbanDetail/(:any)'] = 'transaction/Project_controller/KanbanDetail/$1';
-$route['updateCardStatus'] = 'transaction/Project_controller/updateCardStatus';
+// PROJEK WORKSPACE
+$route['ProjectWrk'] = 'transaction/project_wrk/Project_wrk_controller/GetProjectWrk';
+$route['InsertProjectWrk'] = 'transaction/project_wrk/Project_wrk_controller/InsertProjectWrk';
+$route['DeleteProjectWrk'] = 'transaction/project_wrk/Project_wrk_controller/DeleteProjectWrk';
+$route['UpdateProjectWrk'] = 'transaction/project_wrk/Project_wrk_controller/UpdateProjectWrk';
+
+$route['InsertProjectWrkMember'] = 'transaction/project_wrk/Project_wrk_controller/InsertProjectWrkMember';
+$route['UpdateProjectWrkMember'] = 'transaction/project_wrk/Project_wrk_controller/UpdateProjectWrkMember';
+$route['DeleteProjectWrkMember/(:any)/(:any)'] = 'transaction/project_wrk/Project_wrk_controller/DeleteProjectWrkMember/$1/$2';
+
+// ATTACHMENT
+$route['InsertAttachment'] = 'transaction/tools/Attachment_controller/InsertAttachment';
+$route['ViewAttachment/(:any)'] = 'transaction/tools/Attachment_controller/ViewAttachment/$1';
+$route['DownloadAttachment/(:any)'] = 'transaction/tools/Attachment_controller/DownloadAttachment/$1';
+$route['DeleteAttachment'] = 'transaction/tools/Attachment_controller/DeleteAttachment';
+
+// PROJECT
+$route['Project/(:any)'] = 'transaction/project/Project_controller/Project/$1';
+$route['UpdateProject'] = 'transaction/project/Project_controller/UpdateProject';
+$route['InsertProject'] = 'transaction/project/Project_controller/InsertProject';
+$route['DeleteProject'] = 'transaction/project/Project_controller/DeleteProject';
+
+// PROJECT DETAIL
+$route['ProjectItem/(:any)/(:any)'] = 'transaction/project/Item_controller/ProjectItem/$1/$2';
+$route['UpdateProjectItem'] = 'transaction/project/Item_controller/UpdateProjectItem';
+$route['InsertProjectItem'] = 'transaction/project/Item_controller/InsertProjectItem';
+$route['DeleteProjectItem'] = 'transaction/project/Item_controller/DeleteProjectItem';
+$route['InsertProjectItemMember'] = 'transaction/project/Item_controller/InsertProjectItemMember';
+$route['DeleteProjectItemMember'] = 'transaction/project/Item_controller/DeleteProjectItemMember';
+
+// ITEM
+$route['Item/(:any)/(:any)'] = 'transaction/project/Item_controller/Item/$1/$2';
+$route['InsertItemMember'] = 'transaction/project/Item_controller/InsertItemMember';
 
 
-//Project Member
-$route['InsertProjectMember'] =
-    'transaction/Project_member_controller/InsertProjectMember';
-$route['DeleteProjectMember/(:any)/(:any)'] =
-    'transaction/Project_member_controller/DeleteProjectMember/$1/$2';
-$route['UpdateProjectMember'] =
-    'transaction/Project_member_controller/UpdateProjectMember';
+
+// KANBAN PROJECT
+$route['KanbanProject/(:any)'] = 'transaction/project/Kanban_project_controller/KanbanProject/$1';
+$route['KanbanItem/(:any)/(:any)'] = 'transaction/project/Kanban_project_controller/KanbanItem/$1/$2';
+
 
 //Board Project
-$route['InsertBoardProject'] =
-    'transaction/Board_controller/InsertBoardProject';
-$route['DeleteBoardProject/(:any)/(:any)'] =
-    'transaction/Board_controller/DeleteBoardProject/$1/$2';
-$route['UpdateBoardProject'] =
-    'transaction/Board_controller/UpdateBoardProject';
-$route['DetailBoardProject/(:any)/(:any)'] =
-    'transaction/Board_controller/DetailBoardProject/$1/$2';
-$route['ChangeStatusProjectProjectBoard'] =
-    'transaction/Board_controller/ChangeStatusProjectProjectBoard';
+$route['InsertBoardProject'] = 'transaction/Board_controller/InsertBoardProject';
+$route['DeleteBoardProject/(:any)/(:any)'] = 'transaction/Board_controller/DeleteBoardProject/$1/$2';
+$route['UpdateBoardProject'] = 'transaction/Board_controller/UpdateBoardProject';
+$route['DetailBoardProject/(:any)/(:any)'] = 'transaction/Board_controller/DetailBoardProject/$1/$2';
+$route['ChangeStatusProjectProjectBoard'] = 'transaction/Board_controller/ChangeStatusProjectProjectBoard';
 
 //Project Board Items
-$route['InsertBoardItemList'] =
-    'transaction/List_controller/InsertBoardItemList';
-$route['DeleteBoardItemList/(:any)/(:any)/(:any)'] =
-    'transaction/List_controller/DeleteBoardItemList/$1/$2/$3';
+$route['InsertBoardItemList'] = 'transaction/List_controller/InsertBoardItemList';
+$route['DeleteBoardItemList/(:any)/(:any)/(:any)'] = 'transaction/List_controller/DeleteBoardItemList/$1/$2/$3';
 $route['UpdateItemList'] = 'transaction/List_controller/UpdateItemList';
-$route['DetailItemList/(:any)/(:any)/(:any)'] =
-    'transaction/List_controller/DetailItemList/$1/$2/$3';
+$route['DetailItemList/(:any)/(:any)/(:any)'] = 'transaction/List_controller/DetailItemList/$1/$2/$3';
 
 //Project Card List
 $route['InsertCard'] = 'transaction/Card_controller/InsertCard';
-$route['DeleteCard/(:any)/(:any)'] =
-    'transaction/Card_controller/DeleteCard/$1/$2';
+$route['DeleteCard/(:any)/(:any)'] = 'transaction/Card_controller/DeleteCard/$1/$2';
 $route['UpdateCard'] = 'transaction/Card_controller/UpdateCard';
-$route['DetailCard/(:any)/(:any)'] =
-    'transaction/Card_controller/DetailCard/$1/$2';
-$route['MoveCardList/(:any)/(:any)/(:any)/(:any)/(:any)'] =
-    'transaction/Card_controller/MoveCardList/$1/$2/$3/$4/$5';
-$route['ChangeStatusProjectProjectBoardCard'] =
-    'transaction/Card_controller/ChangeStatusProjectProjectBoardCard';
+$route['DetailCard/(:any)/(:any)'] = 'transaction/Card_controller/DetailCard/$1/$2';
+$route['MoveCardList/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_controller/MoveCardList/$1/$2/$3/$4/$5';
+$route['ChangeStatusProjectProjectBoardCard'] = 'transaction/Card_controller/ChangeStatusProjectProjectBoardCard';
 
 //Project Card Member
-$route['InsertCardMember'] =
-    'transaction/Card_member_controller/InsertCardMember';
-$route['DeleteCardMember/(:any)/(:any)/(:any)'] =
-    'transaction/Card_member_controller/DeleteCardMember/$1/$2/$3';
+$route['InsertCardMember'] = 'transaction/Card_member_controller/InsertCardMember';
+$route['DeleteCardMember/(:any)/(:any)/(:any)'] = 'transaction/Card_member_controller/DeleteCardMember/$1/$2/$3';
 // $route['UpdateCard'] = 'transaction/Card_member_controller/UpdateCard';
-// $route['DetailCard/(:any)/(:any)/(:any)/(:any)'] =
-//     'transaction/Card_member_controller/DetailCard/$1/$2/$3/$4';
+// $route['DetailCard/(:any)/(:any)/(:any)/(:any)'] ='transaction/Card_member_controller/DetailCard/$1/$2/$3/$4';
 
 //Project Card Comment
-$route['InsertCardComment'] =
-    'transaction/Card_comment_controller/InsertCardComment';
-$route['UpdateCardComment'] =
-    'transaction/Card_comment_controller/UpdateCardComment';
-$route['DeleteCardComment/(:any)/(:any)/(:any)/(:any)/(:any)'] =
-    'transaction/Card_comment_controller/DeleteCardComment/$1/$2/$3/$4/$5';
+$route['InsertCardComment'] = 'transaction/Card_comment_controller/InsertCardComment';
+$route['UpdateCardComment'] = 'transaction/Card_comment_controller/UpdateCardComment';
+$route['DeleteCardComment/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_comment_controller/DeleteCardComment/$1/$2/$3/$4/$5';
 
 //Project Card Attachment
-$route['InsertCardAttachment'] =
-    'transaction/Card_attachment_controller/InsertCardAttachment';
-$route['DeleteCardAttachment/(:any)/(:any)/(:any)'] =
-    'transaction/Card_attachment_controller/DeleteCardAttachment/$1/$2/$3';
+$route['InsertCardAttachment'] = 'transaction/Card_attachment_controller/InsertCardAttachment';
+$route['DeleteCardAttachment/(:any)/(:any)/(:any)'] = 'transaction/Card_attachment_controller/DeleteCardAttachment/$1/$2/$3';
 
 //Project Card Checklist
-$route['InsertCardChecklist'] =
-    'transaction/Card_checklist_controller/InsertCardChecklist';
-$route['DeleteCardChecklist/(:any)/(:any)/(:any)/(:any)/(:any)'] =
-    'transaction/Card_checklist_controller/DeleteCardChecklist/$1/$2/$3/$4/$5';
-$route['UpdateCardChecklist'] =
-    'transaction/Card_checklist_controller/UpdateCardChecklist';
-$route['DetailChecklistItem/(:any)/(:any)/(:any)/(:any)/(:any)'] =
-    'transaction/Card_checklist_controller/DetailChecklistItem/$1/$2/$3/$4/$5';
-$route['UpdateCardChecklistPercentage'] =
-    'transaction/Card_checklist_controller/UpdateCardChecklistPercentage';
+$route['InsertCardChecklist'] = 'transaction/Card_checklist_controller/InsertCardChecklist';
+$route['DeleteCardChecklist/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_checklist_controller/DeleteCardChecklist/$1/$2/$3/$4/$5';
+$route['UpdateCardChecklist'] = 'transaction/Card_checklist_controller/UpdateCardChecklist';
+$route['DetailChecklistItem/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_checklist_controller/DetailChecklistItem/$1/$2/$3/$4/$5';
+$route['UpdateCardChecklistPercentage'] = 'transaction/Card_checklist_controller/UpdateCardChecklistPercentage';
 
 //Project Card Checklist Item
 $route['InsertChecklistItem'] = 'transaction/Checklist_item_controller/InsertChecklistItem';
@@ -207,6 +196,7 @@ $route['UpdateChecklistItemChecked'] = 'transaction/Checklist_item_controller/Up
 $route['Upload/(:any)'] = 'transaction/Card_attachment_controller/Upload/$1';
 //Download
 $route['Download/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_attachment_controller/Download/$1/$2/$3/$4';
+
 
 //position
 $route['UpdatePositionListBoard'] = 'transaction/Board_controller/UpdatePositionListBoard';

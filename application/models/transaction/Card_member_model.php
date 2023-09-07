@@ -6,7 +6,7 @@ class Card_member_model extends CI_Model
 {
     function Get($parameter)
     {
-        $procedure = 'call usp_xt_card_member_select(?,?,?,?,?)';
+        $procedure = 'call usp_xt_card_member_select(?,?,?,?)';
         $sql_query = $this->db->query($procedure, $parameter);
         mysqli_next_result($this->db->conn_id);
         if ($sql_query->num_rows() > 0) {

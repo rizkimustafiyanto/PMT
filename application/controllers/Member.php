@@ -19,7 +19,7 @@ class Member extends BaseController
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('transaction/Project_model');
+        $this->load->model('transaction/project_wrk/Project_wrk_model');
         $this->load->model('user_model');
         $this->load->model('login_model');
         $this->IsLoggedIn();
@@ -464,7 +464,7 @@ class Member extends BaseController
     {
         // ambil data project
         $dashboardBox = [0, 0, 4, 0];
-        $data['Countable'] = $this->Project_model->Get(
+        $data['Countable'] = $this->Project_wrk_model->Get(
             $dashboardBox
         );
 

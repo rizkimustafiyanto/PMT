@@ -504,7 +504,7 @@ if (!empty($Countable)) {
       $('#eventDetailView .modal-title').text(title);
       $('#eventDetailView #event-note-date').replaceWith('<p class="text-muted">' + linkNotes + '</p><hr>');
       $('#eventDetailView #event-start-date').text(startDate || '').toggle(!!startDate);
-      $('#eventDetailView #event-end-date-div').text(endDate || '').toggle(!isNaN(new Date(end)));
+      $('#eventDetailView #event-end-date').text(endDate || '').toggle(!!endDate);
       $('#eventDetailView #event-location-date-div').text(location || '').toggle(!!location);
       $('#eventDetailView').modal('show');
     }

@@ -128,7 +128,7 @@
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h4 class="modal-title">Event Detail</h4>
+                    <h4 class="modal-title">Event Editable</h4>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -138,6 +138,10 @@
                         <label for="eventID">ID</label>
                         <input type="text" class="form-control" id="eventID" name="eventID" required readonly>
                         <input type="text" class="form-control" id="creationDate" name="creationDate" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <strong><i class="far fa-file mr-1"></i> Event Title</strong>
+                        <input class="form-control" id="event-title-date" name="event-title-date" required>
                     </div>
                     <div class="form-group">
                         <strong><i class="far fa-calendar mr-1"></i> Start Date</strong>
@@ -227,12 +231,10 @@
         // Untuk click clik calendar
         function handleDateClick(info) {
             $('#loading-overlay').show();
-            var clickedDate = info.date;
             var fullDay = info.allDay;
-            console.log(info);
+            // console.log(info);
 
             $('#event-title').val('');
-            $('#event-start').val(formatDate(clickedDate));
             $('#all-day').val(fullDay.toString());
             $('#all-day').on('change', function() {
                 checkAllDay(info);
@@ -289,6 +291,7 @@
                 $('#eventDetailModal #creatorDiv').show();
                 $('#eventDetailModal #notcreatorDiv').hide();
                 $('#eventDetailModal #eventID').val(id);
+                $('#eventDetailModal #event-title-date').val(title);
 
                 if (allDay) {
                     $('#eventDetailModal #event-start-date, #eventDetailModal #event-end-date').attr('type', 'date');
@@ -416,7 +419,7 @@
             $('#edit-save-event').prop('disabled', true);
             $('#loading-overlay').show();
             var eventId = $('#eventID').val();
-            var eventTitle = $('#eventDetailModal .modal-title').text();
+            var eventTitle = $('#eventDetailModal #event-title-date').val();
             var creationDate = $('#creationDate').val();
             var startDateTime = $('#event-start-date').val();
             var endDateTime = $('#event-end-date').val();
@@ -514,7 +517,7 @@
                 $('#addEventModal #event-start').attr('type', 'date');
                 $('#addEventModal #event-end').attr('type', 'date');
                 $('#addEventModal #event-start').val(info.dateStr);
-                $('#addEventModal #event-end').val('');
+                $('#addEventModal #event-end').val(info.dateStr);
             } else {
                 $('#addEventModal #event-start').attr('type', 'datetime-local');
                 $('#addEventModal #event-end').attr('type', 'datetime-local');
@@ -564,6 +567,7 @@
                         var selectedColor = $(this).val();
                         $('#save-add-event').css('background-color', selectedColor);
                         $('#save-add-event').css('border-color', selectedColor);
+                        $(this).css('background-color', selectedColor);
                     });
                 },
                 error: function(xhr, status, error) {

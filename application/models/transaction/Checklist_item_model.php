@@ -24,7 +24,7 @@ class Checklist_item_model extends CI_Model
 
     function Update($parameter)
     {
-        $procedure = 'call usp_xt_checklist_item_update(?,?,?,?,?,?,?,?,?,?)';
+        $procedure = 'call usp_xt_checklist_item_update(?,?,?,?,?,?,?,?,?,?,?,?)';
         $sql_query = $this->db->query($procedure, $parameter);
         return true;
     }

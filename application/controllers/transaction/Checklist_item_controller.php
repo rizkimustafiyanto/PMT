@@ -262,7 +262,7 @@ class Checklist_item_controller extends BaseController
                 // }
 
                 $this->session->set_flashdata('success', 'Checklist Item Updated');
-                $this->Card_log_model->Insert($card_log_parameter);
+                // $this->Card_log_model->Insert($card_log_parameter);
             } else {
                 $this->session->set_flashdata(
                     'error',
@@ -378,7 +378,7 @@ class Checklist_item_controller extends BaseController
             // } else {
             //     $this->session->set_flashdata('error', 'New checklist item created successfully, but failed to send email notification.');
             // }
-            $this->Card_log_model->Insert($card_log_parameter);
+            // $this->Card_log_model->Insert($card_log_parameter);
             $response = array('success' => true);
         } else {
             $this->session->set_flashdata('error', 'List cannot be checked.');
@@ -477,7 +477,7 @@ class Checklist_item_controller extends BaseController
             //     $this->session->set_flashdata('error', 'New checklist item deleted successfully, but failed to send email notification.');
             // }
             $this->session->set_flashdata('success', 'checklist item has been deleted !');
-            $this->Card_log_model->Insert($card_log_parameter);
+            // $this->Card_log_model->Insert($card_log_parameter);
         } else {
             $this->session->set_flashdata('error', 'checklist item cannot be deleted !');
         }
