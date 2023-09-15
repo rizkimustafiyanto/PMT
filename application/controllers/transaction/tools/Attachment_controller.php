@@ -10,6 +10,7 @@ class Attachment_controller extends BaseController
     {
         parent::__construct();
         $this->load->model('transaction/tools/Attachment_model');
+        $this->load->model('transaction/tools/Log_model');
         $this->load->model('master/member_model');
         $this->load->model('master/variable_model');
         $this->load->library('email');
@@ -60,7 +61,6 @@ class Attachment_controller extends BaseController
                 // File berhasil diunggah
                 $data = ['upload_data' => $this->upload->data()];
 
-                // Memasukkan data attachment ke database
                 $Attachment_param = [
                     $attachment_name,
                     $attachment_type,
@@ -71,12 +71,22 @@ class Attachment_controller extends BaseController
 
                 $result = $this->Attachment_model->Insert($Attachment_param);
 
+                $memberName = $this->session->userdata('member_name');
+                $text_log = 'Attachment "' . $attachment_name . '" uploaded by "' . $memberName . '"';
+                $group_id = $this->input->post('group_id');
+                $logging = [
+                    $text_log,
+                    $group_id,
+                    $creation_user_id
+                ];
+
                 if ($result > 0) {
                     $response = array(
                         'status' => 'success',
                         'title' => 'Success',
                         'message' => 'Attachment has been uploaded'
                     );
+                    $this->Log_model->Insert($logging);
                 } else {
                     $response = array(
                         'status' => 'error',
@@ -111,7 +121,25 @@ class Attachment_controller extends BaseController
             unlink($file_path);
         }
 
+        $data = $this->Attachment_model->Get([$attachment_id, '', '', 1]);
+        $change_user_id = $this->session->userdata('member_id');
+
+        if (!empty($data)) {
+            foreach ($data as $key) {
+                $attachment_name = $key->attachment_name;
+            }
+        }
+
         $result = $this->Attachment_model->Delete($attachment_id);
+
+        $memberName = $this->session->userdata('member_name');
+        $text_log = 'Attachment "' . $attachment_name . '" deleted by "' . $memberName . '"';
+        $group_id = $this->input->post('group_id');
+        $logging = [
+            $text_log,
+            $group_id,
+            $change_user_id
+        ];
 
         if ($result > 0) {
             $response = array(
@@ -119,6 +147,7 @@ class Attachment_controller extends BaseController
                 'title' => 'Success',
                 'message' => 'Attachment has been deleted!'
             );
+            $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',

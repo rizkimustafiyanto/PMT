@@ -193,8 +193,6 @@
         </div>
     </div>
 </div>
-
-<script src="<?= base_url(); ?>assets/plugins/fullcalendar/main.js"></script>
 <script>
     $('#loading-overlay').show();
 
@@ -215,8 +213,9 @@
                     start: '2023-01-01',
                     end: '2023-12-31'
                 },
-                slotMinTime: '06:00:00',
-                slotMaxTime: '22:00:00',
+                timeZone: 'local',
+                slotMinTime: '00:00:00',
+                slotMaxTime: '23:00:00',
                 themeSystem: 'bootstrap',
                 events: eventsData,
                 editable: false,
@@ -230,6 +229,7 @@
 
         // Untuk click clik calendar
         function handleDateClick(info) {
+            $('#save-add-event').prop('disabled', false);
             $('#loading-overlay').show();
             var fullDay = info.allDay;
             // console.log(info);
@@ -282,7 +282,9 @@
 
             const isCreator = (memberID === creator);
             const linkNotes = formatNotes(notes);
+            $('#edit-save-event').prop('disabled', false);
 
+            // console.log(info.event);
             $('#loading-overlay').show();
             $('#eventDetailModal .modal-title').text(title);
             $('#eventDetailModal #creationDate').val(creationDate);
@@ -296,9 +298,14 @@
                 if (allDay) {
                     $('#eventDetailModal #event-start-date, #eventDetailModal #event-end-date').attr('type', 'date');
                     if (startStr) {
-                        $('#eventDetailModal #event-start-date, #eventDetailModal #event-end-date').val(startStr);
+                        $('#eventDetailModal #event-start-date').val(startStr);
                     } else {
                         $('#eventDetailModal #event-start-date').hide();
+                    }
+                    if (endStr) {
+                        $('#eventDetailModal #event-end-date').val(endStr);
+                    } else {
+                        $('#eventDetailModal #event-end-date').val(startStr);
                     }
                 } else {
                     $('#eventDetailModal #event-start-date, #eventDetailModal #event-end-date').attr('type', 'datetime-local');
@@ -311,7 +318,7 @@
                     if (end) {
                         $('#eventDetailModal #event-end-date').val(formatDate(end));
                     } else {
-                        $('#eventDetailModal #event-end-date').hide();
+                        $('#eventDetailModal #event-end-date').val(formatDate(start));
                     }
                 }
 
@@ -356,7 +363,6 @@
             $('#loading-overlay').hide();
             $('#eventDetailModal').modal('show');
         }
-
         // Batas click calendar
 
         // Delete bro
@@ -395,23 +401,22 @@
                 type: 'POST',
                 data: eventDel,
                 success: function(response) {
-                    console.log(calendar);
+                    // console.log(calendar);
                     var event = calendar.getEventById(eventId);
                     if (event) {
                         event.remove();
                     }
-                    $('#eventDetailModal').modal('hide');
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 },
                 complete: function() {
+                    $('#eventDetailModal').modal('hide');
                     $('#loading-overlay').hide();
                 }
             });
 
         }
-
         // Batas Delete bro
 
         // Untuk update bro
@@ -427,6 +432,7 @@
             var locDate = $('#event-location-date').val();
 
             var eventUpdate = {
+                event_id: eventId,
                 title: eventTitle,
                 creationDate: creationDate,
                 start: startDateTime,
@@ -435,6 +441,7 @@
                 eventLoc: locDate,
                 flag: 2
             };
+            // console.log(eventUpdate);
             updateEventDates(eventUpdate);
         });
 
@@ -445,12 +452,12 @@
                 data: eventUpdate,
                 success: function(response) {
                     refreshCalendar();
-                    $('#eventDetailModal').modal('hide');
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 },
                 complete: function() {
+                    $('#eventDetailModal').modal('hide');
                     $('#loading-overlay').hide();
                 }
             });
@@ -487,21 +494,20 @@
             addEventCalendar(eventData);
         });
 
-
         function addEventCalendar(eventData) {
-            // console.log(eventData);
+            console.log(eventData);
             $.ajax({
                 url: '<?= base_url(); ?>AddEvent',
                 type: 'POST',
                 data: eventData,
                 success: function(response) {
-                    console.log(response);
+                    // console.log(response);
                     refreshCalendar();
                     calendar.addEvent(eventData);
                     $('#addEventModal').modal('hide');
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 },
                 complete: function() {
                     $('#loading-overlay').hide();
@@ -565,13 +571,13 @@
 
                     colorSelectEvent.on('change', function() {
                         var selectedColor = $(this).val();
-                        $('#save-add-event').css('background-color', selectedColor);
-                        $('#save-add-event').css('border-color', selectedColor);
+                        // $('#save-add-event').css('background-color', selectedColor);
+                        // $('#save-add-event').css('border-color', selectedColor);
                         $(this).css('background-color', selectedColor);
                     });
                 },
                 error: function(xhr, status, error) {
-                    console.log(error);
+                    // console.log(error);
                 },
                 complete: function() {
                     // Setelah permintaan AJAX selesai, termasuk jika terjadi error
@@ -612,7 +618,7 @@
                     initializeCalendar(response);
                 },
                 error: function(xhr, status, error) {
-                    console.log(error + "oke");
+                    // console.log(error + "oke");
                 },
                 complete: function() {
                     // Setelah permintaan AJAX selesai, termasuk jika terjadi error

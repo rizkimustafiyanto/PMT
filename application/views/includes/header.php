@@ -37,7 +37,9 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- BS Stepper -->
   <link rel="stylesheet" href="<?= base_url(); ?>assets/plugins/bs-stepper/css/bs-stepper.min.css">
   <!-- Calendar -->
-  <link rel="stylesheet" href="<?= base_url(); ?>assets/plugins/fullcalendar/main.min.css">
+  <link rel="stylesheet" href="<?= base_url(); ?>assets/plugins/fullcalendar6/theme.css">
+  <!-- <script src="<?= base_url(); ?>assets/plugins/fullcalendar/main.min.js"></script> -->
+  <script src="<?= base_url(); ?>assets/plugins/fullcalendar6/dist/index.global.min.js"></script>
   <!-- dropzonejs -->
   <link rel="stylesheet" href="<?= base_url(); ?>assets/plugins/dropzone/min/dropzone.min.css">
   <!-- Theme style -->
@@ -99,17 +101,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- Tambahan -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <link rel="stylesheet" href="<?= base_url() ?>assets/plugins/summernote/summernote.min.css">
+  <script src="<?= base_url() ?>assets/plugins/summernote/summernote.min.js"></script>
+  <!-- Slick Slider -->
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.css" />
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick-theme.css" />
+  <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
+
 </head>
 
 <body class="hold-transition sidebar-mini">
   <div class="wrapper">
 
     <!-- Navbar -->
-    <nav class="main-header navbar navbar-expand navbar-light bg-white">
-      <!-- Left navbar links -->
+    <nav class="main-header navbar navbar-expand">
       <ul class="navbar-nav">
         <li class="nav-item">
-          <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fas fa-bars"></i></a>
+          <a class="nav-link" data-widget="pushmenu" href="javascript:void(0);" role="button"><i class="fas fa-bars"></i></a>
         </li>
         <!-- <li class="nav-item">
           <a href="<?= base_url(); ?>Home" class="nav-link">Back To Home</a>
@@ -120,8 +128,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
         </li>
       </ul>
       <ul class="navbar-nav ml-auto">
+        <li class="nav-item">
+          <a class="nav-link" href="javascript:void(0);" id="themeBtn">
+            <i class="fas fa-adjust"></i> Change
+          </a>
+        </li>
         <li class="nav-item dropdown">
-          <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+          <a class="nav-link" data-toggle="dropdown" href="javascript:void(0);" aria-expanded="false">
             <i class="far fa-comments"></i>
             <?php
             $memberID = $this->session->userdata('member_id');
@@ -167,44 +180,44 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <?php endif; ?>
         </li>
         <li class="nav-item dropdown">
-          <a class="nav-link" data-toggle="dropdown" href="#" aria-expanded="false">
+          <a class="nav-link" data-toggle="dropdown" href="javascript:void(0);" aria-expanded="false">
             <i class="far fa-bell"></i>
             <span class="badge badge-warning navbar-badge">15</span>
           </a>
           <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
             <span class="dropdown-item dropdown-header">15 Notifications</span>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
+            <a href="javascript:void(0);" class="dropdown-item">
               <i class="fas fa-envelope mr-2"></i> 4 new messages
               <span class="float-right text-muted text-sm">3 mins</span>
             </a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
+            <a href="javascript:void(0);" class="dropdown-item">
               <i class="fas fa-users mr-2"></i> 8 friend requests
               <span class="float-right text-muted text-sm">12 hours</span>
             </a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item">
+            <a href="javascript:void(0);" class="dropdown-item">
               <i class="fas fa-file mr-2"></i> 3 new reports
               <span class="float-right text-muted text-sm">2 days</span>
             </a>
             <div class="dropdown-divider"></div>
-            <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a>
+            <a href="javascript:void(0);" class="dropdown-item dropdown-footer">See All Notifications</a>
           </div>
         </li>
-        <li class="nav-item dropdown">
+        <li class="nav-item">
           <a class="nav-link" href="<?= base_url(); ?>Profile" aria-expanded="false">
             <i class="far fa-user"></i>
           </a>
         </li>
       </ul>
     </nav>
-    <!-- /.navbar -->
+    <!-- Navbar -->
 
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <aside class="main-sidebar elevation-3">
       <!-- Brand Logo -->
-      <a href="index3.html" class="brand-link">
+      <a href="javascript:void(0);" class="brand-link">
         <img src="<?php echo base_url(); ?>assets/dist/img/logo_psd.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3 bg-light" style="opacity: .8">
         <span class="brand-text font-weight-bold">PMT</span>
       </a>
@@ -217,7 +230,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <img src="<?= base_url(); ?>assets/dist/img/avatar<?= (($this->session->userdata('gender_id')) == 'GR-001') ? '5.png' : '3.png' ?>" class="img-circle elevation-2" alt="User Image">
           </div>
           <div class="info">
-            <a href="#" class="d-block"><?= $this->session->userdata('member_name'); ?></a>
+            <a href="javascript:void(0);" class="d-block"><?= $this->session->userdata('member_name'); ?></a>
           </div>
         </div>
 
@@ -341,7 +354,3 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </div>
       <!-- /.sidebar -->
     </aside>
-
-    <!-- Chatbox PopUP -->
-
-    <!-- Batas Chatbox PopUP -->

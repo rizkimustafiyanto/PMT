@@ -23,11 +23,26 @@ if (!empty($profiles)) {
         text-overflow: ellipsis;
     }
 
-    #select_sender:hover {
+    .container.mt-2 {
+        position: relative;
+    }
+
+    .container.mt-2:hover {
         background-color: #f4f4f4;
+    }
+
+    .container.mt-2:hover .delete-button {
+        display: block;
+    }
+
+    .delete-button {
+        display: none;
+        position: absolute;
+        top: 5px;
+        right: 0;
+        padding: 7px;
+        /* Ubah warna latar belakang sesuai kebutuhan */
         cursor: pointer;
-        display: flex;
-        align-items: center;
     }
 </style>
 
@@ -84,7 +99,6 @@ if (!empty($profiles)) {
                                         <div class="card-header">
                                             <h3 class="card-title">Messages</h3>
                                             <div class="card-tools" style="padding-right: 5px;">
-                                                <a style="margin: 0px; cursor: pointer;padding-right: 5px;" data-toggle="modal" data-target="#delete-messages"> <i class="fa fa-trash"></i></a>
                                                 <a style="margin: 0px; cursor: pointer;" data-toggle="modal" data-target="#input-new-messages"> <i class="fa fa-plus"></i></a>
                                             </div>
                                         </div>
@@ -100,7 +114,6 @@ if (!empty($profiles)) {
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <div class="col-md-8" id="isi_messages">
                     <div class="card card-primary">
@@ -165,41 +178,6 @@ if (!empty($profiles)) {
         <!-- /.modal-dialog -->
     </div>
     <!-- Batas Input Messages -->
-    <!-- Delete Messages -->
-    <div class="modal fade" id="delete-messages">
-        <div class="modal-dialog">
-            <div class="modal-content">
-                <div class="modal-header">
-                    <h4 class="modal-title">Delete Messages</h4>
-                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                    </button>
-                </div>
-                <form role="form" action="<?= base_url(); ?>DeleteMessages" method="post">
-                    <div class="modal-body">
-                        <div class="row">
-                            <div class="col-lg-12">
-                                <label for="delete_sender">Massage</label>
-                                <select class="form-control select2bs4" id="delete_sender" name="delete_sender" data-width=100%>
-                                    <?php foreach ($ColumnMember as $row) : ?>
-                                        <option value="<?= $row->sender_id; ?>"><?= $row->sender_name; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="modal-footer justify-content-between">
-                        <input type="submit" class="btn btn-danger" value="Delete" />
-                        <input type="reset" class="btn btn-default" value="Reset" />
-                    </div>
-                </form>
-            </div>
-            <!-- /.modal-content -->
-        </div>
-        <!-- /.modal-dialog -->
-    </div>
-    <!-- Batas Delete Messages -->
 
 </div>
 
@@ -226,11 +204,11 @@ if (!empty($profiles)) {
                                 var rowHtml =
                                     '<div class="container mt-2">' +
                                     '<div id="select_sender" data-sender="' + row.sender_id + '" class="col-md-12">' +
-                                    '<div style="display: flex;">' +
-                                    '<div style="overflow-y: auto; max-height: 60px; flex: 1;">' +
+                                    '<div class="row">' +
+                                    '<div class="col-sm-4 text-left" style="overflow-y: auto; max-height: 60px; margin-right: -10px;">' +
                                     '<img src="<?= base_url(); ?>assets/dist/img/avatar' + potoBox + '" class="mr-3 img-circle" alt="User Avatar" style="width: 50px; height: 50px;">' +
                                     '</div>' +
-                                    '<div style="overflow-y: auto; max-height: 60px; max-width: 160px;" class="text-left">' +
+                                    '<div class="col-sm-8 text-left" style="overflow-y: hidden; max-height: 60px; margin-left:-30px;">' +
                                     '<p class="text-nowrap" style="margin:0px; max-width:150px;">' + row.sender_name + ' ';
                                 if (row.new_message !== '0') {
                                     rowHtml += '<span class="badge badge-info right">' + row.new_message + '</span>';
@@ -240,6 +218,9 @@ if (!empty($profiles)) {
                                     '<p style="margin:0px;">' + row.created_at + '</p>' +
                                     '</div>' +
                                     '</div>' +
+                                    '</div>' +
+                                    '<div class="delete-button" id="delete_column" data-sender_column="' + row.sender_id + '">' +
+                                    '<i class="fa fa-trash"></i>' +
                                     '</div>' +
                                     '</div>';
                                 messagesContainer.append(rowHtml);
@@ -399,6 +380,42 @@ if (!empty($profiles)) {
             sendMessage.show();
             fetchMessages(senderId);
         });
+
+        $(document).on('click', '#delete_column', function() {
+            var senderId = $(this).data("sender_column");
+            console.log(senderId);
+            delColumn(senderId);
+        })
+
+        function delColumn(params) {
+            $.ajax({
+                url: '<?= base_url(); ?>DeleteMessages',
+                type: 'POST',
+                data: {
+                    sender_id: params
+                },
+                success: function(response) {
+                    Swal.fire({
+                        icon: response.status,
+                        title: response.title,
+                        text: response.message,
+                        toast: true,
+                        position: 'center',
+                        showConfirmButton: false,
+                        timer: 3000,
+                        timerProgressBar: true,
+                        didOpen: toast => {
+                            toast.addEventListener('mouseenter', Swal.stopTimer)
+                            toast.addEventListener('mouseleave', Swal.resumeTimer)
+                        }
+                    });
+
+                },
+                error: function(xhr, status, error) {
+                    console.log(error);
+                }
+            })
+        }
         // $(".btn-select-sender").click(function() {
         //     var senderId = $(this).data("sender");
         //     emptyMessage.hide();

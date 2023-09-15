@@ -142,7 +142,7 @@ class Messages_controller extends BaseController
     public function DeleteMessages()
     {
         $senderId = $this->session->userdata('member_id');
-        $receiverId = $this->input->post('delete_sender');
+        $receiverId = $this->input->post('sender_id');
         // Pencarian member
         $DeleteMessage = [
             '',
@@ -155,18 +155,21 @@ class Messages_controller extends BaseController
         $result = $this->Messages_model->Delete($DeleteMessage);
 
         if ($result > 0) {
-            $this->session->set_flashdata(
-                'success',
-                'New Project created successfully !'
+            $response = array(
+                'status' => 'success',
+                'title' => 'Success',
+                'message' => 'Messages deleted successfully'
             );
         } else {
-            $this->session->set_flashdata(
-                'error',
-                'Project creation failed !'
+            $response = array(
+                'status' => 'error',
+                'title' => 'Error',
+                'message' => 'Failed to delete messages member!'
             );
         }
 
-        redirect('Message');
+        header('Content-Type: application/json');
+        echo json_encode($response);
     }
 
     function ReadMessage($senderId = '', $current_member_id = '')

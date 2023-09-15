@@ -3,7 +3,7 @@
   <!-- To the right -->
 
   <!-- Default to the left -->
-  <strong>Copyright &copy; 2023 <a href="https://adminlte.io">Persada Solusi Data</a>.</strong> All rights reserved.
+  <strong>Copyright PMT version 1.0.0 &copy; 2023 <a href="https://persada-group.com/psd/">Persada Solusi Data</a>.</strong> All rights reserved.
 </footer>
 </div>
 <!-- ./wrapper -->
@@ -95,31 +95,75 @@
 
   });
 
-  //SweetAlert Hapus
-  $('.tombol-hapus').on('click', function(e) {
+  //SUMMERNOTES
+  $(document).ready(function() {
+    $('.editor').each(function() {
+      $(this).summernote({
+        toolbar: [
+          ['style', ['bold', 'italic', 'strikethrough']],
+          ['fontsize', ['fontsize']],
+          ['color', ['color']],
+          ['para', ['ul', 'ol', 'paragraph']],
+          ['insert', ['link']],
+        ],
+        callbacks: {
+          onInit: function() {
+            // Pengaturan awal saat inisialisasi
+          },
+          onFocus: function() {
+            $(this).parent().css({
+              boxShadow: '0 0 0 .2rem rgba(0, 123, 255, .25)',
+              borderColor: '#80bdff'
+            });
+          },
+          onBlur: function() {
+            $(this).parent().css({
+              boxShadow: '',
+              borderColor: ''
+            });
+          }
+        }
+      });
+    });
+  });
+</script>
 
-    e.preventDefault();
-    const href = $(this).attr('href');
+<!-- Untuk Ganti Theme -->
+<script>
+  $(document).ready(function() {
+    var body = $('body');
+    var themeBtn = $('#themeBtn');
 
-    Swal.fire({
-      title: 'Apakah anda yakin',
-      text: "akan menghapus data ini ?",
-      icon: 'warning',
-      showCancelButton: true,
-      confirmButtonColor: '#3085d6',
-      cancelButtonColor: '#d33',
-      confirmButtonText: 'Hapus Data'
-    }).then((result) => {
-      if (result.isConfirmed) {
-        document.location.href = href;
-        Swal.fire(
-          'Dihapus!',
-          'Data berhasil dihapus',
-          'success'
-        )
+    // Tambahkan kelas tema terang saat halaman dimuat
+    body.addClass('light-mode');
+    $('.main-header').addClass('navbar-light');
+    $('.main-sidebar').addClass('sidebar-light-primary');
+
+    themeBtn.on('click', function() {
+      body.toggleClass('dark-mode');
+      $('.main-header').toggleClass('navbar-dark');
+      $('.main-sidebar').toggleClass('sidebar-dark-primary');
+      $('.main-sidebar').toggleClass('sidebar-light-primary');
+
+      // Simpan status tema ke local storage
+      if (body.hasClass('dark-mode')) {
+        localStorage.setItem('theme', 'dark');
+      } else {
+        localStorage.setItem('theme', 'light');
       }
-    })
+    });
 
+    // Cek Saving Storage
+    var savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      body.addClass('dark-mode');
+      $('.main-header').addClass('navbar-dark');
+      $('.main-sidebar').addClass('sidebar-dark-primary');
+      // Hapus kelas tema terang jika tema gelap diaktifkan
+      body.removeClass('light-mode');
+      $('.main-header').removeClass('navbar-light');
+      $('.main-sidebar').removeClass('sidebar-light-primary');
+    }
   });
 </script>
 <!-- <script type="text/javascript" src="javascript/counter.js"></script> -->

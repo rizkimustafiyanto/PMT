@@ -47,12 +47,11 @@ $route['404_override'] = 'error';
 
 // Login
 $route['Login'] = 'login_controller/Login';
-$route['logout'] = 'member/logout';
-$route['Dashboard'] = 'member';
-$route['Dashboard/(:num)/(:num)'] = 'member/index/$1/$2';
+$route['logout'] = 'dashboard/logout';
+$route['Dashboard'] = 'dashboard';
 
-$route['RoleUser'] = 'member/cekRole';
-$route['Home'] = 'member/Home';
+$route['RoleUser'] = 'dashboard/cekRole';
+$route['Home'] = 'dashboard/Home';
 
 // Master Role (Standart PSD)
 // MemberRole
@@ -100,15 +99,32 @@ $route['DeleteVariable/(:any)'] = 'master/variable_controller/DeleteVariable/$1'
 
 // --------------------- The transactions are below --------------------------------
 
-// PROJEK WORKSPACE
-$route['ProjectWrk'] = 'transaction/project_wrk/Project_wrk_controller/GetProjectWrk';
-$route['InsertProjectWrk'] = 'transaction/project_wrk/Project_wrk_controller/InsertProjectWrk';
-$route['DeleteProjectWrk'] = 'transaction/project_wrk/Project_wrk_controller/DeleteProjectWrk';
-$route['UpdateProjectWrk'] = 'transaction/project_wrk/Project_wrk_controller/UpdateProjectWrk';
+// PROJEK
+$route['Project'] = 'transaction/project/project_controller/GetProject';
+$route['InsertProject'] = 'transaction/project/project_controller/InsertProject';
+$route['DeleteProject'] = 'transaction/project/project_controller/DeleteProject';
+$route['UpdateProject'] = 'transaction/project/project_controller/UpdateProject';
 
-$route['InsertProjectWrkMember'] = 'transaction/project_wrk/Project_wrk_controller/InsertProjectWrkMember';
-$route['UpdateProjectWrkMember'] = 'transaction/project_wrk/Project_wrk_controller/UpdateProjectWrkMember';
-$route['DeleteProjectWrkMember/(:any)/(:any)'] = 'transaction/project_wrk/Project_wrk_controller/DeleteProjectWrkMember/$1/$2';
+$route['InsertProjectMember'] = 'transaction/project/project_controller/InsertProjectMember';
+$route['UpdateProjectMember'] = 'transaction/project/project_controller/UpdateProjectMember';
+$route['DeleteProjectMember'] = 'transaction/project/project_controller/DeleteProjectMember';
+
+// LIST
+$route['List/(:any)'] = 'transaction/list/list_controller/List/$1';
+$route['UpdateList'] = 'transaction/list/list_controller/UpdateList';
+$route['InsertList'] = 'transaction/list/list_controller/InsertList';
+$route['DeleteList'] = 'transaction/list/list_controller/DeleteList';
+$route['InsertListMember'] = 'transaction/list/list_controller/InsertListMember';
+$route['DeleteListMember'] = 'transaction/list/list_controller/DeleteListMember';
+
+// TASK
+$route['Task/(:any)/(:any)'] = 'transaction/task/task_controller/Task/$1/$2';
+$route['UpdateTask'] = 'transaction/task/task_controller/UpdateTask';
+$route['InsertTask'] = 'transaction/task/task_controller/InsertTask';
+$route['DeleteTask'] = 'transaction/task/task_controller/DeleteTask';
+
+// KANBAN PROJECT
+$route['KanbanList/(:any)'] = 'transaction/list/kanban_list_controller/KanbanList/$1';
 
 // ATTACHMENT
 $route['InsertAttachment'] = 'transaction/tools/Attachment_controller/InsertAttachment';
@@ -116,98 +132,12 @@ $route['ViewAttachment/(:any)'] = 'transaction/tools/Attachment_controller/ViewA
 $route['DownloadAttachment/(:any)'] = 'transaction/tools/Attachment_controller/DownloadAttachment/$1';
 $route['DeleteAttachment'] = 'transaction/tools/Attachment_controller/DeleteAttachment';
 
-// PROJECT
-$route['Project/(:any)'] = 'transaction/project/Project_controller/Project/$1';
-$route['UpdateProject'] = 'transaction/project/Project_controller/UpdateProject';
-$route['InsertProject'] = 'transaction/project/Project_controller/InsertProject';
-$route['DeleteProject'] = 'transaction/project/Project_controller/DeleteProject';
+// LOGGING
+$route['log_insert'] = 'transaction/tools/Log_controller/log_insert';
 
-// PROJECT DETAIL
-$route['ProjectItem/(:any)/(:any)'] = 'transaction/project/Item_controller/ProjectItem/$1/$2';
-$route['UpdateProjectItem'] = 'transaction/project/Item_controller/UpdateProjectItem';
-$route['InsertProjectItem'] = 'transaction/project/Item_controller/InsertProjectItem';
-$route['DeleteProjectItem'] = 'transaction/project/Item_controller/DeleteProjectItem';
-$route['InsertProjectItemMember'] = 'transaction/project/Item_controller/InsertProjectItemMember';
-$route['DeleteProjectItemMember'] = 'transaction/project/Item_controller/DeleteProjectItemMember';
-
-// ITEM
-$route['Item/(:any)/(:any)'] = 'transaction/project/Item_controller/Item/$1/$2';
-$route['InsertItemMember'] = 'transaction/project/Item_controller/InsertItemMember';
-
-
-
-// KANBAN PROJECT
-$route['KanbanProject/(:any)'] = 'transaction/project/Kanban_project_controller/KanbanProject/$1';
-$route['KanbanItem/(:any)/(:any)'] = 'transaction/project/Kanban_project_controller/KanbanItem/$1/$2';
-
-
-//Board Project
-$route['InsertBoardProject'] = 'transaction/Board_controller/InsertBoardProject';
-$route['DeleteBoardProject/(:any)/(:any)'] = 'transaction/Board_controller/DeleteBoardProject/$1/$2';
-$route['UpdateBoardProject'] = 'transaction/Board_controller/UpdateBoardProject';
-$route['DetailBoardProject/(:any)/(:any)'] = 'transaction/Board_controller/DetailBoardProject/$1/$2';
-$route['ChangeStatusProjectProjectBoard'] = 'transaction/Board_controller/ChangeStatusProjectProjectBoard';
-
-//Project Board Items
-$route['InsertBoardItemList'] = 'transaction/List_controller/InsertBoardItemList';
-$route['DeleteBoardItemList/(:any)/(:any)/(:any)'] = 'transaction/List_controller/DeleteBoardItemList/$1/$2/$3';
-$route['UpdateItemList'] = 'transaction/List_controller/UpdateItemList';
-$route['DetailItemList/(:any)/(:any)/(:any)'] = 'transaction/List_controller/DetailItemList/$1/$2/$3';
-
-//Project Card List
-$route['InsertCard'] = 'transaction/Card_controller/InsertCard';
-$route['DeleteCard/(:any)/(:any)'] = 'transaction/Card_controller/DeleteCard/$1/$2';
-$route['UpdateCard'] = 'transaction/Card_controller/UpdateCard';
-$route['DetailCard/(:any)/(:any)'] = 'transaction/Card_controller/DetailCard/$1/$2';
-$route['MoveCardList/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_controller/MoveCardList/$1/$2/$3/$4/$5';
-$route['ChangeStatusProjectProjectBoardCard'] = 'transaction/Card_controller/ChangeStatusProjectProjectBoardCard';
-
-//Project Card Member
-$route['InsertCardMember'] = 'transaction/Card_member_controller/InsertCardMember';
-$route['DeleteCardMember/(:any)/(:any)/(:any)'] = 'transaction/Card_member_controller/DeleteCardMember/$1/$2/$3';
-// $route['UpdateCard'] = 'transaction/Card_member_controller/UpdateCard';
-// $route['DetailCard/(:any)/(:any)/(:any)/(:any)'] ='transaction/Card_member_controller/DetailCard/$1/$2/$3/$4';
-
-//Project Card Comment
-$route['InsertCardComment'] = 'transaction/Card_comment_controller/InsertCardComment';
-$route['UpdateCardComment'] = 'transaction/Card_comment_controller/UpdateCardComment';
-$route['DeleteCardComment/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_comment_controller/DeleteCardComment/$1/$2/$3/$4/$5';
-
-//Project Card Attachment
-$route['InsertCardAttachment'] = 'transaction/Card_attachment_controller/InsertCardAttachment';
-$route['DeleteCardAttachment/(:any)/(:any)/(:any)'] = 'transaction/Card_attachment_controller/DeleteCardAttachment/$1/$2/$3';
-
-//Project Card Checklist
-$route['InsertCardChecklist'] = 'transaction/Card_checklist_controller/InsertCardChecklist';
-$route['DeleteCardChecklist/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_checklist_controller/DeleteCardChecklist/$1/$2/$3/$4/$5';
-$route['UpdateCardChecklist'] = 'transaction/Card_checklist_controller/UpdateCardChecklist';
-$route['DetailChecklistItem/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_checklist_controller/DetailChecklistItem/$1/$2/$3/$4/$5';
-$route['UpdateCardChecklistPercentage'] = 'transaction/Card_checklist_controller/UpdateCardChecklistPercentage';
-
-//Project Card Checklist Item
-$route['InsertChecklistItem'] = 'transaction/Checklist_item_controller/InsertChecklistItem';
-$route['DeleteChecklistItem/(:any)/(:any)/(:any)'] = 'transaction/Checklist_item_controller/DeleteChecklistItem/$1/$2/$3';
-$route['UpdateChecklistItem'] = 'transaction/Checklist_item_controller/UpdateChecklistItem';
-$route['UpdateChecklistItemChecked'] = 'transaction/Checklist_item_controller/UpdateChecklistItemChecked';
-// $route['UpdateBoardProject'] =
-// 'transaction/Board_controller/UpdateBoardProject';
-
-//Upload
-$route['Upload/(:any)'] = 'transaction/Card_attachment_controller/Upload/$1';
-//Download
-$route['Download/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_attachment_controller/Download/$1/$2/$3/$4';
-
-
-//position
-$route['UpdatePositionListBoard'] = 'transaction/Board_controller/UpdatePositionListBoard';
-
-//Project Card Log
-$route['InsertCardLog'] = 'transaction/Card_log_controller/InsertCardLog';
-$route['UpdateCardLog'] = 'transaction/Card_log_controller/UpdateCardLog';
-$route['DeleteCardLog/(:any)/(:any)/(:any)/(:any)/(:any)'] = 'transaction/Card_log_controller/DeleteCardLog/$1/$2/$3/$4/$5';
-
-// PMT Board
-$route['PmtBoard'] = 'transaction/Pmt_board_controller';
+// COMMENT
+$route['get_comments'] = 'transaction/tools/Comment_controller/get_comments';
+$route['insert_comment'] = 'transaction/tools/Comment_controller/insert_comment';
 
 //Profile Board
 $route['Profile'] = 'profile/Profile_Controller';
@@ -219,7 +149,6 @@ $route['UpdateEvent'] = 'calendar/calendar_controller/UpdateEvent';
 $route['DeleteEvent'] = 'calendar/calendar_controller/DeleteEvent';
 $route['GetEventColor'] = 'calendar/calendar_controller/GetEventColor';
 $route['AddEvent'] = 'calendar/calendar_controller/AddEvent';
-
 
 //Meesagaes
 $route['Message'] = 'messages/Messages_controller';

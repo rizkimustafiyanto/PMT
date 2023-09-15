@@ -4,16 +4,15 @@
 
 require APPPATH . '/libraries/BaseController.php';
 
-class Project_controller extends BaseController
+class project_controller extends BaseController
 {
     public function __construct()
     {
         parent::__construct();
-        $this->load->model('transaction/project_wrk/Project_wrk_model');
-        $this->load->model('transaction/project_wrk/Project_wrk_comment_model');
-        $this->load->model('transaction/project_wrk/Project_wrk_member_model');
-        $this->load->model('transaction/project/Project_model');
+        $this->load->model('transaction/project/project_model');
+        $this->load->model('transaction/project/project_member_model');
         $this->load->model('transaction/tools/Attachment_model');
+        $this->load->model('transaction/tools/Log_model');
         $this->load->model('master/member_model');
         $this->load->model('master/variable_model');
         $this->load->library('email');
@@ -22,334 +21,97 @@ class Project_controller extends BaseController
         $this->IsLoggedIn();
     }
 
-    public function Project($p_project_wrk_id = '')
+    public function index()
+    {
+        $this->global['pageTitle'] = 'CodeInsect : Project Workspace';
+        $this->loadViews('transaction/Project', $this->global, null, null);
+    }
+
+    function GetProject()
     {
         $memberID =  $this->session->userdata('member_id');
-
-        #Project List
-        #============================================================================
-        $data['ProjectRecords'] = $this->Project_model->Get(['', $p_project_wrk_id, '', '', '', '', 1]);
-        $data['StatusItemRecords'] = $this->variable_model->GetVariable(['', 5]);
-
-        #Workspace Project
-        #============================================================================
-        $data['ProjectWrkRecords'] = $this->Project_wrk_model->Get([$p_project_wrk_id, '', 1, $memberID,]);
-        $data['ProjectMemberRecords'] = $this->Project_wrk_member_model->Get(['', $p_project_wrk_id, '', '', 2,]);
-        $data['ProjectMemberTotalRecords'] = $this->Project_wrk_member_model->Get(['', $p_project_wrk_id, '', '', 3,]);
-        $data['MemberRecords'] = $this->member_model->Get(['', 0]);
-        $data['MemberTypeRecords'] = $this->variable_model->GetVariable(['', 2]);
+        $data['ProjectRecords'] = $this->project_model->Get(['', '', 0, $memberID]);
+        $data['ProjectMemberRecords'] = $this->project_member_model->Get(['', '', '', '', 0]);
         $data['ProjectTypeRecords'] = $this->variable_model->GetVariable(['', 4]);
-        $data['StatusProjectWrkRecords'] = $this->variable_model->GetVariable(['', 9]);
-        $data['MemberSelectRecord'] = $this->Project_wrk_member_model->Get(['', $p_project_wrk_id, '', '', 2]);
+        $data['tempmember'] = $this->member_model->Get([0, 0]);
 
-        #Attachment
         #============================================================================
-        $data['AttachmentRecord'] = $this->Attachment_model->Get(['', '', $p_project_wrk_id, 2]);
-        $data['AttachmentTypeRecord'] = $this->variable_model->GetVariable(['', 3]);
 
-        #Cek user_level_project
-        #============================================================================
-        $data['UserMemberRoleProject'] = $this->Project_wrk_member_model->Get(['', $p_project_wrk_id, $memberID, '', 4]);
         $data['member_id'] = $memberID;
 
         #============================================================================
 
-        $this->global['pageTitle'] = 'CodeInsect : Project';
-        $this->loadViews('transaction/project/Project', $this->global, $data, null);
+        $this->global['pageTitle'] = 'CodeInsect : Project Workspace';
+        $this->loadViews(
+            'transaction/project/project',
+            $this->global,
+            $data,
+            null
+        );
     }
 
-    public function KanbanDetail($p_project_wrk_id = '')
+    function InsertProject()
     {
-        $card_status = [
-            'p_project_id' => '',
-            'p_project_wrk_id' => $p_project_wrk_id,
-            'p_start_date' => '',
-            'p_due_date' => '',
-            'p_priority_type_id' => '', #priority Low
-            'p_member_id' => $this->session->userdata('member_id'),
-            'p_flag' => 3
-        ];
-
-        $data['CardStatus'] = $this->Project_model->Get($card_status);
-        $data['member_id'] = $this->session->userdata('member_id');
-        $data['project_id'] = $p_project_wrk_id;
-        #============================================================================
-
-        $this->global['pageTitle'] = 'CodeInsect : Project Detail';
-        $this->loadViews('transaction/Kanban_detail', $this->global, $data, null);
-    }
-
-    public function updateCardStatus()
-    {
-        $cardId = $this->input->post("card_id");
-        $newStatus = $this->input->post("new_status");
-        $member_id = $this->session->userdata("member_id");
-
-        $param = [
-            $cardId,
-            '',
-            '',
-            '',
-            '',
-            '',
-            '',
-            $newStatus,
-            $member_id,
-            '',
-            1,
-        ];
-
-        $result_update_card = $this->Project_model->Update($param);
-
-        if ($result_update_card > 0) {
-            $notif = $this->session->set_flashdata('success', 'Card Updated');
-        } else {
-            $notif = $this->session->set_flashdata('error', 'Card Cannot Update');
-        }
-
-        // Beri tanggapan sukses atau gagal
-        echo json_encode($notif);
-    }
-
-    function ChangeStatusProjectProject()
-    {
-        $project_id = $this->input->post('project_id');
-        $status_id = $this->input->post('status_id');
-        $p_change_user_id = $this->session->userdata('member_id');
-        $p_record_status = 'A';
-        $flag = 1;
-
+        $project_id = '';
+        $project_name = $this->input->post('title');
+        $project_type = $this->input->post('projectType');
+        $project_start = $this->input->post('start');
+        $project_due = $this->input->post('due');
+        $description = $this->input->post('description');
+        $members_project = $this->input->post('membersProject');
+        $creation_user_id = $this->session->userdata('member_id');
+        $status_id = 'STW-1'; # status projectnya On process
         $Project_parameter = [
-            'p_project_wrk_id' => $project_id,
-            'p_project_type' => '',
-            'p_flag' => 2,
-            'p_member_id' => $this->session->userdata('member_id'),
+            $project_id,
+            $project_name,
+            $project_type,
+            $project_start,
+            $project_due,
+            $description,
+            $members_project,
+            $creation_user_id,
+            $status_id
         ];
 
-        $resultCheckProject = $this->Project_wrk_model->Get($Project_parameter);
-
-        foreach ($resultCheckProject as $record) {
-            $total_onProcess = $record->total_onProcess;
-        }
-
-        #jika status project want change to DONE
-        if ($status_id == 'STW-2') {
-            if ($total_onProcess > 0) {
-                $this->session->set_flashdata(
-                    'error',
-                    'Project Cannot Change Status Project Done Because Card in On Process'
-                );
-            } else {
-                $param = [
-                    $project_id,
-                    '',
-                    '',
-                    '',
-                    $p_change_user_id,
-                    $p_record_status,
-                    $status_id,
-                    $flag,
-                ];
-
-                $result = $this->Project_wrk_model->Update($param);
-
-                if ($result > 0) {
-                    $this->session->set_flashdata(
-                        'success',
-                        'Status Project Changed'
-                    );
-                } else {
-                    $this->session->set_flashdata(
-                        'error',
-                        'Status Project Cannot Changed Because Board in On Process'
-                    );
-                }
-            }
-        } else {
-            $param = [
-                $project_id,
-                '',
-                '',
-                '',
-                $p_change_user_id,
-                $p_record_status,
-                $status_id,
-                $flag,
-            ];
-
-            // Pencarian member
-            $member_parameter = [
-                'p_member_id' => '',
-                'p_flag' => 0,
-            ];
-            $memberRecords = $this->member_model->get($member_parameter);
-
-            //Konfigurasi Email
-            $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
-            $user_id = $this->session->userdata('member_id');
-            $namaMember = '';
-            $userMail = '';
-
-            foreach ($memberRecords as $member) {
-                if ($member->member_id == $user_id) {
-                    $namaMember = $member->member_name;
-                    $userMail = $member->email;
-                    break;
-                }
-            }
-
-            $subject_email = 'Update Status Project';
-            //Isi pesan
-            $isi_email = "Halo,\n\n\tAda projek delete di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
-                $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tProject ID\t\t: " . $Project_id . "\n\nTerima kasih.";
-            $email = new Email(); //Pemanggilan fungsi email pada library
-
-            $result = $this->Project_wrk_model->Update($param);
-
-            if ($result > 0) {
-                //Mengirim email
-                if ($email->sendEmail($penerima, $subject_email, $isi_email)) {
-                    $this->session->set_flashdata('success', 'Project has been delete ! Email notification sent.');
-                } else {
-                    $this->session->set_flashdata('error', 'Project has been delete ! but Failed to send email notification.');
-                    //echo $email->getErrorInfo();
-                }
-                $logMessage = 'Project has been deleted. Project ID: ' . $Project_id . ' deleted By ' . $namaMember;
-                $operation = 'Update';
-                writeToLog($logMessage, $operation);
-                // $this->session->set_flashdata(
-                //     'success',
-                //     'Status Project Changed'
-                // );
-            } else {
-                $this->session->set_flashdata(
-                    'error',
-                    'Status Project Cannot Changed Because Board in On Process'
-                );
-            }
-        }
-
-        redirect(base_url() . 'Project/' . $project_id);
-    }
-
-    // PROJECT MEMBER
-    function DeleteProjectMember($Project_member_id, $project_id)
-    {
-        //Bikin pengambilan array
-        $Project_member_parameter = [
-            'p_project_member_id' => $Project_member_id,
-            'p_project_wrk_id' => $project_id,
-            'p_member_id' => '',
-            'p_member_type_id' => '',
-            'p_flag' => 1,
-        ];
-        $WorkMembers = $this->Project_wrk_member_model->Get($Project_member_parameter);
-
+        // Pencarian member
         $member_parameter = [
             'p_member_id' => '',
             'p_flag' => 0,
         ];
-        $MemberRecords = $this->member_model->Get($member_parameter);
+        $memberRecords = $this->member_model->get($member_parameter);
 
-        //Variable pengambilan objek dari mysql
-        $namamember = '';
-        $usermail = '';
+        //Konfigurasi Email
+        $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
+        $namaMember = '';
+        $userMail = '';
 
-        foreach ($WorkMembers as $row) {
-            if ($row->project_member_id == $Project_member_id) {
-                foreach ($MemberRecords as $member) {
-                    if ($member->member_id == $row->member_id) {
-                        $namamember = $member->member_name;
-                        $usermail = $member->email;
-                        break;
-                    }
-                }
+        foreach ($memberRecords as $member) {
+            if ($member->member_id == $creation_user_id) {
+                $namaMember = $member->member_name;
+                $userMail = $member->email;
                 break;
             }
         }
 
-        //Konfigurasi Email
-        $penerima = 'pt.ujicobaku@gmail.com';
-        //Diatas ini merupakan percobaan sedangkan yang bawah eksekusi
-        //$penerima = $usermail;
-        $subject_email = 'Project Delete Member';
+        $subject_email = 'Create New Project';
+        //Isi pesan
+        $isi_email = "Halo,\n\n\tAda projek baru di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
+            $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tProject Name\t: " . $project_name . "\n\nTerima kasih.";
+        $email = new Email(); //Pemanggilan fungsi email pada library
 
-        //Isi Email
-        $isi_email = 'Halo,
-
-        Data Anda di PMT telah dihapus. Berikut adalah detail data yang dihapus:
-        
-        Nama Member: ' . $namamember . '
-        Email: ' . $usermail . '
-        Project ID: ' . $project_id . '
-        
-        Terima kasih.';
-
-        $email = new Email();
-
-        //eksekusi query
-        $result = $this->Project_wrk_member_model->Delete($Project_member_id);
+        $result = $this->project_model->Insert($Project_parameter);
 
         if ($result > 0) {
             //Mengirim email
             // if ($email->sendEmail($penerima, $subject_email, $isi_email)) {
-            //     $this->session->set_flashdata('success', 'Project member has been deleted ! Email notification sent.');
+            //     $this->session->set_flashdata('success', 'Project has been create ! Email notification sent.');
             // } else {
-            //     $this->session->set_flashdata('error', 'Project member has been deleted ! but Failed to send email notification.');
+            //     $this->session->set_flashdata('error', 'Project has been create ! but Failed to send email notification.');
             //     //echo $email->getErrorInfo();
             // }
-            // $logMessage = 'Project member has been deleted for project member: ' . $project_member_id . ' with name of member ' . $namamember;
-            // $operation = 'Delete';
+            // $logMessage = 'Project has been created. Project Name: ' . $project_name . ' Created By ' . $namaMember;
+            // $operation = 'Create';
             // writeToLog($logMessage, $operation);
-            // //$this->session->set_flashdata(
-            //   'success',
-            //   'Project member has been deleted !' . $namamember . $Project_member_id
-            //);
-        } else {
-            $this->session->set_flashdata(
-                'error',
-                'Project member cannot deleted !'
-            );
-            // $logMessage = 'Failed to deleted project member' . $Project_member_id . ' with name of member ' . $namamember;
-            // $operation = 'Delete';
-            // writeToLog($logMessage, $operation);
-        }
-
-        redirect(base_url() . 'Project/' . $project_id);
-    }
-
-    // INSERT PROJECT
-    function InsertProject()
-    {
-        #Header
-        $project_id = '';
-        $project_wrk_id = $this->input->post('idProjectWrk');
-        $project_name = $this->input->post('title');
-        $start_date = $this->input->post('start');
-        $due_date = $this->input->post('due');
-        $p_priority = $this->input->post('priority');
-        $p_description = $this->input->post('description');
-        $member_id = $this->input->post('membersItem');
-        $p_item_status = $this->input->post('status');
-        $creation_user_id = $this->session->userdata('member_id');
-        $record_status = 'A';
-
-        $project_parameter = [
-            $project_id,
-            $project_wrk_id,
-            $project_name,
-            $start_date,
-            $due_date,
-            $p_priority,
-            $member_id,
-            $p_item_status,
-            $p_description,
-            $creation_user_id,
-            $record_status
-        ];
-        $result = $this->Project_model->Insert($project_parameter);
-
-        if ($result > 0) {
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
@@ -359,7 +121,7 @@ class Project_controller extends BaseController
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'Failed to create project'
+                'message' => 'Failed to create project!'
             );
         }
 
@@ -369,75 +131,234 @@ class Project_controller extends BaseController
 
     function UpdateProject()
     {
-        #Header
-        #================================================
-        $project_item_id = $this->input->post('id');
-        $project_id_wrk = $this->input->post('idProjectWrk');
-        $project_name = $this->input->post('title');
-        $start_date = $this->input->post('start');
-        $due_date = $this->input->post('due');
-        $p_priority = $this->input->post('priority');
+        $p_project_id = $this->input->post('id');
+        $p_project_name = $this->input->post('title');
+        $p_project_type = $this->input->post('projectType');
+        $p_project_start = $this->input->post('start');
+        $p_project_due = $this->input->post('due');
         $p_description = $this->input->post('description');
-        $p_item_status = $this->input->post('status');
         $p_change_user_id = $this->session->userdata('member_id');
-        $p_record_status = 'A';
+        $p_status_id =  $this->input->post('status');
         $flag = $this->input->post('flag');
 
         $param = [
-            $project_item_id,
-            $project_id_wrk,
-            $project_name,
-            $start_date,
-            $due_date,
-            $p_priority,
-            $p_item_status,
+            $p_project_id,
+            $p_project_name,
+            $p_project_type,
+            $p_project_start,
+            $p_project_due,
             $p_description,
             $p_change_user_id,
-            $p_record_status,
+            $p_status_id,
             $flag
         ];
+        // Pencarian member
+        $member_parameter = [
+            'p_member_id' => '',
+            'p_flag' => 0,
+        ];
+        $memberRecords = $this->member_model->get($member_parameter);
 
+        //Konfigurasi Email
+        $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
+        $namaMember = '';
+        $userMail = '';
 
-        $result = $this->Project_model->Update($param); //Execute Function
+        foreach ($memberRecords as $member) {
+            if ($member->member_id == $p_change_user_id) {
+                $namaMember = $member->member_name;
+                $userMail = $member->email;
+                break;
+            }
+        }
+
+        $subject_email = 'Updated Project';
+        //Isi pesan
+        $isi_email = "Halo,\n\n\tAda projek update di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
+            $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tProject Name\t: " . $p_project_name . "\n\nTerima kasih.";
+        $email = new Email(); //Pemanggilan fungsi email pada library
+
+        $result = $this->project_model->Update($param);
 
         if ($result > 0) {
+            //Mengirim email
+            // if ($email->sendEmail($penerima, $subject_email, $isi_email)) {
+            //     $this->session->set_flashdata('success', 'Project has been update ! Email notification sent.');
+            // } else {
+            //     $this->session->set_flashdata('error', 'Project has been update ! but Failed to send email notification.');
+            //     //echo $email->getErrorInfo();
+            // }
+            // $logMessage = 'Project has been updated. Project Name: ' . $project_name . ' updated By ' . $namaMember;
+            // $operation = 'Update';
+            // writeToLog($logMessage, $operation);
+            // $this->session->set_flashdata('success', 'Project Updated');
+            // echo json_encode($result);
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'Project Updated!'
+                'message' => 'Project updated successfully'
             );
         } else {
+            // $this->session->set_flashdata('error', 'Project Cannot Update');
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'Project Cannot Update!'
+                'message' => 'Project updated failed!'
             );
         }
-
+        // redirect('Project');
         header('Content-Type: application/json');
         echo json_encode($response);
     }
 
     function DeleteProject()
     {
-        $param = $this->input->post('project_id');
-        $result = $this->Project_model->Delete($param);
+        $Project_id = $this->input->post('project_id');
+        $result = $this->project_model->Delete($Project_id);
+
+        if ($result > 0) {
+            $response = 'Project has been deleted !';
+        } else {
+            $response = 'Project cannot deleted !';
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    }
+
+    // PROJECT MEMBER
+    #===========================================================================
+    function InsertProjectMember()
+    {
+        $project_id = $this->input->post('project_id');
+        $member_id = $this->input->post('member_id');
+        $member_type_id = $this->input->post('member_type_id');
+        $creation_user_id = $this->session->userdata('member_id');
+        $record_status = $this->input->post('r_status');
+
+        $project_param = [
+            $project_id,
+            $member_id,
+            $member_type_id,
+            $creation_user_id,
+            $record_status
+        ];
+
+        $result = $this->project_member_model->Insert($project_param);
+
+        // LOGGING
+        $memberName = $this->session->userdata('member_name');
+        $dataMember = $this->member_model->Get([$member_id, 1]);
+        foreach ($dataMember as $key) {
+            $thismember = $key->member_name;
+        }
+        $object = $thismember;
+        $text_log = 'Member "' . $object . '" inserted by "' . $memberName . '"';
+        $group_id = $this->input->post('group_id');
+        $logging = [
+            $text_log,
+            $group_id,
+            $creation_user_id
+        ];
 
         if ($result > 0) {
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'Project Updated!'
+                'message' => 'Project member insert successfully'
             );
+            $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'Project Cannot Update!'
+                'message' => 'Failed to create project member!'
             );
         }
 
         header('Content-Type: application/json');
         echo json_encode($response);
     }
+
+    function UpdateProjectMember()
+    {
+        //Bikin pengecekan array
+        $project_member_id = $this->input->post('project_member_id');
+        $project_id = $this->input->post('project_id');
+        $member_id = $this->input->post('member_id');
+        $member_type_id = $this->input->post('member_type_id');
+        $p_change_user_id = $this->session->userdata('member_id');
+        $p_record_status = 'A';
+
+        $param = [
+            $project_member_id,
+            $project_id,
+            $member_id,
+            $member_type_id,
+            $p_change_user_id,
+            $p_record_status,
+        ];
+
+        //eksekusi query
+        $result = $this->project_member_model->Update($param);
+
+        if ($result > 0) {
+            $this->session->set_flashdata(
+                'success',
+                'Project workspace member Updated'
+            );
+        } else {
+            $this->session->set_flashdata(
+                'error',
+                'Project workspace member Cannot Update'
+            );
+        }
+
+        redirect(base_url() . 'Project/' . $project_id);
+    }
+
+    function DeleteProjectMember()
+    {
+        $project_member_id = $this->input->post('project_member_id');
+
+        // LOGGING
+        $dataMember = $this->project_member_model->Get([$project_member_id, '', '', 7]);
+        foreach ($dataMember as $key) {
+            $thismember = $key->member_name;
+            $thisgroup = $key->project_id;
+        }
+        $memberName = $this->session->userdata('member_name');
+        $memberID = $this->session->userdata('member_id');
+        $object = $thismember;
+        $text_log = 'Member "' . $object . '" removed by "' . $memberName . '"';
+        $group_id = $this->input->post('group_id');
+        $logging = [
+            $text_log,
+            $group_id,
+            $memberID
+        ];
+
+        // EXCECUTION
+        $result = $this->project_member_model->Delete($project_member_id);
+        if ($result > 0) {
+            $response = array(
+                'status' => 'success',
+                'title' => 'Success',
+                'message' => 'Project member deleted successfully'
+            );
+            $this->Log_model->Insert($logging);
+        } else {
+            $response = array(
+                'status' => 'error',
+                'title' => 'Error',
+                'message' => 'Failed to delete project member!'
+            );
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    }
+    // END EORKSPACE MEMBER
+    #===========================================================================
+
 }

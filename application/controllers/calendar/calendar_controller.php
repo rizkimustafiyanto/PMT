@@ -35,8 +35,8 @@ class calendar_controller extends BaseController
                 $event = array(
                     "id" => $key->id,
                     "title" => $key->title,
-                    "start" => $key->start_date,
-                    "end" => $key->end_date,
+                    "start" => str_replace(' ', 'T', $key->start_date),
+                    "end" => str_replace(' ', 'T', $key->end_date),
                     "notes" => $key->notes,
                     "location" => $key->location,
                     "colorId" => $key->color_id,

@@ -17,10 +17,6 @@
   }
 </style>
 <?php
-$totalProject = '0';
-$doneProject = '0';
-$processProject = '0';
-$stuckProject = '0';
 if (!empty($Countable)) {
   foreach ($Countable as $key) {
     $totalProject = $key->tot_project;
@@ -28,6 +24,11 @@ if (!empty($Countable)) {
     $processProject = $key->percentage_process;
     $stuckProject = $key->percentage_stuck;
   }
+} else {
+  $totalProject = '0';
+  $doneProject = '0';
+  $processProject = '0';
+  $stuckProject = '0';
 }
 ?>
 <!-- Content Wrapper. Contains page content -->
@@ -46,7 +47,6 @@ if (!empty($Countable)) {
             <div class="icon">
               <i class="fas fa-shopping-cart"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
 
@@ -54,7 +54,7 @@ if (!empty($Countable)) {
 
           <div class="small-box bg-success">
             <div class="inner">
-              <h3><?= (strpos($doneProject, '.') !== false) ? rtrim(number_format($doneProject, 2), '0') : number_format($doneProject, 0) ?>
+              <h3><?= $doneProject ?>
                 <sup style="font-size: 20px">%</sup>
               </h3>
               <p>Done</p>
@@ -62,7 +62,6 @@ if (!empty($Countable)) {
             <div class="icon">
               <i class="fas fa-signal"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
 
@@ -70,7 +69,7 @@ if (!empty($Countable)) {
 
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3><?= (strpos($processProject, '.') !== false) ? rtrim(number_format($processProject, 2), '0') : number_format($processProject, 0) ?>
+              <h3><?= $processProject ?>
                 <sup style="font-size: 20px">%</sup>
               </h3>
               <p>Progress</p>
@@ -78,7 +77,6 @@ if (!empty($Countable)) {
             <div class="icon">
               <i class="fas fa-users"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
 
@@ -86,7 +84,7 @@ if (!empty($Countable)) {
 
           <div class="small-box bg-danger">
             <div class="inner">
-              <h3><?= (strpos($stuckProject, '.') !== false) ? rtrim(number_format($stuckProject, 2), '0') : number_format($stuckProject, 0) ?>
+              <h3><?= $stuckProject ?>
                 <sup style="font-size: 20px">%</sup>
               </h3>
               <p>Stuck</p>
@@ -94,7 +92,6 @@ if (!empty($Countable)) {
             <div class="icon">
               <i class="fas fa-asterisk"></i>
             </div>
-            <a href="#" class="small-box-footer">More info <i class="fas fa-arrow-circle-right"></i></a>
           </div>
         </div>
 
@@ -132,130 +129,65 @@ if (!empty($Countable)) {
           <!-- Batas Daily Task -->
 
           <!-- To Do List -->
-          <div class="card card-warning" id="draggableCard">
-            <div class="card-header ui-sortable-handle" style="cursor: move;">
-              <h3 class="card-title">
-                <i class="ion ion-clipboard mr-1"></i>
-                <strong>To Do List</strong>
-              </h3>
+          <div class="card card-warning">
+            <div class="card-header">
+              <div class="card-title">
+                <strong>My Task</strong>
+              </div>
               <div class="card-tools">
-                <ul class="pagination pagination-sm">
-                  <li class="page-item"><a href="#" class="page-link">«</a></li>
-                  <li class="page-item"><a href="#" class="page-link">1</a></li>
-                  <li class="page-item"><a href="#" class="page-link">2</a></li>
-                  <li class="page-item"><a href="#" class="page-link">3</a></li>
-                  <li class="page-item"><a href="#" class="page-link">»</a></li>
-                </ul>
+                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                  <i class="fas fa-minus"></i>
+                </button>
+                <button type="button" class="btn btn-tool" data-card-widget="remove">
+                  <i class="fas fa-times"></i>
+                </button>
               </div>
             </div>
-
             <div class="card-body">
-              <ul class="todo-list ui-sortable" data-widget="todo-list">
-                <li>
+              <?php if (!empty($MyTask)) : ?>
+                <ul class="todo-list ui-sortable" data-widget="todo-list">
+                  <?php foreach ($MyTask as $record) :
+                    $remainingDays = 0;
+                    $badgeClass = '';
+                    $startDate = strtotime($record->start_date);
+                    $dueDate = strtotime($record->due_date);
+                    $currentTime = time();
 
-                  <span class="handle ui-sortable-handle">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                  </span>
+                    if ($currentTime <= $startDate) {
+                      $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
+                      $badgeClass = 'badge-success';
+                    } elseif ($currentTime < $dueDate) {
+                      $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
+                      $badgeClass = (round($remainingDays) <= 2) ? 'badge-danger' : 'badge-warning';
+                    } elseif ($currentTime >= $dueDate) {
+                      $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
+                      $badgeClass = (round($remainingDays) <= 0) ? 'badge-secondary' : 'badge-secondary';
+                      $remainingDays = round($remainingDays * (-1));
+                    }
+                    $remainingDays = round($remainingDays);
 
-                  <div class="icheck-primary d-inline ml-2">
-                    <input type="checkbox" value="" name="todo1" id="todoCheck1">
-                    <label for="todoCheck1"></label>
-                  </div>
+                    $statusW = $record->status_id;
+                  ?>
 
-                  <span class="text">Design a nice theme</span>
+                    <li>
+                      <div class="icheck-primary d-inline">
+                        <label for="todo1"></label>
+                        <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?> disabled>
+                      </div>
+                      <span class="text"><?= $record->task_name ?></span>
+                      <small class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Hari</small>
+                      <div class="tools">
+                        <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= $record->member_id ?>"></i>
+                      </div>
+                    </li>
 
-                  <small class="badge badge-danger"><i class="far fa-clock"></i> 2 mins</small>
-
-                  <div class="tools">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-o"></i>
-                  </div>
-                </li>
-                <li class="done">
-                  <span class="handle ui-sortable-handle">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                  </span>
-                  <div class="icheck-primary d-inline ml-2">
-                    <input type="checkbox" value="" name="todo2" id="todoCheck2" checked="">
-                    <label for="todoCheck2"></label>
-                  </div>
-                  <span class="text">Make the theme responsive</span>
-                  <small class="badge badge-info"><i class="far fa-clock"></i> 4 hours</small>
-                  <div class="tools">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-o"></i>
-                  </div>
-                </li>
-                <li>
-                  <span class="handle ui-sortable-handle">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                  </span>
-                  <div class="icheck-primary d-inline ml-2">
-                    <input type="checkbox" value="" name="todo3" id="todoCheck3">
-                    <label for="todoCheck3"></label>
-                  </div>
-                  <span class="text">Let theme shine like a star</span>
-                  <small class="badge badge-warning"><i class="far fa-clock"></i> 1 day</small>
-                  <div class="tools">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-o"></i>
-                  </div>
-                </li>
-                <li>
-                  <span class="handle ui-sortable-handle">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                  </span>
-                  <div class="icheck-primary d-inline ml-2">
-                    <input type="checkbox" value="" name="todo4" id="todoCheck4">
-                    <label for="todoCheck4"></label>
-                  </div>
-                  <span class="text">Let theme shine like a star</span>
-                  <small class="badge badge-success"><i class="far fa-clock"></i> 3 days</small>
-                  <div class="tools">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-o"></i>
-                  </div>
-                </li>
-                <li>
-                  <span class="handle ui-sortable-handle">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                  </span>
-                  <div class="icheck-primary d-inline ml-2">
-                    <input type="checkbox" value="" name="todo5" id="todoCheck5">
-                    <label for="todoCheck5"></label>
-                  </div>
-                  <span class="text">Check your messages and notifications</span>
-                  <small class="badge badge-primary"><i class="far fa-clock"></i> 1 week</small>
-                  <div class="tools">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-o"></i>
-                  </div>
-                </li>
-                <li>
-                  <span class="handle ui-sortable-handle">
-                    <i class="fas fa-ellipsis-v"></i>
-                    <i class="fas fa-ellipsis-v"></i>
-                  </span>
-                  <div class="icheck-primary d-inline ml-2">
-                    <input type="checkbox" value="" name="todo6" id="todoCheck6">
-                    <label for="todoCheck6"></label>
-                  </div>
-                  <span class="text">Let theme shine like a star</span>
-                  <small class="badge badge-secondary"><i class="far fa-clock"></i> 1 month</small>
-                  <div class="tools">
-                    <i class="fas fa-edit"></i>
-                    <i class="fas fa-trash-o"></i>
-                  </div>
-                </li>
-              </ul>
-            </div>
-            <div class="card-footer clearfix">
-              <button type="button" class="btn btn-primary float-right"><i class="fas fa-plus"></i> Add item</button>
+                  <?php
+                  endforeach;
+                  ?>
+                </ul>
+              <?php else : ?>
+                <div class="text-center">No Task</div>
+              <?php endif; ?>
             </div>
           </div>
           <!-- Batas To Do List -->
@@ -277,38 +209,23 @@ if (!empty($Countable)) {
             </div>
             <div class="card-body">
               <div class="col-md-12">
-                <div class="progress-group">
-                  Add Products to Cart
-                  <span class="float-right"><b>160</b>/200</span>
-                  <div class="progress progress-sm">
-                    <div class="progress-bar bg-primary" style="width: 80%"></div>
-                  </div>
-                </div>
-
-                <div class="progress-group">
-                  Complete Purchase
-                  <span class="float-right"><b>310</b>/400</span>
-                  <div class="progress progress-sm">
-                    <div class="progress-bar bg-danger" style="width: 75%"></div>
-                  </div>
-                </div>
-
-                <div class="progress-group">
-                  <span class="progress-text">Visit Premium Page</span>
-                  <span class="float-right"><b>480</b>/800</span>
-                  <div class="progress progress-sm">
-                    <div class="progress-bar bg-success" style="width: 60%"></div>
-                  </div>
-                </div>
-
-                <div class="progress-group">
-                  Send Inquiries
-                  <span class="float-right"><b>250</b>/500</span>
-                  <div class="progress progress-sm">
-                    <div class="progress-bar bg-warning" style="width: 50%"></div>
-                  </div>
-                </div>
-
+                <?php if (!empty($MyProject)) :
+                  foreach ($MyProject as $key) :
+                    $percent = $key->percentage;
+                    $percent = (empty($percent)) ? 0 : $percent;
+                    if (strlen($percent) > 4) {
+                      $percent = number_format($percent, 2);
+                    }
+                ?>
+                    <div class="progress-group">
+                      <?= $key->project_name ?>
+                      <span class="float-right"><b><?= $percent ?></b>/100</span>
+                      <div class="progress progress-sm">
+                        <div class="progress-bar <?= ($percent < 100) ? 'bg-primary' : 'bg-success'; ?>" style="width: <?= $percent; ?>%"></div>
+                      </div>
+                    </div>
+                <?php endforeach;
+                endif; ?>
               </div>
             </div>
           </div>
@@ -353,10 +270,6 @@ if (!empty($Countable)) {
         </button>
       </div>
       <div class="modal-body">
-        <div class="form-group" style="display: none;">
-          <label for="eventID">ID</label>
-          <p class="text-muted" id="eventID" name="eventID"></p>
-        </div>
         <div class="form-group">
           <strong><i class="far fa-calendar mr-1"></i> Start Date</strong>
           <p class="text-muted" id="event-start-date" name="event-start-date"> </p>
@@ -382,13 +295,6 @@ if (!empty($Countable)) {
 </div>
 <!-- Batas Event View -->
 <!-- Control Sidebar -->
-<aside class="control-sidebar control-sidebar-dark">
-  <div class="p-3">
-    <h5>Title</h5>
-    <p>Sidebar content</p>
-  </div>
-</aside>
-<script src="<?= base_url(); ?>assets/plugins/fullcalendar/main.js"></script>
 <script>
   $(document).ready(function() {
     $(".ui-sortable").sortable({
@@ -426,7 +332,7 @@ if (!empty($Countable)) {
 
     function initializeTimeline(dataTime) {
       const currentDate = new Date().toISOString().split('T')[0];
-      const filteredEvents = dataTime.filter(event => event.start.split(' ')[0] === currentDate);
+      const filteredEvents = dataTime.filter(event => event.start.split('T')[0] === currentDate);
       const timeline = document.getElementById('event-timeline');
       let timelineContent = '';
 
@@ -446,6 +352,7 @@ if (!empty($Countable)) {
       } else {
         filteredEvents.forEach(event => {
           const colorS = event.backgroundColor;
+          const aldAy = event.allDay;
           const timelineItem = document.createElement('div');
           const linkNotes = formatNotes(event.notes);
           const getLoc = event.location;
@@ -462,7 +369,10 @@ if (!empty($Countable)) {
             '<h3 class="timeline-header" data-title="' + event.title +
             '"data-start="' + event.start +
             '"data-end="' + event.end +
-            '"data-notes="' + linkNotes +
+            '"data-notes="' + event.notes +
+            '"data-hs="' + hoursStart +
+            '"data-he="' + hoursEnd +
+            '"data-ald="' + aldAy +
             '"data-loc="' + getLoc +
             '">' + event.title + '</h3>' +
             '<div class="timeline-body">' + linkNotes + '</div>' +
@@ -480,6 +390,9 @@ if (!empty($Countable)) {
             title: this.getAttribute('data-title'),
             start: this.getAttribute('data-start'),
             end: this.getAttribute('data-end'),
+            hoursstart: this.getAttribute('data-hs'),
+            hoursend: this.getAttribute('data-he'),
+            allday: this.getAttribute('data-ald'),
             extendedProps: {
               notes: this.getAttribute('data-notes'),
               location: this.getAttribute('data-loc')
@@ -491,23 +404,38 @@ if (!empty($Countable)) {
     }
 
     function handleEventHeader(eventData) {
-      console.log(eventData);
-      var title = eventData.title;
-      var start = eventData.start;
-      var end = eventData.end;
-      var notes = eventData.extendedProps.notes;
-      var location = eventData.extendedProps.location;
-      var linkNotes = formatNotes(notes);
-      var startDate = new Date(start).toLocaleDateString('en-US');
-      var endDate = new Date(end).toLocaleDateString('en-US');
+      const {
+        title,
+        start,
+        end,
+        extendedProps: {
+          notes,
+          location
+        },
+        hoursstart,
+        hoursend,
+        allday
+      } = eventData;
+
+      const startDate = new Date(start).toLocaleDateString('en-US');
+      const endDate = new Date(end).toLocaleDateString('en-US');
+      const linkNotes = formatNotes(notes);
+      const isStartNotEnd = start !== end;
 
       $('#eventDetailView .modal-title').text(title);
-      $('#eventDetailView #event-note-date').replaceWith('<p class="text-muted">' + linkNotes + '</p><hr>');
-      $('#eventDetailView #event-start-date').text(startDate || '').toggle(!!startDate);
-      $('#eventDetailView #event-end-date').text(endDate || '').toggle(!!endDate);
-      $('#eventDetailView #event-location-date-div').text(location || '').toggle(!!location);
+      $('#eventDetailView #event-note-date').html(linkNotes);
+      $('#eventDetailView #event-end-date').text(
+        isStartNotEnd ? `${endDate} || ${hoursEnd || ''}` : endDate || ''
+      );
+      $('#eventDetailView #event-start-date').text(
+        isStartNotEnd ? `${startDate} || ${hoursStart || ''}` : startDate || ''
+      );
+      $('#eventDetailView #event-end-date-div').toggle(isStartNotEnd);
+      $('#eventDetailView #event-location-date-div').toggle(!!location);
+      $('#eventDetailView #event-location-date').text(location);
       $('#eventDetailView').modal('show');
     }
+
 
     function handleEventClick(info) {
       var id = info.event.id;
@@ -516,6 +444,7 @@ if (!empty($Countable)) {
       var colorId = info.event.extendedProps.colorId;
       var start = info.event.start;
       var startDateStr = info.event.startStr;
+      var endDateStr = info.event.endStr;
       var end = info.event.end;
       var notes = info.event.extendedProps.notes;
       var location = info.event.extendedProps.location;
@@ -527,35 +456,23 @@ if (!empty($Countable)) {
       $('#eventDetailView #creationDate').text(creationDate);
       $('#eventDetailView #event-note-date').html(linkNotes);
 
-      if (allDay) {
-        if (startDateStr) {
-          $('#eventDetailView #event-start-date').text(startDateStr);
-          $('#eventDetailView #event-end-date').text(startDateStr);
-        } else {
-          $('#eventDetailView #event-start-date-div').hide();
-        }
-      } else {
-        if (start) {
-          $('#eventDetailView #event-start-date').text(formatDate(start));
-        } else {
-          $('#eventDetailView #event-start-date-div').hide();
-        }
+      const showStart = allDay ? startDateStr : formatDate(start);
+      const showEnd = allDay ? (end ? endDateStr : null) : formatDate(end);
 
-        if (end) {
-          $('#eventDetailView #event-end-date').text(formatDate(end));
-        } else {
-          $('#eventDetailView #event-end-date-div').hide();
-        }
-      }
+      $('#eventDetailView #event-start-date').text(showStart)
+      $('#eventDetailView #event-end-date-div')
+        .toggle(showEnd !== null)
+        .find('#event-end-date')
+        .text(showEnd);
 
-      if (location) {
-        $('#eventDetailView #event-location-date').text(location);
-      } else {
-        $('#eventDetailView #event-location-date-div').hide();
-      }
+      $('#eventDetailView #event-location-date-div')
+        .toggle(!!location)
+        .find('#event-location-date')
+        .text(location);
 
       $('#eventDetailView').modal('show');
     }
+
 
     function formatNotes(notes) {
       var urlRegex = /(https?:\/\/[^\s]+)/g;
@@ -569,7 +486,7 @@ if (!empty($Countable)) {
       var hours = date.getHours().toString().padStart(2, '0');
       var minutes = date.getMinutes().toString().padStart(2, '0');
 
-      return year + '-' + month + '-' + day + 'T' + hours + ':' + minutes;
+      return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
     }
 
     $.ajax({
