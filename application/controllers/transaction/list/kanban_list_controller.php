@@ -23,11 +23,6 @@ class kanban_list_controller extends BaseController
     public function KanbanList($p_project_id = '')
     {
         $memberID = $this->session->userdata('member_id');
-        #List List
-        #============================================================================
-        $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, 1]);
-        $data['StatusItemRecords'] = $this->variable_model->GetVariable(['', 5]);
-
         #SELECT MEMBER
         #===========================================================================================
         $data['MemberSelectRecord'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2]);
@@ -36,6 +31,7 @@ class kanban_list_controller extends BaseController
         #===========================================================================================
         $ProjectRecords = $this->project_model->Get([$p_project_id, '', 1, $memberID]);
         $ProjectMembers = $this->project_member_model->Get(['', $p_project_id, '', '', 6]);
+        $cekRoling = $this->project_member_model->Get(['', $p_project_id, $memberID, '', 4]);
         $StatusListing = $this->variable_model->GetVariable(['', 5]);
         $data['ProjectRecords'] = $ProjectRecords;
         $data['ProjectMemberRecords'] = $ProjectMembers;
@@ -56,11 +52,9 @@ class kanban_list_controller extends BaseController
                 $creator = $key->creation_id;
             }
         }
-        if (!empty($ProjectMembers)) {
-            foreach ($ProjectMembers as $key) {
-                if ($memberID == $key->member_id) {
-                    $lvlUser = $key->member_type_id;
-                }
+        if (!empty($cekRoling)) {
+            foreach ($cekRoling as $key) {
+                $lvlUser = $key->member_type;
             }
         }
         if (!empty($StatusListing)) {
@@ -92,6 +86,11 @@ class kanban_list_controller extends BaseController
         $data['todoName'] = $todoName;
         $data['inprogressName'] = $inprogressName;
         $data['doneName'] = $doneName;
+
+        #AMBIL
+        #============================================================================
+        $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, ($lvlUser == 'MT-1' || $lvlUser == 'MT-2') ? 3 : 1]);
+        $data['StatusItemRecords'] = $this->variable_model->GetVariable(['', 5]);
 
         #===========================================================================================
 

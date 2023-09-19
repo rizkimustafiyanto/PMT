@@ -67,11 +67,11 @@
                                                                 <p class="mb-0">Member:</p>
                                                             </div>
                                                             <div class="col-6 text-right">
-                                                                <?php foreach ($ProjectMemberRecords as $key) {
+                                                                <?php foreach ($ProjectMemberRecords as $key) :
                                                                     if ($row->list_id == $key->list_id) : ?>
-                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;">
+                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
                                                                 <?php endif;
-                                                                }; ?>
+                                                                endforeach; ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -121,11 +121,11 @@
                                                                 <p class="mb-0">Member:</p>
                                                             </div>
                                                             <div class="col-6 text-right">
-                                                                <?php foreach ($ProjectMemberRecords as $key) {
+                                                                <?php foreach ($ProjectMemberRecords as $key) :
                                                                     if ($row->list_id == $key->list_id) : ?>
-                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;">
+                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
                                                                 <?php endif;
-                                                                }; ?>
+                                                                endforeach; ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -175,11 +175,11 @@
                                                                 <p class="mb-0">Member:</p>
                                                             </div>
                                                             <div class="col-6 text-right">
-                                                                <?php foreach ($ProjectMemberRecords as $key) {
+                                                                <?php foreach ($ProjectMemberRecords as $key) :
                                                                     if ($row->list_id == $key->list_id) : ?>
-                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;">
+                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
                                                                 <?php endif;
-                                                                }; ?>
+                                                                endforeach; ?>
                                                             </div>
                                                         </div>
                                                     </div>
@@ -229,11 +229,11 @@
                                                                 <p class="mb-0">Member:</p>
                                                             </div>
                                                             <div class="col-6 text-right">
-                                                                <?php foreach ($ProjectMemberRecords as $key) {
+                                                                <?php foreach ($ProjectMemberRecords as $key) :
                                                                     if ($row->list_id == $key->list_id) : ?>
-                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;">
+                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
                                                                 <?php endif;
-                                                                }; ?>
+                                                                endforeach; ?>
                                                             </div>
                                                         </div>
                                                     </div>

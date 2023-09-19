@@ -50,7 +50,7 @@
                                                 <td class="text-nowrap">
                                                     <?php foreach ($ProjectMemberRecords as $row) {
                                                         if ($record->project_id == $row->project_id) : ?>
-                                                            <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 30px; height: 30px;">
+                                                            <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>">
                                                     <?php endif;
                                                     }; ?>
                                                 </td>
@@ -67,7 +67,7 @@
                                                 </td>
                                                 <td class="text-center">
                                                     <a id="btnSelect" class="btn btn-xs btn-info" href="<?= base_url() . 'List/' . $record->project_id; ?>"><i class="fa fa-eye"></i></a>
-                                                    <?php if (($member_id == 'System' || $record->member_type_id == 'MT-1') && $record->status_id == 'STW-1') : ?>
+                                                    <?php if (($member_id == 'System' || $record->member_type_id == 'MT-1') && $record->status_id != 'STW-2') : ?>
                                                         <a class="btn btn-xs btn-danger" id="btnDeleteProject" data-project-id="<?= $record->project_id; ?>"><i class="fa fa-trash"></i></a>
                                                     <?php endif; ?>
                                                 </td>
@@ -149,6 +149,10 @@
         handleClickAdd();
     })
 
+    function colorSelect(member) {
+        return $('<span style="color: blue;">' + member.text + '</span>');
+    }
+
     function handleClickAdd() {
         $('#members_project').val([]).trigger('change');
         $('#members_project').select2({
@@ -161,9 +165,11 @@
                         text: "<?= $key->member_name ?>"
                     },
                 <?php } ?>
-            ]
+            ],
+            templateSelection: colorSelect
         });
     }
+
 
 
     $(document).on('click', '#AddProject', function() {

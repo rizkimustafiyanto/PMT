@@ -27,17 +27,11 @@ class task_controller extends BaseController
     {
         $memberID =  $this->session->userdata('member_id');
 
-        #TASK
-        #============================================================================
-        $data['TaskRecords'] = $this->task_model->Get(['', $p_list_id, '', '', $memberID, 0]);
-        $data['StatusTaskRecords'] = $this->variable_model->GetVariable(['', 5]);
-
         #LIST
         #============================================================================
         $listData = $this->list_model->Get([$p_list_id, $p_project_id, '', '', '', $memberID, 0]);
-        $data['ListRecords'] = $this->list_model->Get([$p_list_id, $p_project_id, '', '', '', $memberID, 0]);
+        $ListMemberTotalRecords = $this->list_member_model->Get(['', $p_list_id, '', 2]);
         $data['ListMemberRecords'] = $this->list_member_model->Get(['', $p_list_id, '', 0]);
-        $data['ListMemberTotalRecords'] = $this->list_member_model->Get(['', $p_list_id, '', 2]);
         $data['MemberSelectRecord'] = $this->list_member_model->Get(['', $p_list_id, '', 1]);
 
         #PROJECT
@@ -56,12 +50,39 @@ class task_controller extends BaseController
         $data['AttachmentRecord'] = $this->Attachment_model->Get(['', '', $p_list_id, 2]);
         $data['AttachmentTypeRecord'] = $this->variable_model->GetVariable(['', 3]);
 
+        #Cek user_level_project
+        #============================================================================
+        $UserMemberType = $this->list_member_model->Get(['', $p_project_id, $memberID, 3]);
+        $cekRoling = $this->project_member_model->Get(['', $p_project_id, $memberID, '', 4]);
+
         #TOOLS
         #============================================================================
         $creatorList = '';
+        $list_name = '';
+        $start_date = '';
+        $due_date = '';
+        $priority_type = '';
+        $status_id = '';
+        $status_name = '';
+        $percentage = 0;
+        $description = '';
+        $list_type = '';
+        $total_member = 0;
+        $member_type = '';
+        $member_prj_type = '';
+
         if (!empty($listData)) {
             foreach ($listData as $key) {
                 $creatorList = $key->creation_user_id;
+                $list_name = $key->list_name;
+                $priority_type = $key->priority_type_id;
+                $start_date = $key->start_date;
+                $due_date = $key->due_date;
+                $description = $key->description;
+                $status_name = $key->list_status;
+                $status_id = $key->status_id;
+                $percentage = $key->percentage;
+                $list_type = $key->priority_type;
             }
         }
         if (!empty($ProjectRecords)) {
@@ -71,17 +92,52 @@ class task_controller extends BaseController
             }
         }
 
+        if (!empty($ListMemberTotalRecords)) {
+            foreach ($ListMemberTotalRecords as $recordTotal) {
+                $total_member = $recordTotal->total_member;
+            }
+        }
+
+        if (!empty($UserMemberType)) {
+            foreach ($UserMemberType as $key) {
+                $member_type = $key->member_type;
+            }
+        }
+
+        if (!empty($cekRoling)) {
+            foreach ($cekRoling as $key) {
+                $member_prj_type = $key->member_type;
+            }
+        }
+
+        #AMBIL
+        #============================================================================
         $data['prj_start'] = $start;
         $data['prj_due'] = $due;
         $data['list_id'] = $p_list_id;
         $data['project_id'] = $p_project_id;
         $data['creator'] = $creatorList;
+        $data['member_id'] = $memberID;
 
-        #Cek user_level_project
+        $data['list_name'] = $list_name;
+        $data['start_date'] = $start_date;
+        $data['due_date'] = $due_date;
+        $data['priority_type'] = $priority_type;
+        $data['status_id'] = $status_id;
+        $data['status_name'] = $status_name;
+        $data['percentage'] = $percentage;
+        $data['description'] = $description;
+        $data['list_type'] = $list_type;
+        $data['total_member'] = $total_member;
+        $data['member_type'] = $member_type;
+        $data['member_prj_type'] = $member_prj_type;
+
         #============================================================================
 
-        $data['UserMemberType'] = $this->list_member_model->Get(['', $p_project_id, $memberID, 3]);
-        $data['member_id'] = $memberID;
+        #TASK
+        #============================================================================
+        $data['TaskRecords'] = $this->task_model->Get(['', $p_list_id, '', '', $memberID, ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_prj_type == 'MT-1') ? 3 : 2]);
+        $data['StatusTaskRecords'] = $this->variable_model->GetVariable(['', 5]);
 
         #============================================================================
 

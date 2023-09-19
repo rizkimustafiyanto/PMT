@@ -26,20 +26,17 @@ class list_controller extends BaseController
     {
         $memberID =  $this->session->userdata('member_id');
 
-        #List List
-        #============================================================================
-        $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, 1]);
-        $data['StatusItemRecords'] = $this->variable_model->GetVariable(['', 5]);
-
         #Project List
         #============================================================================
         $projectData = $this->project_model->Get([$p_project_id, '', 1, $memberID,]);
-        $data['ProjectRecords'] = $projectData;
-        $data['ProjectMemberRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2,]);
-        $data['ProjectMemberTotalRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 3,]);
+        $ProjectRecords = $projectData;
+        $cekRoling = $this->project_member_model->Get(['', $p_project_id, $memberID, '', 4]);
+        $ProjectMemberTotalRecords = $this->project_member_model->Get(['', $p_project_id, '', '', 3,]);
+        $ProjectTypeRecords = $this->variable_model->GetVariable(['', 4]);
+        $data['ProjectMemberRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2]);
+        $data['ProjectListRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 6]);
         $data['MemberRecords'] = $this->member_model->Get(['', 0]);
         $data['MemberTypeRecords'] = $this->variable_model->GetVariable(['', 2]);
-        $data['ProjectTypeRecords'] = $this->variable_model->GetVariable(['', 4]);
         $data['StatusProjectRecords'] = $this->variable_model->GetVariable(['', 9]);
         $data['MemberSelectRecord'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2]);
 
@@ -55,18 +52,84 @@ class list_controller extends BaseController
         #Find Kebutuhan
         #============================================================================
         $creatorProject = '';
+        $project_name = '';
+        $project_type = '';
+        $description = '';
+        $record_status = '';
+        $name_record_status = '';
+        $creation_id = '';
+        $status_id = '';
+        $name_project_status = '';
+        $start_date = '';
+        $due_date = '';
+        $percentage = 0;
+        $total_member = 0;
+        $member_type = '';
+
         if (!empty($projectData)) {
             foreach ($projectData as $key) {
                 $creatorProject = $key->creation_id;
             }
         }
 
+        if (!empty($ProjectRecords)) {
+            foreach ($ProjectRecords as $record) {
+                $project_name = $record->project_name;
+                $project_type = $record->project_type;
+                $start_date = $record->start_date;
+                $due_date = $record->due_date;
+                $description = $record->description;
+                $record_status = $record->record_status;
+                $name_record_status = $record->name_record_status;
+                $creation_id = $record->creation_id;
+                $status_id = $record->status_id;
+                $percentage = $record->percentage;
+                $name_project_status = $record->name_project_status;
+            }
+        }
+
+        if (!empty($ProjectMemberTotalRecords)) {
+            foreach ($ProjectMemberTotalRecords as $recordTotal) {
+                $total_member = $recordTotal->total_member;
+            }
+        }
+
+        if (!empty($cekRoling)) {
+            foreach ($cekRoling as $key) {
+                $member_type = $key->member_type;
+            }
+        }
+
+        foreach ($ProjectTypeRecords as $row) {
+            if ($row->variable_id == $project_type) {
+                $selected = $row->variable_name;
+            }
+        }
+
         #Cek Kebutuhan
         #============================================================================
-        $data['UserMemberRoleList'] = $this->project_member_model->Get(['', $p_project_id, $memberID, '', 4]);
         $data['member_id'] = $memberID;
         $data['creator'] = $creatorProject;
         $data['project_id'] = $p_project_id;
+        $data['project_name'] = $project_name;
+        $data['project_type'] = $project_type;
+        $data['description'] = $description;
+        $data['record_status'] = $record_status;
+        $data['name_record_status'] = $name_record_status;
+        $data['creation_id'] = $creation_id;
+        $data['status_id'] = $status_id;
+        $data['name_project_status'] = $name_project_status;
+        $data['start_date'] = $start_date;
+        $data['due_date'] = $due_date;
+        $data['percentage'] = $percentage;
+        $data['total_member'] = $total_member;
+        $data['member_type'] = $member_type;
+        $data['selected'] = $selected;
+
+        #List List
+        #============================================================================
+        $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, ($member_type == 'MT-1' || $member_type == 'MT-2') ? 3 : 1]);
+        $data['StatusItemRecords'] = $this->variable_model->GetVariable(['', 5]);
 
 
         #============================================================================
@@ -294,6 +357,62 @@ class list_controller extends BaseController
                 'status' => 'error',
                 'title' => 'Error',
                 'message' => 'Failed to create list member!'
+            );
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    }
+
+    function UpdateListMember()
+    {
+        //Bikin pengecekan array
+        $list_member_id = $this->input->post('list_member_id');
+        $list_id = $this->input->post('list_id');
+        $member_id = $this->input->post('member_id');
+        $member_type_id = $this->input->post('member_type_id');
+        $p_change_user_id = $this->session->userdata('member_id');
+        $p_record_status = $this->input->post('r_status');
+
+        $param = [
+            $list_member_id,
+            $list_id,
+            $member_id,
+            $member_type_id,
+            $p_change_user_id,
+            $p_record_status,
+        ];
+
+        // LOGGING
+        $memberName = $this->session->userdata('member_name');
+        $dataMember = $this->member_model->Get([$member_id, 1]);
+        foreach ($dataMember as $key) {
+            $thismember = $key->member_name;
+        }
+        $object = $thismember;
+        $text_log = 'Member "' . $object . '" updated by "' . $memberName . '"';
+        $group_id = $list_id;
+        $logging = [
+            $text_log,
+            $group_id,
+            $p_change_user_id
+        ];
+
+        //eksekusi query
+        $result = $this->list_member_model->Update($param);
+
+        if ($result > 0) {
+            $response = array(
+                'status' => 'success',
+                'title' => 'Success',
+                'message' => 'List member update successfully'
+            );
+            $this->Log_model->Insert($logging);
+        } else {
+            $response = array(
+                'status' => 'error',
+                'title' => 'Error',
+                'message' => 'Failed to update list member!'
             );
         }
 

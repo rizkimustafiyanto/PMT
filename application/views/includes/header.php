@@ -129,6 +129,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
       </ul>
       <ul class="navbar-nav ml-auto">
         <li class="nav-item">
+          <a class="nav-link" href="<?= base_url(); ?>Home" id="" title="Back to Home">
+            <i class="fas fa-home"></i>
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-link" href="javascript:void(0);" id="themeBtn">
             <i class="fas fa-adjust"></i> Change
           </a>

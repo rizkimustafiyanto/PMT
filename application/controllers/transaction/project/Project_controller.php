@@ -288,7 +288,7 @@ class project_controller extends BaseController
         $member_id = $this->input->post('member_id');
         $member_type_id = $this->input->post('member_type_id');
         $p_change_user_id = $this->session->userdata('member_id');
-        $p_record_status = 'A';
+        $p_record_status = $this->input->post('r_status');
 
         $param = [
             $project_member_id,
@@ -299,22 +299,41 @@ class project_controller extends BaseController
             $p_record_status,
         ];
 
+        // LOGGING
+        $memberName = $this->session->userdata('member_name');
+        $dataMember = $this->member_model->Get([$member_id, 1]);
+        foreach ($dataMember as $key) {
+            $thismember = $key->member_name;
+        }
+        $object = $thismember;
+        $text_log = 'Member "' . $object . '" updated by "' . $memberName . '"';
+        $group_id = $project_id;
+        $logging = [
+            $text_log,
+            $group_id,
+            $p_change_user_id
+        ];
+
         //eksekusi query
         $result = $this->project_member_model->Update($param);
 
         if ($result > 0) {
-            $this->session->set_flashdata(
-                'success',
-                'Project workspace member Updated'
+            $response = array(
+                'status' => 'success',
+                'title' => 'Success',
+                'message' => 'Project member update successfully'
             );
+            $this->Log_model->Insert($logging);
         } else {
-            $this->session->set_flashdata(
-                'error',
-                'Project workspace member Cannot Update'
+            $response = array(
+                'status' => 'error',
+                'title' => 'Error',
+                'message' => 'Failed to update project member!'
             );
         }
 
-        redirect(base_url() . 'Project/' . $project_id);
+        header('Content-Type: application/json');
+        echo json_encode($response);
     }
 
     function DeleteProjectMember()
@@ -322,10 +341,9 @@ class project_controller extends BaseController
         $project_member_id = $this->input->post('project_member_id');
 
         // LOGGING
-        $dataMember = $this->project_member_model->Get([$project_member_id, '', '', 7]);
+        $dataMember = $this->project_member_model->Get([$project_member_id, '', '', '', 7]);
         foreach ($dataMember as $key) {
             $thismember = $key->member_name;
-            $thisgroup = $key->project_id;
         }
         $memberName = $this->session->userdata('member_name');
         $memberID = $this->session->userdata('member_id');

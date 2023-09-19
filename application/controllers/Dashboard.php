@@ -456,7 +456,7 @@ class Dashboard extends BaseController
         $data['Countable'] = $this->project_model->Get(
             $dashboardBox
         );
-        $data['MyTask'] = $this->task_model->Get(['', '', '', '', $memberID, 2]);
+        $data['MyTask'] = $this->task_model->Get(['', '', '', '', $memberID, 4]);
         $data['MyProject'] = $this->project_model->Get(['', '', 0, $memberID]);
 
         return $data;

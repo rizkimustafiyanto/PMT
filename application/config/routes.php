@@ -104,7 +104,6 @@ $route['Project'] = 'transaction/project/project_controller/GetProject';
 $route['InsertProject'] = 'transaction/project/project_controller/InsertProject';
 $route['DeleteProject'] = 'transaction/project/project_controller/DeleteProject';
 $route['UpdateProject'] = 'transaction/project/project_controller/UpdateProject';
-
 $route['InsertProjectMember'] = 'transaction/project/project_controller/InsertProjectMember';
 $route['UpdateProjectMember'] = 'transaction/project/project_controller/UpdateProjectMember';
 $route['DeleteProjectMember'] = 'transaction/project/project_controller/DeleteProjectMember';
@@ -115,6 +114,7 @@ $route['UpdateList'] = 'transaction/list/list_controller/UpdateList';
 $route['InsertList'] = 'transaction/list/list_controller/InsertList';
 $route['DeleteList'] = 'transaction/list/list_controller/DeleteList';
 $route['InsertListMember'] = 'transaction/list/list_controller/InsertListMember';
+$route['UpdateListMember'] = 'transaction/list/list_controller/UpdateListMember';
 $route['DeleteListMember'] = 'transaction/list/list_controller/DeleteListMember';
 
 // TASK

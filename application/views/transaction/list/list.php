@@ -1,55 +1,3 @@
-<?php
-$project_name = '';
-$project_type = '';
-$description = '';
-$record_status = '';
-$name_record_status = '';
-$creation_id = '';
-$status_id = '';
-$name_project_status = '';
-$start_date = '';
-$due_date = '';
-$percentage = 0;
-
-if (!empty($ProjectRecords)) {
-    foreach ($ProjectRecords as $record) {
-        $project_name = $record->project_name;
-        $project_type = $record->project_type;
-        $start_date = $record->start_date;
-        $due_date = $record->due_date;
-        $description = $record->description;
-        $record_status = $record->record_status;
-        $name_record_status = $record->name_record_status;
-        $creation_id = $record->creation_id;
-        $status_id = $record->status_id;
-        $percentage = $record->percentage;
-        $name_project_status = $record->name_project_status;
-    }
-}
-
-$total_member = 0;
-
-if (!empty($ProjectMemberTotalRecords)) {
-    foreach ($ProjectMemberTotalRecords as $recordTotal) {
-        $total_member = $recordTotal->total_member;
-    }
-}
-
-$member_type = '';
-
-if (!empty($UserMemberRoleProject)) {
-    foreach ($UserMemberRoleProject as $recordMemberRoleProject) {
-        $member_type = $recordMemberRoleProject->member_type;
-    }
-}
-
-foreach ($ProjectTypeRecords as $row) {
-    if ($row->variable_id == $project_type) {
-        $selected = $row->variable_name;
-    }
-}
-?>
-
 <!-- Dropdown Toggle -->
 <script src="<?= base_url(); ?>assets/dist/js/addition/js.js"></script>
 
@@ -101,7 +49,7 @@ foreach ($ProjectTypeRecords as $row) {
                                 <i class="fa fa-lg fa-reply"></i>
                             </a>
                             <a class="btn btn-sm btn-info" href="<?= base_url() . 'KanbanList/' . $project_id; ?>">
-                                <i class="fa fa-lg fa-eye"></i> Board
+                                <i class="fa fa-lg fa-brands fa-flipboard"></i> Board
                             </a>
                         </div>
                     </div>
@@ -118,11 +66,11 @@ foreach ($ProjectTypeRecords as $row) {
                             Description
                         </div>
                         <div class="card-tools">
-                            <?php if (($member_type == 'MT-1' || $member_id == 'System' || $member_id == $creator) && $status_id == 'STW-1') { ?>
+                            <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
                                 <button type="button" class="btn btn-xs btn-tool" style="font-size: 10px;" id="btnUpProject" data-toggle="modal" data-target="#modal-update-project">
                                     <i class="fa fa-lg fa-pen"></i>
                                 </button>
-                            <?php } ?>
+                            <?php endif; ?>
                             <button type="button" class="btn btn-sm btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
                             </button>
@@ -163,7 +111,7 @@ foreach ($ProjectTypeRecords as $row) {
                     <div class="card-header">
                         <div class="card-title">Project Attachment</div>
                         <div class="card-tools">
-                            <?php if (($member_type == 'MT-1' || $member_id == 'System' || $member_id == $creator) && $status_id == 'STW-1') : ?>
+                            <?php if ($status_id != 'STW-2') : ?>
                                 <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
                                     <i class="fas fa-file"></i>
                                 </button>
@@ -197,7 +145,7 @@ foreach ($ProjectTypeRecords as $row) {
                                                 <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <?php if (($member_type == 'MT-1' || $member_id == 'System' || $member_id == $record->creation_user_id) && $status_id == 'STW-1') : ?>
+                                                <?php if (($member_id == 'System' || $member_id == $record->member_id || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
                                                     <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
@@ -216,7 +164,7 @@ foreach ($ProjectTypeRecords as $row) {
                     <div class="card-header">
                         <div class="card-title">Members</div>
                         <div class="card-tools">
-                            <?php if (($member_type == 'MT-1' || $member_type == 'MT-2' || $member_id == 'System' || $member_id == $creator) && $status_id == 'STW-1') : ?>
+                            <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
                                 <button type="button" class="btn btn-xs btn-tool" id="btnAdd" data-toggle="modal" data-target="#modal-input-project-member">
                                     <i class="fa fa-user-plus"></i>
                                 </button>
@@ -232,12 +180,14 @@ foreach ($ProjectTypeRecords as $row) {
                         </div>
                         <ul class="users-list clearfix">
                             <?php if (!empty($ProjectMemberRecords)) :
-                                foreach ($ProjectMemberRecords as $record) : ?>
-                                    <?php $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png'; ?>
+                                foreach ($ProjectMemberRecords as $record) :
+                                    $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                    $typeM = $record->variable_id;
+                            ?>
                                     <li>
                                         <img src="<?= base_url() ?>assets/dist/img/<?= $avatar ?>" alt="User Image" style="width:60px">
                                         <a class="users-list-name" href="javascript:void(0);"><?= $record->member_name ?></a>
-                                        <span class="badge badge-success"><?= $record->member_type ?></span>
+                                        <span class="badge badge-<?= ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : 'danger') ?>"><?= $record->member_type ?></span>
                                         <?php if (($member_type == 'MT-1' || $member_id == 'System') && $record->member_id != $creation_id &&  $status_id != 'STL-4') : ?>
                                             <a class="btn btn-xs btn-success" data-bs-toggle="dropdown">
                                                 <i class="fas fa-bars"></i>
@@ -245,6 +195,9 @@ foreach ($ProjectTypeRecords as $row) {
                                         <?php endif; ?>
                                         <ul class="dropdown-menu">
                                             <li>
+                                                <a class="dropdown-item" data-project_member_id="<?= $record->project_member_id ?>" data-member_id='<?= $record->member_id ?>' data-mtype_id='<?= $typeM ?>' id="slcMember" data-toggle="modal" data-target="#modal-update-project-member">
+                                                    <i class="fa fa-pen"></i> Update Member
+                                                </a>
                                                 <a class="dropdown-item" data-project_member_id="<?= $record->project_member_id ?>" data-member_id='<?= $record->member_id ?>' id="btnDelMember">
                                                     <i class="fa fa-trash"></i> Delete Member
                                                 </a>
@@ -264,7 +217,7 @@ foreach ($ProjectTypeRecords as $row) {
                     <div class="card-header">
                         <div class="card-title">List</div>
                         <div class="card-tools">
-                            <?php if (($member_type == 'MT-1' || $member_type == 'MT-2' || $member_id == 'System' || $member_id == $creator) && $status_id == 'STW-1') : ?>
+                            <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
                                 <button type="button" class="btn btn-xs btn-tool" id="btnAddList" data-toggle="modal" data-target="#modal-input-list">
                                     <i class="fa fa-file-circle-plus"></i>
                                 </button>
@@ -320,7 +273,13 @@ foreach ($ProjectTypeRecords as $row) {
                                             <td class="text-center">
                                                 <span class="badge <?= $statusClass ?>"><?= $record->list_status ?></span>
                                             </td>
-                                            <td><?= $record->member_name ?></td>
+                                            <td>
+                                                <?php foreach ($ProjectListRecords as $key) :
+                                                    if ($record->list_id == $key->list_id) : ?>
+                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
+                                                <?php endif;
+                                                endforeach; ?>
+                                            </td>
                                             <td class="text-center">
                                                 <a class="btn btn-xs btn-info" href="<?= base_url() . 'Task/' . $record->project_id . '/' . $record->list_id ?>"><i class="fa fa-eye"></i></a>
                                                 <?php if (($member_type == 'MT-1' || $member_type == 'MT-2' || $member_id == 'System' || $member_id == $record->creation_user_id) && $status_id == 'STW-1') : ?>
@@ -343,7 +302,7 @@ foreach ($ProjectTypeRecords as $row) {
                 <!-- Log Activity -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Activity</div>
+                        <div class="card-title">LOG Activity</div>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
@@ -408,7 +367,7 @@ foreach ($ProjectTypeRecords as $row) {
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Add Project Wrokspace Member</h4>
+                <h4 class="modal-title">Add Project Member</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -474,6 +433,75 @@ foreach ($ProjectTypeRecords as $row) {
 </div>
 <!--#EndProject Modal Insert Member-->
 
+<!--#Project Modal Update Member-->
+<div class="modal fade" id="modal-update-project-member">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Update Project Member</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Member</label>
+                                <div class="input-group">
+                                    <input type="hidden" id="project_member_id_update" class="form-control" placeholder="Member Id" value="" readonly>
+                                    <select class="form-control select2bs4" name="member_id_update" data-width="100%" id="member_id_update">
+                                        <option value="">-- Choose Member --</option>
+                                        <?php foreach ($MemberRecords as $row) : ?>
+                                            <option value="<?= $row->member_id; ?>">
+                                                <?php
+                                                if ($row->company_name == "PT Persada Lampung Raya") {
+                                                    echo 'PLR - ' . $row->member_name;
+                                                } else if ($row->company_name == "PT Persada Palembang Raya") {
+                                                    echo 'PPR - ' . $row->member_name;
+                                                } else if ($row->company_name == "PT Gita Riau Makmur") {
+                                                    echo 'GRM - ' . $row->member_name;
+                                                } else if ($row->company_name == "PT Genta Lampung Makmur") {
+                                                    echo 'GLM - ' . $row->member_name;
+                                                } else if ($row->company_name == "PT Universal Traktor Indonesia") {
+                                                    echo 'UTI - ' . $row->member_name;
+                                                } else if ($row->company_name == "PT Persada Bangka Raya") {
+                                                    echo 'PBR - ' . $row->member_name;
+                                                } else if ($row->company_name == "PT Persada Solusi Data") {
+                                                    echo 'PSD - ' . $row->member_name;
+                                                } else if ($row->company_name == "PT Mega Truckindo Utama") {
+                                                    echo 'MTU - ' . $row->member_name;
+                                                } else {
+                                                    echo $row->company_name . '   -   ' . $row->member_name;
+                                                }
+                                                ?>
+                                            </option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Member Type</label>
+                                <select class="form-control select2bs4" name="member_type_id_update" id="member_type_id_update" data-width=100%>
+                                    <?php foreach ($MemberTypeRecords as $row) : ?>
+                                        <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-primary" id="btnUpMember">Update Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--#EndProject Modal Update Member-->
+
 <!--#Project Modal Insert Attachment-->
 <div class="modal fade" id="modal-input-attachment">
     <div class="modal-dialog">
@@ -490,13 +518,14 @@ foreach ($ProjectTypeRecords as $row) {
                         <div class="col-lg-12">
                             <label for="attachment_name">Attachment Name</label>
                             <input class="form-control" id="attachment_name" placeholder="Attachment Name" name="attachment_name" maxlength="50" required>
-                            <br>
-                            <label>Attachment Type</label>
-                            <select class="form-control select2bs4" name="attachment_type" id="attachment_type" data-width=100%>
-                                <?php foreach ($AttachmentTypeRecord as $row) : ?>
-                                    <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?></option>
-                                <?php endforeach; ?>
-                            </select>
+                            <div style="display:none;">
+                                <label>Attachment Type</label>
+                                <select class="form-control select2bs4" name="attachment_type" id="attachment_type" data-width=100%>
+                                    <?php foreach ($AttachmentTypeRecord as $row) : ?>
+                                        <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                             <br>
                             <label for="attachment_url">Attachment</label>
                             <input class="form-control" type="file" name="attachment_file" id="attachment_file" required accept=".jpeg,.jpg,.png,.pdf">
@@ -712,7 +741,7 @@ foreach ($ProjectTypeRecords as $row) {
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="update_list_status" class="mr-2">Item Status</label>
+                                <label for="update_list_status" class="mr-2">List Status</label>
                                 <select class="form-control select2bs4" name="update_list_status" id="update_list_status">
                                     <?php foreach ($StatusItemRecords as $row) { ?>
                                         <option value="<?= $row->variable_id ?>" class=""><?= $row->list_name ?></option>
@@ -814,8 +843,8 @@ foreach ($ProjectTypeRecords as $row) {
             success: function(response) {
                 $('#modal-update-project').modal('hide');
                 Swal.fire({
-                    icon: 'success',
-                    title: 'Success',
+                    icon: response.status,
+                    title: response.title,
                     text: response.message,
                     toast: true,
                     position: 'center',
@@ -1272,6 +1301,80 @@ foreach ($ProjectTypeRecords as $row) {
         });
     }
 
+    //#Update MEMBER
+    $(document).on('click', '#slcMember', function() {
+        $('#project_member_id_update').val($(this).data('project_member_id'));
+        $('#member_id_update').val($(this).data('member_id'));
+        $('#member_type_id_update').val($(this).data('mtype_id'));
+    })
+
+    $(document).on('click', '#btnUpMember', function() {
+        var projectId = '<?= $project_id ?>';
+        var projectMId = $('#project_member_id_update').val();
+        var memberId = $('#member_id_update').val();
+        var memberType = $('#member_type_id_update').val();
+        var member_status = 'A';
+
+        if (!projectId || !memberId || !memberType) {
+            validasiInfo('Please complete all fields before updating member project!');
+            return;
+        }
+
+        var UpdatingMember = {
+            project_id: projectId,
+            project_member_id: projectMId,
+            member_id: memberId,
+            member_type_id: memberType,
+            r_status: member_status
+        };
+
+
+        // TOOLS
+        var upBtn = document.getElementById("btnUpMember");
+        upBtn.disabled = true;
+        upBtn.textContent = "Updating...";
+        upBtn.classList.add("disabled");
+
+        // console.log(UpdatingMember);
+        UpMember(UpdatingMember);
+    })
+
+    function UpMember(UpdatingMember) {
+        $.ajax({
+            url: '<?= base_url(); ?>UpdateProjectMember',
+            type: 'POST',
+            data: UpdatingMember,
+            success: function(response) {
+                $('#modal-update-project-member').modal('hide');
+                Swal.fire({
+                    icon: response.status,
+                    title: response.title,
+                    text: response.message,
+                    toast: true,
+                    position: 'center',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: toast => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location.reload(); // Reload the page
+                    }
+                });
+
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+            }
+            // complete: function() {
+            //     $('#loading-overlay').hide();
+            // }
+        });
+    }
+
     //#Del MEMBER
     $(document).on('click', '#btnDelMember', function() {
         var projectMemberId = $(this).data('project_member_id');
@@ -1292,6 +1395,7 @@ foreach ($ProjectTypeRecords as $row) {
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
+                // console.log(deleteData);
                 DelMember(deleteData);
             }
         });
@@ -1349,6 +1453,10 @@ foreach ($ProjectTypeRecords as $row) {
         });
     }
 
+    function colorSelect(member) {
+        return $('<span style="color: blue;">' + member.text + '</span>');
+    }
+
     function handleSelectMember() {
         $('#members_list_item').val([]).trigger('change');
         $('#members_list_item').select2({
@@ -1361,7 +1469,8 @@ foreach ($ProjectTypeRecords as $row) {
                         text: "<?= $key->member_name ?>"
                     },
                 <?php } ?>
-            ]
+            ],
+            templateSelection: colorSelect
         });
     }
 

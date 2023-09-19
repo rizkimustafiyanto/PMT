@@ -1,44 +1,3 @@
-<?php
-$list_name = '';
-$start_date = '';
-$due_date = '';
-$priority_type = '';
-$status_id = '';
-$status_name = '';
-$percentage = 0;
-$description = '';
-$list_type = '';
-
-if (!empty($ListRecords)) {
-    foreach ($ListRecords as $record) {
-        $list_name = $record->list_name;
-        $priority_type = $record->priority_type_id;
-        $start_date = $record->start_date;
-        $due_date = $record->due_date;
-        $description = $record->description;
-        $status_name = $record->list_status;
-        $status_id = $record->status_id;
-        $percentage = $record->percentage;
-        $list_type = $record->priority_type;
-    }
-}
-
-$total_member = 0;
-
-if (!empty($ListMemberTotalRecords)) {
-    foreach ($ListMemberTotalRecords as $recordTotal) {
-        $total_member = $recordTotal->total_member;
-    }
-}
-
-$member_type = '';
-if (!empty($UserMemberType)) {
-    foreach ($UserMemberType as $key) {
-        $member_type = $key->member_type;
-    }
-}
-?>
-
 <!-- Dropdown Toggle -->
 <script src="<?= base_url(); ?>assets/dist/js/addition/js.js"></script>
 
@@ -89,6 +48,9 @@ if (!empty($UserMemberType)) {
                             <a class="btn btn-sm btn-danger" href="<?= base_url() . 'List/' . $project_id; ?>">
                                 <i class="fa fa-lg fa-reply"></i>
                             </a>
+                            <a class="btn btn-sm btn-info" href="<?= base_url() . 'KanbanList/' . $project_id; ?>">
+                                <i class="fa fa-lg fa-brands fa-flipboard"></i> Board
+                            </a>
                         </div>
                     </div>
                 </div>
@@ -104,7 +66,7 @@ if (!empty($UserMemberType)) {
                             Description
                         </div>
                         <div class="card-tools">
-                            <?php if (($member_type == 'MT-2' || $member_id == 'System' || $member_id == $creator) && $status_id != 'STL-4') : ?>
+                            <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-2') && $status_id != 'STL-4') : ?>
                                 <button type="button" class="btn btn-xs btn-tool" id="btnUpList" style="font-size: 10px;" data-toggle="modal" data-target="#modal-update-list">
                                     <i class="fa fa-lg fa-pen"></i>
                                 </button>
@@ -206,13 +168,12 @@ if (!empty($UserMemberType)) {
                             <div class="card-title">Members</div>
                         </div>
                         <div class="card-tools">
-                            <?php if ($member_type == 'MT-1' || $member_id == 'System') {
-                                if ($status_id != 'STL-4') { ?>
-                                    <button type="button" class="btn btn-xs btn-tool" id="btnAdd" data-toggle="modal" data-target="#modal-input-list-member">
-                                        <i class="fa fa-user-plus"></i>
-                                    </button>
-                            <?php }
-                            } ?>
+                            <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-2') && $status_id != 'STL-4') : ?>
+                                <button type="button" class="btn btn-xs btn-tool" id="btnAdd" data-toggle="modal" data-target="#modal-input-list-member">
+                                    <i class="fa fa-user-plus"></i>
+                                </button>
+                            <?php
+                            endif; ?>
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
                             </button>
@@ -224,19 +185,24 @@ if (!empty($UserMemberType)) {
                         </div>
                         <ul class="users-list clearfix">
                             <?php if (!empty($ListMemberRecords)) :
-                                foreach ($ListMemberRecords as $record) : ?>
-                                    <?php $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png'; ?>
+                                foreach ($ListMemberRecords as $record) :
+                                    $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                    $typeM = $record->variable_id;
+                            ?>
                                     <li>
                                         <img src="<?= base_url() ?>assets/dist/img/<?= $avatar ?>" alt="User Image" style="width:60px">
                                         <a class="users-list-name" href="javascript:void(0);"><?= $record->member_name ?></a>
-                                        <span class="badge badge-success"><?= $record->member_type ?></span>
-                                        <?php if (($member_type == 'MT-2' || $member_id == 'System' || $member_id == $creator) && $status_id != 'STL-4') : ?>
+                                        <span class="badge badge-<?= ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : 'danger') ?>"><?= $record->member_type ?></span>
+                                        <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-2') && $status_id != 'STL-4') : ?>
                                             <a class="btn btn-xs btn-success" data-bs-toggle="dropdown">
                                                 <i class="fas fa-bars"></i>
                                             </a>
                                         <?php endif; ?>
                                         <ul class="dropdown-menu">
                                             <li>
+                                                <a class="dropdown-item" data-list_member_id="<?= $record->list_member_id ?>" data-member_id='<?= $record->member_id ?>' data-mtype_id='<?= $typeM ?>' id="slcMember" data-toggle="modal" data-target="#modal-update-list-member">
+                                                    <i class="fa fa-pen"></i> Update Member
+                                                </a>
                                                 <a class="dropdown-item" data-list_member_id="<?= $record->list_member_id ?>" data-member_id='<?= $record->member_id ?>' id="btnDelMember">
                                                     <i class="fa fa-trash"></i> Delete Member
                                                 </a>
@@ -299,6 +265,7 @@ if (!empty($UserMemberType)) {
                                         </div>
                                         <span class="text"><?= $record->task_name ?></span>
                                         <small class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Hari</small>
+                                        <span class="text-muted">|| <?= $record->member_name ?> ||</span>
                                         <div class="tools">
                                             <?php if ($showCheckbox) : ?>
                                                 <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= $record->member_id ?>"></i>
@@ -320,7 +287,7 @@ if (!empty($UserMemberType)) {
                 <!-- Log Activity -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Activity</div>
+                        <div class="card-title">LOG Activity</div>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
                                 <i class="fas fa-minus"></i>
@@ -427,11 +394,62 @@ if (!empty($UserMemberType)) {
                 </div>
             </form>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
 </div>
 <!--#EndProject Modal Insert Member-->
+
+<!--#Project Modal Update Member-->
+<div class="modal fade" id="modal-update-list-member">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h4 class="modal-title">Update List Member</h4>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form>
+                <div class="modal-body">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="form-group">
+                                <label>Member</label>
+                                <div class="input-group">
+                                    <input type="hidden" id="list_member_id_update" class="form-control" placeholder="Member Id" value="" readonly>
+                                    <select class="form-control select2bs4" name="member_id_update" data-width="100%" id="member_id_update">
+                                        <?php if ($member_type == 'MT-3') : ?>
+                                            <option value="<?= $member_id ?>">It's You</option>
+                                        <?php else :  ?>
+                                            <option value="">-- Select an option --</option>
+                                            <?php foreach ($ProjectMemberRecords as $row) : ?>
+                                                <option value="<?= $row->member_id; ?>">
+                                                    <?= $row->member_name ?>
+                                                </option>
+                                        <?php endforeach;
+                                        endif; ?>
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group">
+                                <label>Member Type</label>
+                                <select class="form-control select2bs4" name="member_type_id_update" id="member_type_id_update" data-width=100%>
+                                    <?php foreach ($MemberTypeRecords as $row) : ?>
+                                        <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?>
+                                        </option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-primary" id="btnUpMember">Update Member</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+<!--#EndProject Modal Update Member-->
 
 <!--#Project Modal Insert Attachment-->
 <div class="modal fade" id="modal-input-attachment">
@@ -588,11 +606,15 @@ if (!empty($UserMemberType)) {
                         <label for="MemberTask" class="mr-2">Assign Member</label>
                         <select class="form-control select2bs4" id="members_task" name="members_task">
                             <option value="" selected disabled>-- Select an option --</option>
-                            <?php foreach ($MemberSelectRecord as $row) : ?>
-                                <option value="<?= $row->member_id; ?>">
-                                    <?= $row->member_name ?>
-                                </option>
-                            <?php endforeach; ?>
+                            <?php if ($member_type == 'MT-3') : ?>
+                                <option value="<?= $member_id ?>">It's You</option>
+                                <?php else :
+                                foreach ($MemberSelectRecord as $row) : ?>
+                                    <option value="<?= $row->member_id; ?>">
+                                        <?= $row->member_name ?>
+                                    </option>
+                            <?php endforeach;
+                            endif; ?>
                         </select>
                     </div>
                     <div class="form-group">
@@ -654,11 +676,16 @@ if (!empty($UserMemberType)) {
                     <div class="form-group">
                         <label for="MemberTask" class="mr-2">Assign Member</label>
                         <select class="form-control select2bs4" id="update_members_task" name="update_members_task">
-                            <?php foreach ($MemberSelectRecord as $row) : ?>
-                                <option value="<?= $row->member_id; ?>">
-                                    <?= $row->member_name ?>
-                                </option>
-                            <?php endforeach; ?>
+                            <option value="" selected disabled>-- Select an option --</option>
+                            <?php if ($member_type == 'MT-3') : ?>
+                                <option value="<?= $member_id ?>">It's You</option>
+                                <?php else :
+                                foreach ($MemberSelectRecord as $row) : ?>
+                                    <option value="<?= $row->member_id; ?>">
+                                        <?= $row->member_name ?>
+                                    </option>
+                            <?php endforeach;
+                            endif; ?>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1226,6 +1253,80 @@ if (!empty($UserMemberType)) {
             data: AddingMember,
             success: function(response) {
                 $('#modal-input-list-member').modal('hide');
+                Swal.fire({
+                    icon: response.status,
+                    title: response.title,
+                    text: response.message,
+                    toast: true,
+                    position: 'center',
+                    showConfirmButton: false,
+                    timer: 3000,
+                    timerProgressBar: true,
+                    didOpen: toast => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location.reload(); // Reload the page
+                    }
+                });
+
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+            }
+            // complete: function() {
+            //     $('#loading-overlay').hide();
+            // }
+        });
+    }
+
+    //#Update MEMBER
+    $(document).on('click', '#slcMember', function() {
+        $('#list_member_id_update').val($(this).data('list_member_id'));
+        $('#member_id_update').val($(this).data('member_id'));
+        $('#member_type_id_update').val($(this).data('mtype_id'));
+    })
+
+    $(document).on('click', '#btnUpMember', function() {
+        var listId = '<?= $list_id ?>';
+        var listMId = $('#list_member_id_update').val();
+        var memberId = $('#member_id_update').val();
+        var memberType = $('#member_type_id_update').val();
+        var member_status = 'A';
+
+        if (!listId || !memberId || !memberType) {
+            validasiInfo('Please complete all fields before updating member project!');
+            return;
+        }
+
+        var UpdatingMember = {
+            list_id: listId,
+            list_member_id: listMId,
+            member_id: memberId,
+            member_type_id: memberType,
+            r_status: member_status
+        };
+
+
+        // TOOLS
+        var upBtn = document.getElementById("btnUpMember");
+        upBtn.disabled = true;
+        upBtn.textContent = "Updating...";
+        upBtn.classList.add("disabled");
+
+        // console.log(UpdatingMember);
+        UpMember(UpdatingMember);
+    })
+
+    function UpMember(UpdatingMember) {
+        $.ajax({
+            url: '<?= base_url(); ?>UpdateListMember',
+            type: 'POST',
+            data: UpdatingMember,
+            success: function(response) {
+                $('#modal-update-list-member').modal('hide');
                 Swal.fire({
                     icon: response.status,
                     title: response.title,
