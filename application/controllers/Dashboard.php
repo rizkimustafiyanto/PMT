@@ -452,12 +452,34 @@ class Dashboard extends BaseController
     {
         $memberID = $this->session->userdata('member_id');
         // ambil data project
-        $dashboardBox = [0, 0, 4, 0];
-        $data['Countable'] = $this->project_model->Get(
-            $dashboardBox
-        );
+        $totalProject = '0';
+        $doneProject = '0';
+        $processProject = '0';
+        $stuckProject = '0';
+        $dashboardBox = [0, 0, ($memberID == 'System') ? 5 : 4, $memberID];
+        $Countable = $this->project_model->Get($dashboardBox);
+
+        if (!empty($Countable)) {
+            foreach ($Countable as $key) {
+                $totalProject = $key->tot_project;
+                $doneProject = $key->percentage_done % 1 === 0 ? intval($key->percentage_done) : number_format($key->percentage_done, 2, '.', '');
+                $processProject = $key->percentage_process % 1 === 0 ? intval($key->percentage_process) : number_format($key->percentage_process, 2, '.', '');
+                $stuckProject = $key->percentage_stuck % 1 === 0 ? intval($key->percentage_stuck) : number_format($key->percentage_stuck, 2, '.', '');
+            }
+        }
+
+        #AMBIL
+        #==================================================================================
         $data['MyTask'] = $this->task_model->Get(['', '', '', '', $memberID, 4]);
         $data['MyProject'] = $this->project_model->Get(['', '', 0, $memberID]);
+
+        #AMBIL TOOLS
+        #==================================================================================
+        $data['totalProject'] = $totalProject;
+        $data['doneProject'] = $doneProject;
+        $data['processProject'] = $processProject;
+        $data['stuckProject'] = $stuckProject;
+        $data['dashboardBox'] = $dashboardBox;
 
         return $data;
     }

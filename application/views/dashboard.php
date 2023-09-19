@@ -16,21 +16,6 @@
     border: none;
   }
 </style>
-<?php
-if (!empty($Countable)) {
-  foreach ($Countable as $key) {
-    $totalProject = $key->tot_project;
-    $doneProject = $key->percentage_done;
-    $processProject = $key->percentage_process;
-    $stuckProject = $key->percentage_stuck;
-  }
-} else {
-  $totalProject = '0';
-  $doneProject = '0';
-  $processProject = '0';
-  $stuckProject = '0';
-}
-?>
 <!-- Content Wrapper. Contains page content -->
 <div class="content-wrapper">
   <!-- Content Header (Page header) -->

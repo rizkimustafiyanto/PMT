@@ -65,9 +65,9 @@ if (!empty($profiles)) {
                                 <?= $profile_email ?>
                             </p>
                             <hr>
-                            <strong><i class="fas fa-map-marker-alt mr-1"></i> Location</strong>
-                            <p class="text-muted">Surabaya, East Java</p>
-                            <hr>
+                            <strong><i class="fas fa-building mr-1"></i> Department</strong>
+                            <p class="text-muted"><?= $profile_department ?></p>
+                            <!-- <hr>
                             <strong><i class="fas fa-pencil-alt mr-1"></i> Skills</strong>
                             <p class="text-muted">
                                 <span class="tag tag-danger">UI Design</span>
@@ -75,10 +75,10 @@ if (!empty($profiles)) {
                                 <span class="tag tag-info">Javascript</span>
                                 <span class="tag tag-warning">PHP</span>
                                 <span class="tag tag-primary">Node.js</span>
-                            </p>
-                            <hr>
+                            </p> -->
+                            <!-- <hr>
                             <strong><i class="far fa-file-alt mr-1"></i> Notes</strong>
-                            <p class="text-muted">Berakit-rakit ke hulu berenang-renang ke tepian. Bersakit-sakit dahulu bersenang-senang kemudian</p>
+                            <p class="text-muted">Berakit-rakit ke hulu berenang-renang ke tepian. Bersakit-sakit dahulu bersenang-senang kemudian</p> -->
                         </div>
 
                     </div>
