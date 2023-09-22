@@ -145,7 +145,7 @@
                                                 <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <?php if (($member_id == 'System' || $member_id == $record->member_id || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
+                                                <?php if (($member_id == 'System' || $member_id == $record->creation_user_id || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
                                                     <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
@@ -215,7 +215,7 @@
                 <!-- Card To Do List -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">List</div>
+                        <div class="card-title">Card</div>
                         <div class="card-tools">
                             <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
                                 <button type="button" class="btn btn-xs btn-tool" id="btnAddList" data-toggle="modal" data-target="#modal-input-list">
@@ -231,7 +231,7 @@
                         <table class="table text-nowrap table-bordered table-striped" style="font-size: 14px;" id="tblProject">
                             <thead>
                                 <tr>
-                                    <th>List Name</th>
+                                    <th>Card Name</th>
                                     <th>Remaining Days</th>
                                     <th>Status</th>
                                     <th>Member</th>
@@ -413,6 +413,7 @@
                             <div class="form-group">
                                 <label>Member Type</label>
                                 <select class="form-control select2bs4" name="member_type_id" id="member_type_id" data-width=100%>
+                                    <option value="">-- Choose Type --</option>
                                     <?php foreach ($MemberTypeRecords as $row) : ?>
                                         <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?>
                                         </option>
@@ -447,7 +448,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-12">
-                            <div class="form-group">
+                            <div class="form-group" style="display:none;">
                                 <label>Member</label>
                                 <div class="input-group">
                                     <input type="hidden" id="project_member_id_update" class="form-control" placeholder="Member Id" value="" readonly>
@@ -484,6 +485,7 @@
                             <div class="form-group">
                                 <label>Member Type</label>
                                 <select class="form-control select2bs4" name="member_type_id_update" id="member_type_id_update" data-width=100%>
+                                    <option value="">-- Choose Type --</option>
                                     <?php foreach ($MemberTypeRecords as $row) : ?>
                                         <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?>
                                         </option>
@@ -595,8 +597,7 @@
                                 <select class="form-control select2bs4" name="project_status" id="project_status">
                                     <option value="STW-1" selected>-- Select an option --</option>
                                     <?php foreach ($StatusProjectRecords as $row) {
-                                        $selectStatus = $row->variable_id == $status_id
-                                            ? 'selected' : ''; ?>
+                                        $selectStatus = $row->variable_id == $status_id ? 'selected' : ''; ?>
                                         <option value="<?= $row->variable_id ?>" <?= $selectStatus ?> class=""><?= $row->project_status ?></option>
                                     <?php
                                     } ?>
@@ -616,12 +617,12 @@
 </div>
 <!-- #End Modal Update -->
 
-<!-- Modal Insert List -->
+<!-- Modal Insert Card -->
 <div class="modal fade" id="modal-input-list">
     <div class="modal-dialog" style="max-width: 920px;">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">New List</h4>
+                <h4 class="modal-title">New Card</h4>
             </div>
             <form id="">
                 <div class="modal-body">
@@ -639,7 +640,7 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <label for="CheckingPriority">Priority List</label>
+                                <label for="CheckingPriority">Priority Card</label>
                                 <div class="form-group">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="priority_list" value="PR-3">
@@ -676,7 +677,7 @@
                 </div>
                 <div class="card-footer text-right">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary" id="AddList">Create List</button>
+                        <button type="button" class="btn btn-primary" id="AddList">Create Card</button>
                     </div>
                 </div>
             </form>
@@ -690,7 +691,7 @@
     <div class="modal-dialog" style="max-width: 920px;">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Update List</h4>
+                <h4 class="modal-title">Update Card</h4>
             </div>
             <form id="">
                 <div class="modal-body">
@@ -712,7 +713,7 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <label for="CheckingPriority">Priority List</label>
+                                <label for="CheckingPriority">Priority Card</label>
                                 <div class="form-group">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="update_priority_list" value="PR-3">
@@ -741,7 +742,7 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <label for="update_list_status" class="mr-2">List Status</label>
+                                <label for="update_list_status" class="mr-2">Card Status</label>
                                 <select class="form-control select2bs4" name="update_list_status" id="update_list_status">
                                     <?php foreach ($StatusItemRecords as $row) { ?>
                                         <option value="<?= $row->variable_id ?>" class=""><?= $row->list_name ?></option>

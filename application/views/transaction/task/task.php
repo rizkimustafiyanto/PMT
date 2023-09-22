@@ -41,7 +41,7 @@
             <div class="card-header" style="margin-bottom: -8px;">
                 <div class="row ">
                     <div class="col-sm-6">
-                        <h4>List</h4>
+                        <h4>Card</h4>
                     </div>
                     <div class="col-sm-6">
                         <div class="col-sm-12 text-right">
@@ -79,7 +79,7 @@
                         </div>
                     </Div>
                     <div class="card-body">
-                        <strong><i class="fas fa-file-alt mr-1"></i> List Name</strong>
+                        <strong><i class="fas fa-file-alt mr-1"></i> Card Name</strong>
                         <p class="text-muted"><?= $list_name ?></p>
                         <hr>
                         <strong><i class="fas fa-receipt mr-1"></i> Priority</strong>
@@ -111,7 +111,7 @@
                 <!-- List Attachment -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">List Attachment</div>
+                        <div class="card-title">Card Attachment</div>
                         <div class="card-tools">
                             <?php if ($status_id != 'STL-4') : ?>
                                 <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
@@ -147,7 +147,7 @@
                                                 <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
                                                     <i class="fas fa-eye"></i>
                                                 </a>
-                                                <?php if (($member_type == 'MT-2' || $member_id == 'System' || $member_id == $creator) && $status_id != 'STL-4') : ?>
+                                                <?php if (($member_type == 'MT-2' || $member_id == 'System' || $member_id == $creator || $member_id == $record->creation_user_id) && $status_id != 'STL-4') : ?>
                                                     <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
                                                         <i class="fa fa-trash"></i>
                                                     </a>
@@ -353,7 +353,7 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Add List Member</h4>
+                <h4 class="modal-title">Add Card Member</h4>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -380,6 +380,7 @@
                             <br>
                             <label>Member Type</label>
                             <select class="form-control select2bs4" name="member_type_id" id="member_type_id" data-width=100%>
+                                <option value="">-- Choose Type --</option>
                                 <?php foreach ($MemberTypeRecords as $row) : ?>
                                     <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?>
                                     </option>
@@ -433,6 +434,7 @@
                             <div class="form-group">
                                 <label>Member Type</label>
                                 <select class="form-control select2bs4" name="member_type_id_update" id="member_type_id_update" data-width=100%>
+                                    <option value="">-- Choose Type --</option>
                                     <?php foreach ($MemberTypeRecords as $row) : ?>
                                         <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?>
                                         </option>
@@ -468,13 +470,14 @@
                             <label for="attachment_name">Attachment Name</label>
                             <input class="form-control" id="attachment_name" placeholder="Attachment Name" name="attachment_name" maxlength="50" required>
                             <br>
-                            <label>Attachment Type</label>
-                            <select class="form-control select2bs4" name="attachment_type" id="attachment_type" data-width=100%>
-                                <?php foreach ($AttachmentTypeRecord as $row) : ?>
-                                    <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?></option>
-                                <?php endforeach; ?>
-                            </select>
-                            <br>
+                            <div style="display:none;">
+                                <label>Attachment Type</label>
+                                <select class="form-control select2bs4" name="attachment_type" id="attachment_type" data-width=100%>
+                                    <?php foreach ($AttachmentTypeRecord as $row) : ?>
+                                        <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?></option>
+                                    <?php endforeach; ?>
+                                </select>
+                            </div>
                             <label for="attachment_url">Attachment</label>
                             <input class="form-control" type="file" name="attachment_file" id="attachment_file" required accept=".jpeg,.jpg,.png,.pdf">
                             <small>

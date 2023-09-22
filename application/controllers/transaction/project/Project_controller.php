@@ -73,31 +73,31 @@ class project_controller extends BaseController
             $status_id
         ];
 
-        // Pencarian member
-        $member_parameter = [
-            'p_member_id' => '',
-            'p_flag' => 0,
-        ];
-        $memberRecords = $this->member_model->get($member_parameter);
+        // // Pencarian member
+        // $member_parameter = [
+        //     'p_member_id' => '',
+        //     'p_flag' => 0,
+        // ];
+        // $memberRecords = $this->member_model->get($member_parameter);
 
-        //Konfigurasi Email
-        $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
-        $namaMember = '';
-        $userMail = '';
+        // //Konfigurasi Email
+        // $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
+        // $namaMember = '';
+        // $userMail = '';
 
-        foreach ($memberRecords as $member) {
-            if ($member->member_id == $creation_user_id) {
-                $namaMember = $member->member_name;
-                $userMail = $member->email;
-                break;
-            }
-        }
+        // foreach ($memberRecords as $member) {
+        //     if ($member->member_id == $creation_user_id) {
+        //         $namaMember = $member->member_name;
+        //         $userMail = $member->email;
+        //         break;
+        //     }
+        // }
 
-        $subject_email = 'Create New Project';
-        //Isi pesan
-        $isi_email = "Halo,\n\n\tAda projek baru di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
-            $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tProject Name\t: " . $project_name . "\n\nTerima kasih.";
-        $email = new Email(); //Pemanggilan fungsi email pada library
+        // $subject_email = 'Create New Project';
+        // //Isi pesan
+        // $isi_email = "Halo,\n\n\tAda projek baru di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
+        //     $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tProject Name\t: " . $project_name . "\n\nTerima kasih.";
+        // $email = new Email(); //Pemanggilan fungsi email pada library
 
         $result = $this->project_model->Insert($Project_parameter);
 
@@ -152,31 +152,31 @@ class project_controller extends BaseController
             $p_status_id,
             $flag
         ];
-        // Pencarian member
-        $member_parameter = [
-            'p_member_id' => '',
-            'p_flag' => 0,
-        ];
-        $memberRecords = $this->member_model->get($member_parameter);
+        // // Pencarian member
+        // $member_parameter = [
+        //     'p_member_id' => '',
+        //     'p_flag' => 0,
+        // ];
+        // $memberRecords = $this->member_model->get($member_parameter);
 
-        //Konfigurasi Email
-        $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
-        $namaMember = '';
-        $userMail = '';
+        // //Konfigurasi Email
+        // $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
+        // $namaMember = '';
+        // $userMail = '';
 
-        foreach ($memberRecords as $member) {
-            if ($member->member_id == $p_change_user_id) {
-                $namaMember = $member->member_name;
-                $userMail = $member->email;
-                break;
-            }
-        }
+        // foreach ($memberRecords as $member) {
+        //     if ($member->member_id == $p_change_user_id) {
+        //         $namaMember = $member->member_name;
+        //         $userMail = $member->email;
+        //         break;
+        //     }
+        // }
 
-        $subject_email = 'Updated Project';
-        //Isi pesan
-        $isi_email = "Halo,\n\n\tAda projek update di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
-            $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tProject Name\t: " . $p_project_name . "\n\nTerima kasih.";
-        $email = new Email(); //Pemanggilan fungsi email pada library
+        // $subject_email = 'Updated Project';
+        // //Isi pesan
+        // $isi_email = "Halo,\n\n\tAda projek update di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
+        //     $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tProject Name\t: " . $p_project_name . "\n\nTerima kasih.";
+        // $email = new Email(); //Pemanggilan fungsi email pada library
 
         $result = $this->project_model->Update($param);
 

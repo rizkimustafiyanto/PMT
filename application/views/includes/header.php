@@ -184,7 +184,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             </div>
           <?php endif; ?>
         </li>
-        <li class="nav-item dropdown">
+        <!-- <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="javascript:void(0);" aria-expanded="false">
             <i class="far fa-bell"></i>
             <span class="badge badge-warning navbar-badge">15</span>
@@ -209,7 +209,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <div class="dropdown-divider"></div>
             <a href="javascript:void(0);" class="dropdown-item dropdown-footer">See All Notifications</a>
           </div>
-        </li>
+        </li> -->
         <li class="nav-item">
           <a class="nav-link" href="<?= base_url(); ?>Profile" aria-expanded="false">
             <i class="far fa-user"></i>

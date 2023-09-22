@@ -95,7 +95,7 @@
                             <div class="col-lg-6">
                                 <div class="card card-info card-outline" style="max-height: 300px;">
                                     <div class="card-header">
-                                        <h5 class="card-title" style="width: 90%;"><input type="text" id="project_name" class="form-control" placeholder="Project Name"></h5>
+                                        <h5 class="card-title" style="width: 90%;"><input type="text" id="project_name" class="form-control" placeholder="Project Name" required></h5>
                                         <div class="card-tools">
                                             <div style="margin-top: 5px; margin-right: 10px;"><i class="fa fa-pen" style="color: gray;"></i></div>
                                         </div>
@@ -106,7 +106,7 @@
                             <div class="col-lg-6">
                                 <div class="form-group">
                                     <label for="project_type" class="mr-2">Project Type</label>
-                                    <select class="form-control select2bs4" name="project_type" id="project_type">
+                                    <select class="form-control select2bs4" name="project_type" id="project_type" required>
                                         <option value="" selected disabled>-- Select an option --</option>
                                         <?php foreach ($ProjectTypeRecords as $row) : ?>
                                             <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?></option>
@@ -117,11 +117,11 @@
                                     <div class="row">
                                         <div class="col">
                                             <label for="startProject">Start Date</label>
-                                            <input type="date" class="form-control" id="project_start">
+                                            <input type="date" class="form-control" id="project_start" required>
                                         </div>
                                         <div class="col">
                                             <label for="endProject">End Date</label>
-                                            <input type="date" class="form-control" id="project_due">
+                                            <input type="date" class="form-control" id="project_due" required>
                                         </div>
                                     </div>
                                 </div>
@@ -180,6 +180,11 @@
         var description = $('#project_description').summernote('code');
         var membersProject = $('#members_project').val();
 
+        if (!title || !projectStart || !projectDue || !description || !projectType) {
+            validasiInfo('Please complete all fields before inserting project!');
+            return;
+        }
+
         var AddProject = {
             title: title,
             projectType: projectType,
@@ -188,6 +193,12 @@
             description: description,
             membersProject: JSON.stringify(membersProject)
         };
+
+        // TOOLS
+        var addBtnProject = document.getElementById("AddProject");
+        addBtnProject.disabled = true;
+        addBtnProject.textContent = "Creating...";
+        addBtnProject.classList.add("disabled");
         // console.log(AddProject);
         addProject(AddProject);
     })
@@ -276,6 +287,23 @@
             },
             error: function(xhr, status, error) {
                 console.log(error);
+            }
+        });
+    }
+
+    function validasiInfo(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Peringatan',
+            text: message,
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: toast => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         });
     }

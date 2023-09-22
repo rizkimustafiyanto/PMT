@@ -52,7 +52,7 @@ class task_controller extends BaseController
 
         #Cek user_level_project
         #============================================================================
-        $UserMemberType = $this->list_member_model->Get(['', $p_project_id, $memberID, 3]);
+        $UserMemberType = $this->list_member_model->Get(['', $p_list_id, $memberID, 3]);
         $cekRoling = $this->project_member_model->Get(['', $p_project_id, $memberID, '', 4]);
 
         #TOOLS

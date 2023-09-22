@@ -33,11 +33,12 @@ class list_controller extends BaseController
         $cekRoling = $this->project_member_model->Get(['', $p_project_id, $memberID, '', 4]);
         $ProjectMemberTotalRecords = $this->project_member_model->Get(['', $p_project_id, '', '', 3,]);
         $ProjectTypeRecords = $this->variable_model->GetVariable(['', 4]);
+        $data['ProjectTypeRecords'] = $ProjectTypeRecords;
         $data['ProjectMemberRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2]);
         $data['ProjectListRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 6]);
         $data['MemberRecords'] = $this->member_model->Get(['', 0]);
         $data['MemberTypeRecords'] = $this->variable_model->GetVariable(['', 2]);
-        $data['StatusProjectRecords'] = $this->variable_model->GetVariable(['', 9]);
+        $data['StatusProjectRecords'] = $this->variable_model->GetVariable(['', 11]);
         $data['MemberSelectRecord'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2]);
 
         #Attachment
@@ -171,7 +172,7 @@ class list_controller extends BaseController
 
         $memberName = $this->session->userdata('member_name');
         $object = $list_name;
-        $text_log = 'New list "' . $object . '" created by "' . $memberName . '"';
+        $text_log = 'New card "' . $object . '" created by "' . $memberName . '"';
         $group_id = $project_id;
         $logging = [
             $text_log,
@@ -183,14 +184,14 @@ class list_controller extends BaseController
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'List created successfully'
+                'message' => 'Card created successfully'
             );
             $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'Failed to create project'
+                'message' => 'Failed to create card'
             );
         }
 
@@ -260,14 +261,14 @@ class list_controller extends BaseController
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'List Updated!'
+                'message' => 'Card Updated!'
             );
             $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'List Cannot Update!'
+                'message' => 'Card Cannot Update!'
             );
         }
 
@@ -299,14 +300,14 @@ class list_controller extends BaseController
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'List Deleted Successfully!'
+                'message' => 'Card Deleted Successfully!'
             );
             $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'List Cannot Delete!'
+                'message' => 'Card Cannot Delete!'
             );
         }
 
@@ -349,14 +350,14 @@ class list_controller extends BaseController
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'List member insert successfully'
+                'message' => 'Card member insert successfully'
             );
             $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'Failed to create list member!'
+                'message' => 'Failed to create card member!'
             );
         }
 
@@ -405,14 +406,14 @@ class list_controller extends BaseController
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'List member update successfully'
+                'message' => 'Card member update successfully'
             );
             $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'Failed to update list member!'
+                'message' => 'Failed to update card member!'
             );
         }
 
@@ -448,14 +449,14 @@ class list_controller extends BaseController
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'List member deleted successfully'
+                'message' => 'Card member deleted successfully'
             );
             $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'Failed to delete list member!'
+                'message' => 'Failed to delete card member!'
             );
         }
 
