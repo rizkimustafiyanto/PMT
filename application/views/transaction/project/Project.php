@@ -25,6 +25,7 @@
                                     <tr>
                                         <th>No</th>
                                         <th>Project Name</th>
+                                        <th>Time</th>
                                         <th>Team Member</th>
                                         <th>Project Progress</th>
                                         <th>Status</th>
@@ -44,15 +45,28 @@
                                             <tr>
                                                 <td><?= $index + 1; ?></td>
                                                 <td>
-                                                    <div><?= $record->project_name; ?></div>
-                                                    <div>Created : <?= (new DateTime($record->creation_datetime))->format('Y-m-d'); ?></div>
+                                                    <div class="row align-items-center">
+                                                        <div class="col">
+                                                            <?= $record->project_name; ?><br>
+                                                            Created : <?= (new DateTime($record->creation_datetime))->format('d M y'); ?>
+                                                        </div>
+                                                        <div class="col-auto pin-button" data-project-id="<?= $record->project_id; ?>" title="Pin Project"><i class="<?= ($record->pin_pro == 1) ? 'fa-regular' : 'fa-solid'; ?> fa-bookmark"></i></div>
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <div>Start : <?= ($record->start_date) ? (new DateTime($record->start_date))->format('d M y') : ''; ?></div>
+                                                    <div>Due : <?= ($record->due_date) ? (new DateTime($record->due_date))->format('d M y') : ''; ?></div>
                                                 </td>
                                                 <td class="text-nowrap">
-                                                    <?php foreach ($ProjectMemberRecords as $row) {
-                                                        if ($record->project_id == $row->project_id) : ?>
-                                                            <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>">
+                                                    <?php foreach ($ProjectMemberRecords as $row) :
+                                                        if ($record->project_id == $row->project_id) :
+                                                            if ($row->photo_url) : ?>
+                                                                <img src="<?= base_url(); ?>../api-hris/upload/<?= $row->photo_url; ?>" alt="User Image" class="rounded-circle elevation-1 profile-trigger" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>" data-member-name="<?= $row->member_name ?>" data-member-company="<?= $row->company_name ?>" data-src="<?= base_url(); ?>../api-hris/upload/<?= $row->photo_url; ?>">
+                                                            <?php else : ?>
+                                                                <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle elevation-1 profile-trigger" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>" data-member-name="<?= $row->member_name ?>" data-member-company="<?= $row->company_name ?>" data-src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png">
                                                     <?php endif;
-                                                    }; ?>
+                                                        endif;
+                                                    endforeach; ?>
                                                 </td>
                                                 <td>
                                                     <div class="progress-group">
@@ -66,10 +80,20 @@
                                                     <a class="badge <?= ($record->status_id == 'STW-1') ? 'badge-warning' : 'badge-success'; ?> float"><?= $record->name_project_status ?></a>
                                                 </td>
                                                 <td class="text-center">
-                                                    <a id="btnSelect" class="btn btn-xs btn-info" href="<?= base_url() . 'List/' . $record->project_id; ?>"><i class="fa fa-eye"></i></a>
-                                                    <?php if (($member_id == 'System' || $record->member_type_id == 'MT-1') && $record->status_id != 'STW-2') : ?>
-                                                        <a class="btn btn-xs btn-danger" id="btnDeleteProject" data-project-id="<?= $record->project_id; ?>"><i class="fa fa-trash"></i></a>
-                                                    <?php endif; ?>
+                                                    <!-- <button class="btn btn-xs btn-info mr-1 pin-button" data-project-id="<?= $record->project_id; ?>" title="Pin Project"><i class="fa fa-thumbtack"></i></button> -->
+                                                    <div class="btn-group">
+                                                        <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
+                                                            <i class="fas fa-bars"></i>
+                                                        </button>
+                                                        <div class="dropdown-menu" style="box-shadow: none; border-color: transparent;">
+                                                            <a class="dropdown-item btn btn-xs" href="<?= base_url() . 'List/' . $record->project_id; ?>" title="View Detail" style="width: 90px;"><i class="fa fa-eye mr-1"></i>View</a>
+                                                            <a class="dropdown-item btn btn-xs" href="<?= base_url() . 'KanbanList/' . $record->project_id; ?>" title="View Kanban" style="width: 90px;"><i class="fa fa-lg fa-brands fa-flipboard mr-1"></i>Board</a>
+                                                            <?php if (($member_id == 'System' || $record->member_type_id == 'MT-1') && $record->status_id != 'STW-2') : ?>
+                                                                <a class="dropdown-item btn btn-xs" id="btnDeleteProject" data-project-id="<?= $record->project_id; ?>" title="Delete Project" style="width: 90px;"><i class="fa fa-trash mr-1"></i>Delete</a>
+                                                            <?php endif; ?>
+                                                        </div>
+                                                    </div>
+
                                                 </td>
                                             </tr>
                                     <?php endforeach;
@@ -83,8 +107,8 @@
         </div>
     </section>
 
-    <div class="modal fade" id="modal-input-project">
-        <div class="modal-dialog" style="max-width: 920px;">
+    <div class="modal fade" id="modal-input-project" tabindex="-1" role="dialog" aria-labelledby="modal-input-project-label" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
                     <h4 class="modal-title">Create New Project</h4>
@@ -104,14 +128,37 @@
                                 </div>
                             </div>
                             <div class="col-lg-6">
-                                <div class="form-group">
-                                    <label for="project_type" class="mr-2">Project Type</label>
+                                <div class="row col-lg-12 justify-content-between" style="display: none;">
+                                    <div>
+                                        <label for="project_type" class="mr-2">Project Type</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" name="ptypec" id="ptypec" onchange="toggleProjectType()">
+                                        <label for="project_type" class="mr-2">Others</label>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="ptype">
                                     <select class="form-control select2bs4" name="project_type" id="project_type" required>
                                         <option value="" selected disabled>-- Select an option --</option>
                                         <?php foreach ($ProjectTypeRecords as $row) : ?>
                                             <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?></option>
                                         <?php endforeach; ?>
                                     </select>
+                                </div>
+                                <div class="form-group" id="ptype1">
+                                    <input type="text" name="project_type1" id="project_type1" class="form-control">
+                                </div>
+                                <div class="row col-lg-12 justify-content-between">
+                                    <div>
+                                        <label for="project_collab" class="mr-2">Collaborate Project</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" name="pcollabc" id="pcollabc" onchange="toggleCollab()">
+                                        <label for="project_collab" class="mr-2">Collaborate</label>
+                                    </div>
+                                </div>
+                                <div class="form-group" id="pcollab">
+                                    <select class="form-control" id="collab_project" name="collab_project[]" multiple="multiple"></select>
                                 </div>
                                 <div class="form-group">
                                     <div class="row">
@@ -145,42 +192,23 @@
 </div>
 
 <script>
-    $(document).on('click', '#btnAdd', function() {
-        handleClickAdd();
-    })
-
-    function colorSelect(member) {
-        return $('<span style="color: blue;">' + member.text + '</span>');
-    }
-
-    function handleClickAdd() {
-        $('#members_project').val([]).trigger('change');
-        $('#members_project').select2({
-            placeholder: '-- Choose Members --',
-            allowClear: true,
-            minimumInputLength: 0,
-            data: [
-                <?php foreach ($tempmember as $key) { ?> {
-                        id: "<?= $key->member_id ?>",
-                        text: "<?= $key->member_name ?>"
-                    },
-                <?php } ?>
-            ],
-            templateSelection: colorSelect
-        });
-    }
-
-
-
     $(document).on('click', '#AddProject', function() {
+        var checkbox = $("#ptypec");
+        var projectType = checkbox.prop("checked") ? $("#project_type1").val() : $("#project_type").val();
         var title = $('#project_name').val();
-        var projectType = $('#project_type').val();
+        // var projectType = $('#project_type').val();
         var projectStart = $('#project_start').val();
         var projectDue = $('#project_due').val();
         var description = $('#project_description').summernote('code');
         var membersProject = $('#members_project').val();
 
-        if (!title || !projectStart || !projectDue || !description || !projectType) {
+        var pcollabC = document.getElementById("pcollabc");
+        var projectCollab = pcollabC.checked ? $("#collab_project").val() : '<?= $this->session->userdata("company_id") ?>';
+        var projectCollabString = pcollabC.checked ? projectCollab.map(function(pc) {
+            return '"' + pc + '"';
+        }).join(', ') : JSON.stringify(projectCollab);
+
+        if (!title || !projectStart || !projectDue || !description) {
             validasiInfo('Please complete all fields before inserting project!');
             return;
         }
@@ -191,7 +219,8 @@
             start: projectStart,
             due: projectDue,
             description: description,
-            membersProject: JSON.stringify(membersProject)
+            membersProject: JSON.stringify(membersProject),
+            collab_member: projectCollabString !== '' ? projectCollabString : JSON.stringify('<?= $this->session->userdata("company_id") ?>')
         };
 
         // TOOLS
@@ -307,20 +336,137 @@
             }
         });
     }
+
+
+    function colorSelect(member) {
+        return $('<span style="color: blue;">' + member.text + '</span>');
+    }
+
+    function handleCollab() {
+        $('#collab_project').val([]).trigger('change');
+        $('#collab_project').select2({
+            placeholder: '-- Choose Group --',
+            allowClear: true,
+            minimumInputLength: 0,
+            data: [
+                <?php foreach ($CollabGroup as $key) { ?> {
+                        id: "<?= $key->company_id ?>",
+                        text: "<?= $key->company_initial ?>" + ' - ' + "<?= $key->company_name ?>"
+                    },
+                <?php } ?>
+            ],
+            templateSelection: colorSelect
+        });
+    }
+
+    function handleCollabMember() {
+        var pcollabC = document.getElementById("pcollabc");
+        var projectCollab = pcollabC.checked ? $("#collab_project").val() : '<?= $this->session->userdata("company_id") ?>';
+        var projectCollabString = pcollabC.checked ? projectCollab.map(function(pc) {
+            return '"' + pc + '"';
+        }).join(', ') : JSON.stringify(projectCollab);
+        $.ajax({
+            url: '<?= base_url() ?>MemberSelect',
+            type: 'POST',
+            data: {
+                pro_group: projectCollabString !== '' ? projectCollabString : JSON.stringify('<?= $this->session->userdata("company_id") ?>')
+            },
+            dataType: 'JSON',
+            success: function(response) {
+
+                var membersData = [];
+                $.each(response.SelectM, function(index, isi) {
+                    membersData.push({
+                        id: isi.member_id,
+                        text: isi.company_initial + ' - ' + isi.company_brand_name + ' - ' + isi.member_name
+                    });
+                });
+
+                $('#members_project').empty().select2({
+                    placeholder: '-- Choose Members --',
+                    allowClear: true,
+                    minimumInputLength: 0,
+                    data: membersData,
+                    templateSelection: colorSelect
+                });
+
+            }
+        });
+    }
+
+    function toggleProjectType() {
+        var checkbox = document.getElementById("ptypec");
+        var projectTypeSelect = document.getElementById("ptype");
+        var projectTypeInput = document.getElementById("ptype1");
+
+        if (checkbox.checked) {
+            projectTypeSelect.style.display = "none";
+            projectTypeInput.style.display = "block";
+            projectTypeSelect.removeAttribute("required");
+            projectTypeInput.setAttribute("required", "required");
+        } else {
+            projectTypeSelect.style.display = "none";
+            projectTypeInput.style.display = "none";
+            projectTypeSelect.setAttribute("required", "required");
+            projectTypeInput.removeAttribute("required");
+        }
+    };
+
+    function toggleCollab() {
+        const checks = document.getElementById("pcollabc");
+        const projectCollab = document.getElementById("pcollab");
+
+        if (checks.checked) {
+            projectCollab.style.display = "block";
+            handleCollabMember();
+            handleCollab();
+        } else {
+            projectCollab.style.display = "none";
+            handleCollabMember();
+        }
+    };
+
+    $('#collab_project').on('change', function() {
+        handleCollabMember();
+    });
+
+    // Penjagaan untuk running function
+    $(document).ready(function() {
+        toggleCollab();
+        toggleProjectType();
+
+        $("#tblProject")
+            .DataTable({
+                responsive: true,
+                lengthChange: false,
+                autoWidth: false,
+                buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
+                ordering: true
+            })
+            .buttons()
+            .container()
+            .appendTo("#tblProject_wrapper .col-md-6:eq(0)");
+    })
 </script>
 
 <script>
-    $("#tblProject")
-        .DataTable({
-            responsive: true,
-            lengthChange: false,
-            autoWidth: false,
-            buttons: ["copy", "csv", "excel", "pdf", "print", "colvis"],
-            order: [
-                [0, "asc"]
-            ]
-        })
-        .buttons()
-        .container()
-        .appendTo("#tblProject_wrapper .col-md-6:eq(0)");
+    $(document).on('click', '.pin-button', function() {
+        var projectId = $(this).data('project-id');
+        var buttonElement = $(this);
+
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url(); ?>Pining',
+            data: {
+                project_id: projectId
+            },
+            success: function(response) {
+                console.log(response.message);
+                window.location.reload();
+            },
+            error: function() {
+                alert('Permintaan AJAX gagal.');
+            }
+        });
+    });
 </script>

@@ -33,7 +33,8 @@ class project_controller extends BaseController
         $data['ProjectRecords'] = $this->project_model->Get(['', '', 0, $memberID]);
         $data['ProjectMemberRecords'] = $this->project_member_model->Get(['', '', '', '', 0]);
         $data['ProjectTypeRecords'] = $this->variable_model->GetVariable(['', 4]);
-        $data['tempmember'] = $this->member_model->Get([0, 0]);
+        $data['tempmember'] = $this->member_model->Get([0, 2]);
+        $data['CollabGroup'] = $this->project_member_model->Get(['', '', '', '', 11]);
 
         #============================================================================
 
@@ -60,7 +61,8 @@ class project_controller extends BaseController
         $description = $this->input->post('description');
         $members_project = $this->input->post('membersProject');
         $creation_user_id = $this->session->userdata('member_id');
-        $status_id = 'STW-1'; # status projectnya On process
+        $status_id = 'STW-1';
+        $collaborate_member = $this->input->post('collab_member');
         $Project_parameter = [
             $project_id,
             $project_name,
@@ -70,7 +72,8 @@ class project_controller extends BaseController
             $description,
             $members_project,
             $creation_user_id,
-            $status_id
+            $status_id,
+            $collaborate_member
         ];
 
         // // Pencarian member
@@ -139,6 +142,7 @@ class project_controller extends BaseController
         $p_description = $this->input->post('description');
         $p_change_user_id = $this->session->userdata('member_id');
         $p_status_id =  $this->input->post('status');
+        $p_collab_member =  $this->input->post('collab_member');
         $flag = $this->input->post('flag');
 
         $param = [
@@ -150,6 +154,7 @@ class project_controller extends BaseController
             $p_description,
             $p_change_user_id,
             $p_status_id,
+            $p_collab_member,
             $flag
         ];
         // // Pencarian member
@@ -228,6 +233,22 @@ class project_controller extends BaseController
 
     // PROJECT MEMBER
     #===========================================================================
+    function SelectProjectMember()
+    {
+        $group_project = $this->input->post('pro_group');
+
+        if (is_array($group_project)) {
+            $group_project = array_map(function ($item) {
+                return str_replace('"', '', $item);
+            }, $group_project);
+            $group_project = implode(', ', $group_project);
+        }
+
+        $data['SelectM'] = $this->project_member_model->Get(['', $group_project, '', '', 10]);
+        echo json_encode($data);
+    }
+
+
     function InsertProjectMember()
     {
         $project_id = $this->input->post('project_id');
@@ -379,4 +400,36 @@ class project_controller extends BaseController
     // END EORKSPACE MEMBER
     #===========================================================================
 
+
+
+    // PINNED PROJECT
+    #===========================================================================
+    function PinorUnpinProject()
+    {
+        $project_id = $this->input->post('project_id');
+        $member_id = $this->session->userdata('member_id');
+
+        $Pin_parameter = [
+            $project_id,
+            $member_id
+        ];
+        $result = $this->project_model->Pinning($Pin_parameter);
+
+        if ($result) {
+            $response = array(
+                'status' => 'success',
+                'title' => 'Success',
+                'message' => 'Project pin successfully'
+            );
+        } else {
+            $response = array(
+                'status' => 'error',
+                'title' => 'Error',
+                'message' => 'Failed to pin project!'
+            );
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    }
 }

@@ -58,42 +58,69 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <!-- Description -->
                 <div class="card">
                     <Div class="card-header">
-                        <div class="card-title">
-                            Description
-                        </div>
-                        <div class="card-tools">
-                            <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
-                                <button type="button" class="btn btn-xs btn-tool" style="font-size: 10px;" id="btnUpProject" data-toggle="modal" data-target="#modal-update-project">
-                                    <i class="fa fa-lg fa-pen"></i>
+                        <div class="row justify-content-between">
+                            <div class="col-md-10" data-card-widget="collapse" style="cursor: pointer;">
+                                Description
+                            </div>
+                            <div class="card-tools">
+                                <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
+                                    <button type="button" class="btn btn-xs btn-tool" style="font-size: 10px;" id="btnUpProject" data-toggle="modal" data-target="#modal-update-project">
+                                        <i class="fa fa-lg fa-pen"></i>
+                                    </button>
+                                <?php endif; ?>
+                                <button type="button" class="btn btn-sm btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
                                 </button>
-                            <?php endif; ?>
-                            <button type="button" class="btn btn-sm btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
+                            </div>
                         </div>
                     </Div>
                     <div class="card-body">
-                        <strong><i class="fas fa-file-alt mr-1"></i> Project Name</strong>
-                        <p class="text-muted"><?= $project_name ?></p>
+                        <div class="row col-md-12" style="margin-bottom: -15px;">
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-file-alt mr-1"></i> Project Name</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted"><?= $project_name ?></p>
+                            </div>
+                        </div>
                         <hr>
-                        <strong><i class="fas fa-receipt mr-1"></i> Project Type</strong>
-                        <p class="text-muted"><?= $selected ?></p>
+                        <div class="row col-md-12" style="margin-bottom: -15px;">
+                            <div class="col-md-6">
+                                <strong><i class="far fa-calendar-alt mr-1"></i> Start Date</strong>
+                                <p class="text-muted" style="margin-left: 10px;"><?= date('d M Y', strtotime($start_date)) ?></p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong><i class="far fa-calendar-alt mr-1"></i> Due Date</strong>
+                                <p class="text-muted" style="margin-left: 10px;"><?= date('d M Y', strtotime($due_date)) ?></p>
+                            </div>
+                        </div>
                         <hr>
-                        <strong><i class="far fa-calendar-alt mr-1"></i> Start Date</strong>
-                        <p class="text-muted"><?= $start_date ?> </p>
+                        <div class="row col-md-12" style="margin-bottom: -15px;">
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-receipt mr-1"></i> Project Collaboration</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted"><?= ($collab_name) ? $collab_name : '-' ?></p>
+                            </div>
+                        </div>
                         <hr>
-                        <strong><i class="far fa-calendar-alt mr-1"></i> Due Date</strong>
-                        <p class="text-muted"><?= $due_date ?> </p>
+                        <div class="row col-md-12" style="margin-bottom: -15px;">
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-quote-left mr-1"></i> Status</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted"><?= $name_project_status ?></p>
+                            </div>
+                        </div>
                         <hr>
-                        <strong><i class="fas fa-quote-left mr-1"></i> Status</strong>
-                        <p class="text-muted"><?= $name_project_status ?></p>
-                        <hr>
-                        <strong><i class="fas fa-info mr-1"></i> Description</strong>
-                        <p class="text-muted"><?= $description ?></p>
+                        <div class="col-md-12">
+                            <strong><i class="fas fa-info mr-1"></i> Description</strong>
+                            <p class="text-muted"><?= $description ?></p>
+                        </div>
                         <hr>
                         <div class="col-md-12 progress-group">
                             <label for="card_name">Progress</label>
@@ -106,125 +133,25 @@
                     </div>
                 </div>
                 <!-- Batas Description -->
-                <!-- Project Attachment -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Project Attachment</div>
-                        <div class="card-tools">
-                            <?php if ($status_id != 'STW-2') : ?>
-                                <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
-                                    <i class="fas fa-file"></i>
-                                </button>
-                            <?php endif; ?>
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <table id="tblAttachment" class="table table-bordered table-striped" style="font-size: small;">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                    <th>Uploaded By</th>
-                                    <th class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($AttachmentRecord)) :
-                                    foreach ($AttachmentRecord as $record) : ?>
-                                        <tr>
-                                            <td><?= $record->attachment_name ?></td>
-                                            <td><?= $record->attachment_type_name ?></td>
-                                            <td><?= $record->member_upload ?></td>
-                                            <td class="text-center">
-                                                <a id="btnDownload" class="btn btn-xs btn-success disabled" href="<?= base_url('DownloadAttachment/' . $record->attachment_url) ?>">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                                <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <?php if (($member_id == 'System' || $member_id == $record->creation_user_id || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
-                                                    <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                <?php endforeach;
-                                endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- Batas Card Attachment -->
-                <!-- Card Member -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Members</div>
-                        <div class="card-tools">
-                            <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
-                                <button type="button" class="btn btn-xs btn-tool" id="btnAdd" data-toggle="modal" data-target="#modal-input-project-member">
-                                    <i class="fa fa-user-plus"></i>
-                                </button>
-                            <?php endif; ?>
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body p-0" style="font-size: small;">
-                        <div class="col-md-12 text-center">
-                            <span class="badge badge-warning"><?= $total_member ?> Members</span>
-                        </div>
-                        <ul class="users-list clearfix">
-                            <?php if (!empty($ProjectMemberRecords)) :
-                                foreach ($ProjectMemberRecords as $record) :
-                                    $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
-                                    $typeM = $record->variable_id;
-                            ?>
-                                    <li>
-                                        <img src="<?= base_url() ?>assets/dist/img/<?= $avatar ?>" alt="User Image" style="width:60px">
-                                        <a class="users-list-name" href="javascript:void(0);"><?= $record->member_name ?></a>
-                                        <span class="badge badge-<?= ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : 'danger') ?>"><?= $record->member_type ?></span>
-                                        <?php if (($member_type == 'MT-1' || $member_id == 'System') && $record->member_id != $creation_id &&  $status_id != 'STL-4') : ?>
-                                            <a class="btn btn-xs btn-success" data-bs-toggle="dropdown">
-                                                <i class="fas fa-bars"></i>
-                                            </a>
-                                        <?php endif; ?>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" data-project_member_id="<?= $record->project_member_id ?>" data-member_id='<?= $record->member_id ?>' data-mtype_id='<?= $typeM ?>' id="slcMember" data-toggle="modal" data-target="#modal-update-project-member">
-                                                    <i class="fa fa-pen"></i> Update Member
-                                                </a>
-                                                <a class="dropdown-item" data-project_member_id="<?= $record->project_member_id ?>" data-member_id='<?= $record->member_id ?>' id="btnDelMember">
-                                                    <i class="fa fa-trash"></i> Delete Member
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
-                </div>
-                <!-- Batas Card Member -->
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-8">
                 <!-- Card To Do List -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Card</div>
-                        <div class="card-tools">
-                            <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
-                                <button type="button" class="btn btn-xs btn-tool" id="btnAddList" data-toggle="modal" data-target="#modal-input-list">
-                                    <i class="fa fa-file-circle-plus"></i>
+                        <div class="row justify-content-between">
+                            <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">
+                                Card
+                            </div>
+                            <div class="card-tools">
+                                <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
+                                    <button type="button" class="btn btn-xs btn-tool" id="btnAddList" data-toggle="modal" data-target="#modal-input-list">
+                                        <i class="fa fa-file-circle-plus"></i>
+                                    </button>
+                                <?php endif; ?>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
                                 </button>
-                            <?php endif; ?>
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
@@ -232,10 +159,10 @@
                             <thead>
                                 <tr>
                                     <th>Card Name</th>
-                                    <th>Remaining Days</th>
-                                    <th>Status</th>
+                                    <!-- <th>Remaining Days</th>
+                                    <th>Status</th> -->
                                     <th>Member</th>
-                                    <th>Action</th>
+                                    <th class="col-md-1">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -247,47 +174,82 @@
                                         $dueDate = strtotime($record->due_date);
                                         $currentTime = time();
 
-                                        if ($currentTime <= $startDate) {
-                                            $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                                            $badgeClass = 'badge-success';
-                                        } elseif ($currentTime < $dueDate) {
-                                            $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                                            $badgeClass = (round($remainingDays) <= 2) ? 'badge-danger' : 'badge-warning';
-                                        } elseif ($currentTime >= $dueDate) {
-                                            $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                                            $badgeClass = (round($remainingDays) <= 0) ? 'badge-secondary' : 'badge-secondary';
-                                            $remainingDays = round($remainingDays * (-1));
-                                        }
-
-                                        $remainingDays = round($remainingDays);
-
                                         $statusW = $record->status_id;
                                         $statusClass = ($statusW == 'STL-1') ? 'badge-primary' : (($statusW == 'STL-2') ? 'badge-warning' : (($statusW == 'STL-3') ? 'badge-danger' : 'badge-success'));
+                                        $completed = $record->percentage;
+                                        $completed = (empty($completed)) ? 0 : $completed;
+                                        if (strlen($completed) > 4) {
+                                            $completed = number_format($completed, 2);
+                                        }
+
+                                        if ($dueDate !== $startDate) {
+                                            $percentage = ($currentTime - $startDate) / ($dueDate - $startDate) * 100;
+                                            $percentage = max(0, min(100, $percentage));
+                                        } else {
+                                            $percentage = 100;
+                                        }
+
+                                        if ($percentage <= 25) {
+                                            $badgeClass = 'badge-success';
+                                        } elseif ($percentage <= 75) {
+                                            $badgeClass = 'badge-warning';
+                                        } else {
+                                            $badgeClass = 'badge-danger';
+                                        }
+
+                                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
 
                                 ?>
                                         <tr>
-                                            <td><?= $record->list_name ?></td>
-                                            <td class="text-center">
-                                                <span class="badge <?= $badgeClass ?>"><?= $remainingDays ?> Day</span>
+                                            <td>
+                                                <div class="row">
+                                                    <div class="col-md-6"><?= $record->list_name ?></div>
+                                                    <div class="col-md-6 text-right">
+                                                        <?php if ($completed == '100') : ?>
+                                                            <span class="badge <?= $statusClass ?>"><?= $record->list_status ?></span>
+                                                        <?php else : ?>
+                                                            <span class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Days</span>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
+                                                <div class="progress-group" style="margin-top: 5px;">
+                                                    <div class="progress progress-sm" style="height: 8px; border-radius: 20px;">
+                                                        <div class="progress-bar <?= ($completed < 100) ? 'bg-primary' : 'bg-success'; ?>" style="width: <?= $completed; ?>%"></div>
+                                                    </div>
+                                                    <span class="float-center small"><b><?= $completed; ?> %</b></span>
+                                                </div>
                                             </td>
-                                            <td class="text-center">
+                                            <!-- <td class="text-center">
+                                                <span class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Days</span>
+                                            </td> -->
+                                            <!-- <td class="text-center">
                                                 <span class="badge <?= $statusClass ?>"><?= $record->list_status ?></span>
-                                            </td>
+                                            </td> -->
                                             <td>
                                                 <?php foreach ($ProjectListRecords as $key) :
-                                                    if ($record->list_id == $key->list_id) : ?>
-                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
+                                                    if ($record->list_id == $key->list_id) :  if ($key->photo_url) : ?>
+                                                            <img src="<?= base_url(); ?>../api-hris/upload/<?= $key->photo_url ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 20px; height: 20px;" title="<?= $key->member_name ?>" data-member-name="<?= $key->member_name ?>" data-member-company="<?= $key->company_name ?>" data-src="<?= base_url(); ?>../api-hris/upload/<?= $key->photo_url; ?>">
+                                                        <?php else : ?>
+                                                            <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle profile-trigger" style="width: 20px; height: 20px;" title="<?= $key->member_name ?>" data-member-name="<?= $key->member_name ?>" data-member-company="<?= $key->company_name ?>" data-src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png">
                                                 <?php endif;
+                                                    endif;
                                                 endforeach; ?>
                                             </td>
                                             <td class="text-center">
-                                                <a class="btn btn-xs btn-info" href="<?= base_url() . 'Task/' . $record->project_id . '/' . $record->list_id ?>"><i class="fa fa-eye"></i></a>
-                                                <?php if (($member_type == 'MT-1' || $member_type == 'MT-2' || $member_id == 'System' || $member_id == $record->creation_user_id) && $status_id == 'STW-1') : ?>
-                                                    <a id="slcList" class="btn btn-xs btn-primary" data-list_id="<?= $record->list_id ?>" data-project_id="<?= $record->project_id ?>" data-list_name="<?= $record->list_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-list_status="<?= $record->status_id ?>" data-list_description="<?= $record->description; ?>" data-toggle="modal" data-target="#modal-update-list">
-                                                        <i class="fa fa-pen"></i>
-                                                    </a>
-                                                    <a id="delList" class="btn btn-xs btn-danger" data-del_list="<?= $record->list_id ?>"><i class="fa fa-trash"></i></a>
-                                                <?php endif; ?>
+                                                <div class="btn-group">
+                                                    <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown" data-offset="+130" aria-haspopup="true" aria-expanded="false">
+                                                        <i class="fas fa-bars"></i>
+                                                    </button>
+                                                    <div class="dropdown-menu dropdown-menu-right p-0" style="box-shadow: none; border-color: transparent;">
+                                                        <a class="dropdown-item btn btn-xs btn-info" href="<?= base_url() . 'Task/' . $record->project_id . '/' . $record->list_id ?>" title="View Detail"><i class="fa fa-eye mr-1"></i>View</a>
+                                                        <?php if (($member_type == 'MT-1' || $member_type == 'MT-2' || $member_id == 'System' || $member_id == $record->creation_user_id) && $status_id == 'STW-1') : ?>
+                                                            <a id="slcList" class="dropdown-item btn btn-xs btn-primary" data-list_id="<?= $record->list_id ?>" data-project_id="<?= $record->project_id ?>" data-list_name="<?= $record->list_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-list_status="<?= $record->status_id ?>" data-list_description="<?= $record->description; ?>" data-toggle="modal" data-target="#modal-update-list" title="Update Card">
+                                                                <i class="fa fa-pen mr-1"></i>Edit
+                                                            </a>
+                                                            <a id="delList" class="dropdown-item btn btn-xs btn-danger" data-del_list="<?= $record->list_id ?>" title="Delete Card"><i class="fa fa-trash mr-1"></i>Delete</a>
+                                                        <?php endif; ?>
+                                                    </div>
+                                                </div>
                                             </td>
                                         </tr>
                                 <?php
@@ -299,38 +261,9 @@
                     </div>
                 </div>
                 <!-- Batas Card To Do List -->
-                <!-- Log Activity -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">LOG Activity</div>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <?php if (!empty($LogRecord)) { ?>
-                            <div class="direct-chat-messages overflow-auto" id="logact">
-                                <?php foreach ($LogRecord as $record) { ?>
-                                    <div class="row" style="font-size: smaller;">
-                                        <div class="col-md-9 overflow-auto text-nowrap" style="max-width: 100%;">
-                                            <?= $record->log ?>
-                                        </div>
-                                        <div class="col-md-3 text-center p-0 text-muted"><?= date("[H:i] D m y", strtotime($record->creation_datetime)) ?></div>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                        <?php } else { ?>
-                            <div class="text-center">No Activity</div>
-                        <?php }
-                        ?>
-                    </div>
-                </div>
-                <!-- Batas Log Activity -->
                 <!-- Message -->
                 <div class="card direct-chat direct-chat-msg">
-                    <div class="card-header">
+                    <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
                         <h3 class="card-title">Comment</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -349,9 +282,9 @@
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
                             <div class="input-group">
-                                <input type="text" id="message-input" class="form-control" placeholder="Type your comment..." <?= ($status_id == 'STW-1') ? '' : 'disabled' ?>>
+                                <input type="text" id="message-input" class="form-control" placeholder="Type your comment..." <?= ($status_id == 'STW-1') ? '' : 'disabled' ?> autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleKeyDown(event)">
                                 <span class="input-group-append">
-                                    <button type="submit" class="btn btn-primary" <?= ($status_id == 'STW-1') ? '' : 'disabled' ?>>Send</button>
+                                    <button type="submit" class="btn btn-primary" <?= ($status_id != 'STW-2' && $member_type != 'MT-4') ? '' : 'disabled' ?>>Send</button>
                                 </span>
                             </div>
                         </form>
@@ -359,15 +292,165 @@
                 </div>
                 <!-- Batas Message -->
             </div>
+            <!-- Project Attachment -->
+            <div class="col-lg-12">
+                <div class="card collapsed-card">
+                    <div class="card-header">
+                        <div class="row justify-content-between">
+                            <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer; width: max-content;">Project Attachment</div>
+                            <div class="card-tools">
+                                <?php if ($status_id != 'STW-2' && $member_type != 'MT-4') : ?>
+                                    <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
+                                        <i class="fas fa-file"></i>
+                                    </button>
+                                <?php endif; ?>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="tblAttachment" class="table table-bordered table-striped" style="font-size: small;">
+                            <thead>
+                                <tr>
+                                    <th data-width="60%">Name</th>
+                                    <th data-width="15%">Uploaded Date</th>
+                                    <!-- <th>Type</th> -->
+                                    <th data-width="15%">Uploaded By</th>
+                                    <th data-width="10%" class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($AttachmentRecord)) :
+                                    foreach ($AttachmentRecord as $record) : ?>
+                                        <tr>
+                                            <td><?= $record->attachment_name . '.' . $record->attachment_type ?></td>
+                                            <td><?= $record->creation_datetime ?></td>
+
+                                            <!-- <td><?= $record->attachment_type_name ?></td> -->
+                                            <td><?= $record->member_upload ?></td>
+                                            <td class="text-center">
+                                                <a id="btnDownload" class="btn btn-xs btn-success" href="<?= base_url('DownloadAttachment/' . $record->attachment_url) ?>">
+                                                    <i class="fa fa-download"></i>
+                                                </a>
+                                                <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <?php if (($member_id == 'System' || $member_id == $record->creation_user_id || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
+                                                    <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                <?php endforeach;
+                                endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Batas Card Attachment -->
+            <!-- Card Member -->
+            <div class="col-lg-12">
+                <div class="card collapsed-card">
+                    <div class="card-header">
+                        <div class="row justify-content-between">
+                            <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Members</div>
+                            <div class="card-tools">
+                                <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_type == 'MT-1') && $status_id != 'STW-2') : ?>
+                                    <button type="button" class="btn btn-xs btn-tool ml-auto" id="btnAddMember" data-toggle="modal" data-target="#modal-input-project-member">
+                                        <i class="fa fa-user-plus"></i>
+                                    </button>
+                                <?php endif; ?>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="card-body p-0" style="font-size: small;">
+                        <div class="col-md-12 text-center">
+                            <span class="badge badge-warning"><?= $total_member ?> Members</span>
+                        </div>
+                        <ul class="users-list clearfix">
+                            <?php if (!empty($ProjectMemberRecords)) :
+                                foreach ($ProjectMemberRecords as $record) :
+                                    $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                    $typeM = $record->variable_id;
+                            ?>
+                                    <li>
+                                        <?php if ($record->photo_url) : ?>
+                                            <img src="<?= base_url(); ?>../api-hris/upload/<?= $record->photo_url ?>" alt="User Image" class="rounded-circle" style="width: 60px; height: 60px;" title="<?= $record->member_name ?>">
+                                        <?php else : ?>
+                                            <img src="<?= base_url() ?>assets/dist/img/<?= $avatar ?>" alt="User Image" class="rounded-circle" style="width: 60px; height: 60px;" title="<?= $record->member_name ?>">
+                                        <?php endif; ?>
+                                        <a class="users-list-name" href="javascript:void(0);"><?= $record->member_name ?></a>
+                                        <a class="btn btn-xs btn-<?= ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : 'danger') ?>" data-bs-toggle="dropdown" <?= (($member_type == 'MT-1' || $member_id == 'System') && $record->member_id != $creation_id &&  $status_id != 'STL-4') ? '' : 'disabled' ?>>
+                                            <span class="badge"><?= $record->member_type ?></span>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <?php foreach ($MemberTypeRecords as $row) : ?>
+                                                    <a class="dropdown-item" data-project_member_id="<?= $record->project_member_id ?>" data-member_id='<?= $record->member_id ?>' data-mtype_id='<?= $row->variable_id ?>' id="slcMember">
+                                                        <i class="fa fa-pen"></i> <?= $row->variable_name ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                                <a class="dropdown-item" data-project_member_id="<?= $record->project_member_id ?>" data-member_id='<?= $record->member_id ?>' id="btnDelMember">
+                                                    <i class="fa fa-trash"></i> Delete Member
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Batas Card Member -->
+            <!-- Log Activity -->
+            <div class="col-lg-12">
+                <div class="card collapsed-card">
+                    <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
+                        <div class="card-title">LOG Activity</div>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($LogRecord)) { ?>
+                            <div class="direct-chat-messages overflow-auto" id="logact">
+                                <?php foreach ($LogRecord as $record) { ?>
+                                    <div class="row" style="font-size: smaller;">
+                                        <div class="col-md-9">
+                                            <?= $record->log ?>
+                                        </div>
+                                        <div class="col-md-3 text-center p-0 text-muted"><?= date("[H:i] D m y", strtotime($record->creation_datetime)) ?></div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        <?php } else { ?>
+                            <div class="text-center">No Activity</div>
+                        <?php }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <!-- Batas Log Activity -->
         </div>
     </section>
 </div>
 <!--#Project Modal Insert Member-->
-<div class="modal fade" id="modal-input-project-member">
-    <div class="modal-dialog">
+<div class="modal fade" id="modal-input-project-member" role="dialog" aria-labelledby="modal-input-project-member-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Add Project Member</h4>
+                <h5 class="modal-title">Add Project Member</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -379,34 +462,8 @@
                             <div class="form-group">
                                 <label>Member</label>
                                 <div class="input-group">
-                                    <select class="form-control select2bs4" name="member_id" data-width="100%" id="member_id">
-                                        <option value="">-- Select an option --</option>
-                                        <?php foreach ($MemberRecords as $row) : ?>
-                                            <option value="<?= $row->member_id; ?>">
-                                                <?php
-                                                if ($row->company_name == "PT Persada Lampung Raya") {
-                                                    echo 'PLR - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Persada Palembang Raya") {
-                                                    echo 'PPR - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Gita Riau Makmur") {
-                                                    echo 'GRM - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Genta Lampung Makmur") {
-                                                    echo 'GLM - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Universal Traktor Indonesia") {
-                                                    echo 'UTI - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Persada Bangka Raya") {
-                                                    echo 'PBR - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Persada Solusi Data") {
-                                                    echo 'PSD - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Mega Truckindo Utama") {
-                                                    echo 'MTU - ' . $row->member_name;
-                                                } else {
-                                                    echo $row->company_name . '   -   ' . $row->member_name;
-                                                }
-                                                ?>
-
-                                            </option>
-                                        <?php endforeach; ?>
+                                    <select class="form-control select2bs4" name="member_id_select" data-width="100%" id="member_id_select">
+                                        <option value="" selected disabled>-- Choose Member --</option>
                                     </select>
                                 </div>
                             </div>
@@ -428,85 +485,13 @@
                 </div>
             </form>
         </div>
-        <!-- /.modal-content -->
     </div>
-    <!-- /.modal-dialog -->
 </div>
 <!--#EndProject Modal Insert Member-->
 
-<!--#Project Modal Update Member-->
-<div class="modal fade" id="modal-update-project-member">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Update Project Member</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="form-group" style="display:none;">
-                                <label>Member</label>
-                                <div class="input-group">
-                                    <input type="hidden" id="project_member_id_update" class="form-control" placeholder="Member Id" value="" readonly>
-                                    <select class="form-control select2bs4" name="member_id_update" data-width="100%" id="member_id_update">
-                                        <option value="">-- Choose Member --</option>
-                                        <?php foreach ($MemberRecords as $row) : ?>
-                                            <option value="<?= $row->member_id; ?>">
-                                                <?php
-                                                if ($row->company_name == "PT Persada Lampung Raya") {
-                                                    echo 'PLR - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Persada Palembang Raya") {
-                                                    echo 'PPR - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Gita Riau Makmur") {
-                                                    echo 'GRM - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Genta Lampung Makmur") {
-                                                    echo 'GLM - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Universal Traktor Indonesia") {
-                                                    echo 'UTI - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Persada Bangka Raya") {
-                                                    echo 'PBR - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Persada Solusi Data") {
-                                                    echo 'PSD - ' . $row->member_name;
-                                                } else if ($row->company_name == "PT Mega Truckindo Utama") {
-                                                    echo 'MTU - ' . $row->member_name;
-                                                } else {
-                                                    echo $row->company_name . '   -   ' . $row->member_name;
-                                                }
-                                                ?>
-                                            </option>
-                                        <?php endforeach; ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Member Type</label>
-                                <select class="form-control select2bs4" name="member_type_id_update" id="member_type_id_update" data-width=100%>
-                                    <option value="">-- Choose Type --</option>
-                                    <?php foreach ($MemberTypeRecords as $row) : ?>
-                                        <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-primary" id="btnUpMember">Update Member</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!--#EndProject Modal Update Member-->
-
 <!--#Project Modal Insert Attachment-->
-<div class="modal fade" id="modal-input-attachment">
-    <div class="modal-dialog">
+<div class="modal fade" id="modal-input-attachment" role="dialog" aria-labelledby="modal-input-attachment-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <div class="modal-title">Add Project Attachment</div>
@@ -548,11 +533,11 @@
 <!--#EndProject Modal Insert Attachment-->
 
 <!--  Modal Update -->
-<div class="modal fade" id="modal-update-project">
-    <div class="modal-dialog" style="max-width: 920px;">
+<div class="modal fade" id="modal-update-project" role="dialog" aria-labelledby="modal-update-project-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Update Project</h4>
+                <h5 class="modal-title">Update Project</h5>
             </div>
             <form id="">
                 <div class="modal-body">
@@ -571,14 +556,30 @@
                             </div>
                         </div>
                         <div class="col-lg-6">
-                            <div class="form-group">
+                            <div class="form-group" style="display: none;">
                                 <label for="project_type" class="mr-2">Project Type</label>
-                                <select class="form-control select2bs4" name="project_type" id="project_type">
-                                    <?php foreach ($ProjectTypeRecords as $row) :
-                                        $selectType = $row->variable_id == $project_type ? 'selected' : ''; ?>
-                                        <option value="<?= $row->variable_id; ?>" <?= $selectType ?>><?= $row->variable_name; ?></option>
-                                    <?php endforeach; ?>
-                                </select>
+                                <?php if ($selected) : ?>
+                                    <select class="form-control select2bs4" name="project_type" id="project_type">
+                                        <?php foreach ($ProjectTypeRecords as $row) :
+                                            $selectType = $row->variable_id == $project_type ? 'selected' : ''; ?>
+                                            <option value="<?= $row->variable_id; ?>" <?= $selectType ?>><?= $row->variable_name; ?></option>
+                                        <?php endforeach; ?>
+                                    </select>
+                                <?php else : ?>
+                                    <input type="text" name="project_type1" id="project_type1" class="form-control" value="<?= $project_type ?>">
+                                <?php endif; ?>
+                            </div>
+                            <div class="row col-lg-12 justify-content-between">
+                                <div>
+                                    <label for="project_collab" class="mr-2">Collaborate Project</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" name="pcollabc" id="pcollabc" onchange="toggleCollab()">
+                                    <label for="project_collab" class="mr-2">Collaborate</label>
+                                </div>
+                            </div>
+                            <div class="form-group" id="pcollab">
+                                <select class="form-control" id="collab_project" name="collab_project[]" multiple="multiple"></select>
                             </div>
                             <div class="form-group">
                                 <div class="row">
@@ -618,11 +619,11 @@
 <!-- #End Modal Update -->
 
 <!-- Modal Insert Card -->
-<div class="modal fade" id="modal-input-list">
-    <div class="modal-dialog" style="max-width: 920px;">
+<div class="modal fade" id="modal-input-list" role="dialog" aria-labelledby="modal-input-list-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">New Card</h4>
+                <h5 class="modal-title">New Card</h5>
             </div>
             <form id="">
                 <div class="modal-body">
@@ -630,7 +631,7 @@
                         <div class="col-lg-6">
                             <div class="card card-info card-outline" style="max-height: 300px;">
                                 <div class="card-header">
-                                    <h5 class="card-title" style="width: 90%;"><input type="text" id="list_name" class="form-control" placeholder="Item Name"></h5>
+                                    <h5 class="card-title" style="width: 90%;"><input type="text" id="list_name" class="form-control" placeholder="Card Name"></h5>
                                     <div class="card-tools">
                                         <a class="btn btn-tool" href=""><i class="fa fa-pen"></i></a>
                                     </div>
@@ -648,7 +649,7 @@
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="priority_list" value="PR-2">
-                                        <label class="form-check-label">Medium</label>
+                                        <label class="form-check-label">Normal</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="priority_list" value="PR-1">
@@ -684,14 +685,14 @@
         </div>
     </div>
 </div>
-<!-- Modal Insert List -->
+<!-- Modal Insert Card -->
 
-<!-- Modal Update List -->
-<div class="modal fade" id="modal-update-list">
-    <div class="modal-dialog" style="max-width: 920px;">
+<!-- Modal Update Card -->
+<div class="modal fade" id="modal-update-list" role="dialog" aria-labelledby="modal-update-list-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Update Card</h4>
+                <h5 class="modal-title">Update Card</h5>
             </div>
             <form id="">
                 <div class="modal-body">
@@ -721,7 +722,7 @@
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="update_priority_list" value="PR-2">
-                                        <label class="form-check-label">Medium</label>
+                                        <label class="form-check-label">Normal</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="update_priority_list" value="PR-1">
@@ -762,8 +763,7 @@
         </div>
     </div>
 </div>
-<!-- Modal Update List -->
-
+<!-- Modal Update Card -->
 <script>
     $("#tblProjectMember").DataTable({
             responsive: true,
@@ -793,27 +793,45 @@
         .appendTo("#tblAttachment_wrapper .col-md-6:eq(0)");
     $("#tblProject").DataTable({
             responsive: true,
-            lengthChange: false,
+            lengthChange: true,
             autoWidth: false,
-            searching: false,
-            order: [
-                [0, "desc"]
-            ]
-
+            searching: false
         })
         .buttons()
         .container()
         .appendTo("#tblProject_wrapper .col-md-6:eq(0)");
+</script>
+
+<script>
+    $(document).on('click', '#btnUpProject', function() {
+        var colb = '<?= $collab_member ?>';
+        var posisiKoma = colb.includes(",");
+        const checks = document.getElementById("pcollabc");
+        if (posisiKoma) {
+            checks.checked = true;
+            toggleCollab();
+        } else {
+            checks.checked = false;
+            toggleCollab();
+        }
+    });
 
     //Function Update Project
     $(document).on('click', '#UpdateProject', function() {
         var id = '<?= $project_id ?>';
         var title = $('#project_name').val();
-        var projectType = $('#project_type').val();
+        var projectType = ('<?= $selected ?>') ? $("#project_type").val() : $("#project_type1").val();
         var projectStart = $('#project_start').val();
         var projectDue = $('#project_due').val();
         var description = $('#project_description').summernote('code');
         var projectStatus = $('#project_status').val();
+
+        var pcollabC = document.getElementById("pcollabc");
+        var collabing = $('#collab_project').val();
+        var projectCollab = '<?= $this->session->userdata("company_id") ?>';
+        var projectCollabString = pcollabC.checked ? collabing.map(function(pc) {
+            return '"' + pc + '"';
+        }).join(', ') : JSON.stringify(projectCollab);
 
         var UpdateProject = {
             id: id,
@@ -823,6 +841,7 @@
             due: projectDue,
             description: description,
             status: projectStatus,
+            collab_member: projectCollabString,
             flag: 0
         };
 
@@ -1304,38 +1323,17 @@
 
     //#Update MEMBER
     $(document).on('click', '#slcMember', function() {
-        $('#project_member_id_update').val($(this).data('project_member_id'));
-        $('#member_id_update').val($(this).data('member_id'));
-        $('#member_type_id_update').val($(this).data('mtype_id'));
-    })
-
-    $(document).on('click', '#btnUpMember', function() {
-        var projectId = '<?= $project_id ?>';
-        var projectMId = $('#project_member_id_update').val();
-        var memberId = $('#member_id_update').val();
-        var memberType = $('#member_type_id_update').val();
-        var member_status = 'A';
-
-        if (!projectId || !memberId || !memberType) {
-            validasiInfo('Please complete all fields before updating member project!');
-            return;
-        }
+        const prj_memberID = $(this).data('project_member_id');
+        const memberID = $(this).data('member_id');
+        const memberType = $(this).data('mtype_id');
 
         var UpdatingMember = {
-            project_id: projectId,
-            project_member_id: projectMId,
-            member_id: memberId,
+            project_id: '<?= $project_id ?>',
+            project_member_id: prj_memberID,
+            member_id: memberID,
             member_type_id: memberType,
-            r_status: member_status
+            r_status: 'A'
         };
-
-
-        // TOOLS
-        var upBtn = document.getElementById("btnUpMember");
-        upBtn.disabled = true;
-        upBtn.textContent = "Updating...";
-        upBtn.classList.add("disabled");
-
         // console.log(UpdatingMember);
         UpMember(UpdatingMember);
     })
@@ -1467,12 +1465,83 @@
             data: [
                 <?php foreach ($MemberSelectRecord as $key) { ?> {
                         id: "<?= $key->member_id ?>",
-                        text: "<?= $key->member_name ?>"
+                        text: "<?= $key->company_initial ?>" + " - " + "<?= $key->company_brand_name ?>" + " - " + "<?= $key->member_name ?>"
                     },
                 <?php } ?>
             ],
             templateSelection: colorSelect
         });
+    }
+
+    function handleCollab() {
+        const colb = '<?= $collab_member ?>';
+        const colbArray = JSON.parse("[" + colb + "]");
+        $('#collab_project').select2({
+            placeholder: '-- Choose Group --',
+            allowClear: true,
+            minimumInputLength: 0,
+            data: [
+                <?php foreach ($CollabGroup as $key) { ?> {
+                        id: "<?= $key->company_id ?>",
+                        text: "<?= $key->company_initial ?>" + ' - ' + "<?= $key->company_name ?>"
+                    },
+                <?php } ?>
+            ],
+            templateSelection: colorSelect
+        });
+        $('#collab_project').val(colbArray).trigger('change');
+    }
+
+    function toggleCollab() {
+        const checks = document.getElementById("pcollabc");
+        const projectCollab = document.getElementById("pcollab");
+
+        if (checks.checked) {
+            projectCollab.style.display = "block";
+            handleCollab();
+        } else {
+            projectCollab.style.display = "none";
+            handleCollab();
+        }
+    };
+
+    $(document).on('click', '#btnAddMember', function() {
+        var coling = '<?= $collab_member ?>';
+        $.ajax({
+            url: '<?= base_url() ?>MemberSelect',
+            type: 'POST',
+            data: {
+                pro_group: coling
+            },
+            dataType: 'JSON',
+            success: function(data) {
+                var select = $('#member_id_select');
+                $.each(data.SelectM, function(index, member) {
+                    if (select.find('option[value="' + member.member_id + '"]').length === 0) {
+                        select.append('<option value="' + member.member_id + '">' + member.company_initial + ' - ' + member.company_brand_name + ' - ' + member.member_name + '</option>');
+                    }
+                });
+            },
+            error: function() {
+                console.error('Error Ajaxnya');
+            }
+        });
+    });
+
+
+
+    function handleKeyDown(event) {
+        if (event.key === 'Enter' && event.shiftKey) {
+            event.preventDefault();
+            const messageInput = document.getElementById('message-input');
+            messageInput.value += '\n';
+            adjustInputHeight(messageInput);
+        }
+    }
+
+    function adjustInputHeight(input) {
+        input.style.height = 'auto';
+        input.style.height = input.scrollHeight + 'px';
     }
 
     function actBot() {
@@ -1481,6 +1550,7 @@
             logAct.scrollTop = logAct.scrollHeight;
         }
     }
+
 
     window.onload = function() {
         actBot();
@@ -1515,22 +1585,30 @@
 
                     $.each(response.messages, function(index, message) {
                         var potoBox = (message.gender_id === 'GR-001') ? '5.png' : '3.png';
+                        var potoLive = message.photo_url;
                         if (message.message.trim() !== '') {
                             var messageClass = (message.sender_id == response.current_member_id) ? 'right' : '';
                             var senderName = (message.sender_name === '<?= $this->session->userdata("member_name") ?>') ? 'Anda' : message.sender_name;
 
-                            commentContainer.append(
-                                '<div class="direct-chat-msg ' + messageClass + '">' +
-                                '<div class="direct-chat-infos clearfix">' +
+                            var commentHtml = '<div class="direct-chat-msg ' + messageClass + '">' +
+                                '<div class="direct-chat-info clearfix">' +
                                 '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + senderName + '</span>' +
                                 '<span class="direct-chat-timestamp ' + (messageClass === 'right' ? 'float-left' : 'float-right') + '">' + message.created_at + '</span>' +
-                                '</div>' +
-                                '<img class="direct-chat-img" src="<?= base_url(); ?>assets/dist/img/avatar' + potoBox + '" alt="User Avatar" style="width: 40px; height: 40px;">' +
-                                '<div class="direct-chat-text">' + message.message + '</div>' +
-                                '</div>'
-                            );
+                                '</div>';
+
+                            if (potoLive) {
+                                commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>../api-hris/upload/' + potoLive + '" alt="User Image" class="rounded-circle" style="width: 40px; height: 40px;" title="' + senderName + '">';
+                            } else {
+                                commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>assets/dist/img/avatar' + potoBox + '" alt="User Avatar" style="width: 40px; height: 40px;">';
+                            }
+
+                            commentHtml += '<div class="direct-chat-text">' + message.message + '</div>' +
+                                '</div>';
+
+                            commentContainer.append(commentHtml);
                         }
                     });
+
 
                     var newScrollHeight = commentContainer[0].scrollHeight;
 
@@ -1560,7 +1638,6 @@
         event.preventDefault();
         var currentMemberId = $("#current-member-id").val();
         var message = $("#message-input").val();
-
         $.ajax({
             type: 'POST',
             url: '<?= base_url(); ?>insert_comment',

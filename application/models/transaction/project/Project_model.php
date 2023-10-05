@@ -16,7 +16,7 @@ class project_model extends CI_Model
 
     function Insert($parameter)
     {
-        $procedure = 'call usp_xt_project_insert(?,?,?,?,?,?,?,?,?)';
+        $procedure = 'call usp_xt_project_insert(?,?,?,?,?,?,?,?,?,?)';
         $result = $this->db->query($procedure, $parameter);
 
         return true;
@@ -24,7 +24,7 @@ class project_model extends CI_Model
 
     function Update($parameter)
     {
-        $procedure = 'call usp_xt_project_update(?,?,?,?,?,?,?,?,?)';
+        $procedure = 'call usp_xt_project_update(?,?,?,?,?,?,?,?,?,?)';
         $sql_query = $this->db->query($procedure, $parameter);
         return true;
     }
@@ -33,6 +33,16 @@ class project_model extends CI_Model
     {
         $procedure = 'call usp_xt_project_delete(?)';
         $sql_query = $this->db->query($procedure, $parameter);
+        return true;
+    }
+
+    #PIN PROJECT
+    #==================================================================================
+    function Pinning($parameter)
+    {
+        $procedure = 'call usp_pin_project(?,?)';
+        $result = $this->db->query($procedure, $parameter);
+
         return true;
     }
 }

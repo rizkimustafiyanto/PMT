@@ -1,3 +1,16 @@
+<div id="profile-popup" class="text-center">
+  <div class="col-md-12 text-center">
+    <div class="card text-center" style="border-radius: 20px;width: 200px; height:200px;">
+      <div class="text-center overflow-auto">
+        <img src="" alt="Foto Profil" class="img-fluid rounded-circle" style="width: 100px; height: 100px; margin-top: 20px;" id="profile-image">
+        <p class="small" id="profile-name" style="margin-top: 10px; margin-bottom: 0px;">Nama Anda</p>
+        <p class="text-muted small" id="profile-company" style="margin-top: 0px;">Motto Anda</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 <!-- Main Footer -->
 <footer class="main-footer">
   <!-- To the right -->
@@ -127,7 +140,43 @@
     });
   });
 </script>
+<!-- For Profile -->
+<script>
+  const profileTriggers = document.querySelectorAll(".profile-trigger");
+  const profilePopup = document.getElementById("profile-popup");
 
+  profileTriggers.forEach(trigger => {
+    trigger.addEventListener("click", (event) => {
+      event.stopPropagation();
+      const imageUrl = trigger.getAttribute("data-src");
+      const proName = trigger.getAttribute("data-member-name");
+      const proComp = trigger.getAttribute("data-member-company");
+
+      const profileImage = document.getElementById("profile-image");
+      profileImage.src = imageUrl;
+      const profileName = document.getElementById("profile-name");
+      profileName.textContent = proName;
+      const profileCompany = document.getElementById("profile-company");
+      profileCompany.textContent = proComp;
+
+      profilePopup.style.display = "block";
+
+      const imageRect = trigger.getBoundingClientRect();
+      const popupWidth = profilePopup.clientWidth;
+      const topPosition = imageRect.top + window.scrollY - profilePopup.clientHeight + 10 + "px";
+      const leftPosition = imageRect.left + window.scrollX + (imageRect.width - popupWidth) / 2 + "px";
+
+      profilePopup.style.top = topPosition;
+      profilePopup.style.left = leftPosition;
+    });
+  });
+
+  document.addEventListener("click", (event) => {
+    if (profilePopup.style.display === "block" && !profilePopup.contains(event.target)) {
+      profilePopup.style.display = "none";
+    }
+  });
+</script>
 <!-- Untuk Ganti Theme -->
 <script>
   $(document).ready(function() {

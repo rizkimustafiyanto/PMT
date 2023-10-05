@@ -39,7 +39,7 @@
 
           <div class="small-box bg-success">
             <div class="inner">
-              <h3><?= $doneProject ?>
+              <h3><?= (strpos($doneProject, '.') !== false) ? number_format($doneProject, 2) : $doneProject ?>
                 <sup style="font-size: 20px">%</sup>
               </h3>
               <p>Done</p>
@@ -54,7 +54,7 @@
 
           <div class="small-box bg-warning">
             <div class="inner">
-              <h3><?= $processProject ?>
+              <h3><?= (strpos($processProject, '.') !== false) ? number_format($processProject, 2) : $processProject ?>
                 <sup style="font-size: 20px">%</sup>
               </h3>
               <p>Progress</p>
@@ -69,7 +69,7 @@
 
           <div class="small-box bg-danger">
             <div class="inner">
-              <h3><?= $stuckProject ?>
+              <h3><?= (strpos($stuckProject, '.') !== false) ? number_format($stuckProject, 2) : $stuckProject ?>
                 <sup style="font-size: 20px">%</sup>
               </h3>
               <p>Stuck</p>
@@ -129,50 +129,52 @@
               </div>
             </div>
             <div class="card-body">
-              <?php if (!empty($MyTask)) : ?>
+              <div class="scrollable" style="max-height: 300px; overflow-y: auto;">
                 <ul class="todo-list ui-sortable" data-widget="todo-list">
-                  <?php foreach ($MyTask as $record) :
-                    $remainingDays = 0;
-                    $badgeClass = '';
-                    $startDate = strtotime($record->start_date);
-                    $dueDate = strtotime($record->due_date);
-                    $currentTime = time();
+                  <?php if (!empty($MyTask)) : ?>
+                    <?php foreach ($MyTask as $record) :
+                      $remainingDays = 0;
+                      $badgeClass = '';
+                      $startDate = strtotime($record->start_date);
+                      $dueDate = strtotime($record->due_date);
+                      $currentTime = time();
 
-                    if ($currentTime <= $startDate) {
-                      $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                      $badgeClass = 'badge-success';
-                    } elseif ($currentTime < $dueDate) {
-                      $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                      $badgeClass = (round($remainingDays) <= 2) ? 'badge-danger' : 'badge-warning';
-                    } elseif ($currentTime >= $dueDate) {
-                      $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                      $badgeClass = (round($remainingDays) <= 0) ? 'badge-secondary' : 'badge-secondary';
-                      $remainingDays = round($remainingDays * (-1));
-                    }
-                    $remainingDays = round($remainingDays);
+                      if ($currentTime <= $startDate) {
+                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
+                        $badgeClass = 'badge-success';
+                      } elseif ($currentTime < $dueDate) {
+                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
+                        $badgeClass = (round($remainingDays) <= 2) ? 'badge-danger' : 'badge-warning';
+                      } elseif ($currentTime >= $dueDate) {
+                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
+                        $badgeClass = (round($remainingDays) <= 0) ? 'badge-secondary' : 'badge-secondary';
+                        $remainingDays = round($remainingDays * (-1));
+                      }
+                      $remainingDays = round($remainingDays);
 
-                    $statusW = $record->status_id;
-                  ?>
+                      $statusW = $record->status_id;
+                    ?>
 
-                    <li>
-                      <div class="icheck-primary d-inline">
-                        <label for="todo1"></label>
-                        <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?> disabled>
-                      </div>
-                      <span class="text"><?= $record->task_name ?></span>
-                      <small class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Hari</small>
-                      <div class="tools">
-                        <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= $record->member_id ?>"></i>
-                      </div>
-                    </li>
+                      <li class="overflow-auto text-nowrap">
+                        <div class="icheck-primary d-inline">
+                          <label for="todo1"></label>
+                          <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?> disabled>
+                        </div>
+                        <span class="text"><?= $record->task_name ?></span>
+                        <small class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Hari</small>
+                        <div class="tools">
+                          <!-- <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= $record->member_id ?>"></i> -->
+                        </div>
+                      </li>
 
-                  <?php
-                  endforeach;
-                  ?>
+                    <?php
+                    endforeach;
+                    ?>
+                  <?php else : ?>
+                    <div class="text-center">No Task</div>
+                  <?php endif; ?>
                 </ul>
-              <?php else : ?>
-                <div class="text-center">No Task</div>
-              <?php endif; ?>
+              </div>
             </div>
           </div>
           <!-- Batas To Do List -->
@@ -193,7 +195,7 @@
               </div>
             </div>
             <div class="card-body">
-              <div class="col-md-12">
+              <div class="scrollable" style="max-height: 300px; overflow-y: auto;">
                 <?php if (!empty($MyProject)) :
                   foreach ($MyProject as $key) :
                     $percent = $key->percentage;

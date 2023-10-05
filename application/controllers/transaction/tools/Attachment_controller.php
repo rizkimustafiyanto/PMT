@@ -17,6 +17,7 @@ class Attachment_controller extends BaseController
         $this->load->library('email/Email');
         $this->load->helper('log_helper');
         $this->IsLoggedIn();
+        $this->load->helper(array('url', 'download'));
     }
 
     // ATTACHMENT
@@ -36,7 +37,9 @@ class Attachment_controller extends BaseController
 
         if ($fileExt != '') {
             // Membuat nama unik untuk file
-            $attachment_url = $group_id . '-' . time() . '.' . $fileExt;
+            //$attachment_url = $group_id . '-' . time() . '.' . $fileExt;
+
+            $attachment_url = $group_id . '-' . str_replace(' ', '_', $attachment_name,) . '.' . $fileExt;
 
             // Konfigurasi untuk mengunggah file
             $config['upload_path'] = './upload/';
@@ -63,7 +66,9 @@ class Attachment_controller extends BaseController
 
                 $Attachment_param = [
                     $attachment_name,
-                    $attachment_type,
+                    //$attachment_type,
+                    $fileExt,
+
                     $attachment_url,
                     $group_id,
                     $creation_user_id
@@ -165,16 +170,37 @@ class Attachment_controller extends BaseController
     {
         $file_path = './upload/' . $attachment_url;
 
+        // if (file_exists($file_path)) {
+        //     header('Content-Type: application/pdf');
+        //     // header('Content-Transfer-Encoding: Binary');
+        //     // header('Content-disposition: attachment; filename="' . basename($file_path) . '"');
+        //     // header('Content-Length: ' . filesize($file_path));
+        //     @readfile($file_path);
+        //     exit;
+        // } else {
+        //     // Handle jika file tidak ditemukan
+        //     echo "File not found.";
+        // }
+
+
         if (file_exists($file_path)) {
-            header('Content-Type: application/octet-stream');
-            header('Content-Transfer-Encoding: Binary');
-            header('Content-disposition: attachment; filename="' . basename($file_path) . '"');
-            header('Content-Length: ' . filesize($file_path));
+            $file_extension = pathinfo($file_path, PATHINFO_EXTENSION);
+
+            // Check the file type and set appropriate headers
+            switch ($file_extension) {
+                case 'pdf':
+                    header('Content-Type: application/pdf');
+                    break;
+                    // Add more cases for other file types (e.g., images, videos, etc.)
+                default:
+                    header('Content-Type: application/octet-stream');
+                    break;
+            }
+
+            header('Content-Disposition: inline; filename="' . $attachment_url . '"');
             readfile($file_path);
-            exit;
         } else {
-            // Handle jika file tidak ditemukan
-            echo "File not found.";
+            echo 'File not found.';
         }
     }
 

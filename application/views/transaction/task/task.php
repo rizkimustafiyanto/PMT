@@ -58,48 +58,75 @@
         </div>
 
         <div class="row">
-            <div class="col-md-6">
+            <div class="col-md-4">
                 <!-- Description -->
                 <div class="card">
                     <Div class="card-header">
-                        <div class="card-title">
-                            Description
-                        </div>
-                        <div class="card-tools">
-                            <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-2') && $status_id != 'STL-4') : ?>
-                                <button type="button" class="btn btn-xs btn-tool" id="btnUpList" style="font-size: 10px;" data-toggle="modal" data-target="#modal-update-list">
-                                    <i class="fa fa-lg fa-pen"></i>
+                        <div class="row justify-content-between">
+                            <div class="col-md-10" data-card-widget="collapse" style="cursor: pointer;">
+                                Description
+                            </div>
+                            <div class="card-tools">
+                                <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1') && $status_id != 'STL-4') : ?>
+                                    <button type="button" class="btn btn-xs btn-tool" id="btnUpList" style="font-size: 10px;" data-toggle="modal" data-target="#modal-update-list">
+                                        <i class="fa fa-lg fa-pen"></i>
+                                    </button>
+                                <?php
+                                endif;
+                                ?>
+                                <button type="button" class="btn btn-sm btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
                                 </button>
-                            <?php
-                            endif;
-                            ?>
-                            <button type="button" class="btn btn-sm btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
+                            </div>
                         </div>
                     </Div>
                     <div class="card-body">
-                        <strong><i class="fas fa-file-alt mr-1"></i> Card Name</strong>
-                        <p class="text-muted"><?= $list_name ?></p>
+                        <div class="row col-md-12" style="margin-bottom: -15px;">
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-file-alt mr-1"></i> Card Name</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted"><?= $list_name ?></p>
+                            </div>
+                        </div>
                         <hr>
-                        <strong><i class="fas fa-receipt mr-1"></i> Priority</strong>
-                        <p class="text-muted"><?= $list_type ?></p>
+                        <div class="row col-md-12" style="margin-bottom: -15px;">
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-receipt mr-1"></i> Priority</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted"><?= $list_type ?></p>
+                            </div>
+                        </div>
                         <hr>
-                        <strong><i class="far fa-calendar-alt mr-1"></i> Start Date</strong>
-                        <p class="text-muted"><?= $start_date ?> </p>
+                        <div class="row col-md-12" style="margin-bottom: -15px;">
+                            <div class="col-md-6">
+                                <strong><i class="far fa-calendar-alt mr-1"></i> Start Date</strong>
+                                <p class="text-muted" style="margin-left: 10px;"><?= date('d M Y', strtotime($start_date)) ?></p>
+                            </div>
+                            <div class="col-md-6">
+                                <strong><i class="far fa-calendar-alt mr-1"></i> Due Date</strong>
+                                <p class="text-muted" style="margin-left: 10px;"><?= date('d M Y', strtotime($due_date)) ?></p>
+                            </div>
+                        </div>
                         <hr>
-                        <strong><i class="far fa-calendar-alt mr-1"></i> Due Date</strong>
-                        <p class="text-muted"><?= $due_date ?> </p>
+                        <div class="row col-md-12" style="margin-bottom: -15px;">
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-quote-left mr-1"></i> Status</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <p class="text-muted"><?= $status_name ?></p>
+                            </div>
+                        </div>
                         <hr>
-                        <strong><i class="fas fa-quote-left mr-1"></i> Status</strong>
-                        <p class="text-muted"><?= $status_name ?></p>
-                        <hr>
-                        <strong><i class="fas fa-info mr-1"></i> Description</strong>
-                        <p class="text-muted"><?= $description ?></p>
+                        <div class="col-md-12">
+                            <strong><i class="fas fa-info mr-1"></i> Description</strong>
+                            <p class="text-muted"><?= $description ?></p>
+                        </div>
                         <hr>
                         <div class="col-md-12 progress-group">
                             <label for="card_name">Progress</label>
-                            <span class="float-right"><b><?= $percentage . ' %'; ?></b></span>
+                            <span class="float-right"><b><?= (strpos($percentage, '.') !== false) ? number_format($percentage, 2) : $percentage ?> %</b></span>
                             <div class="progress progress-sm" style="height: 10px;border-radius: 20px;">
                                 <div class="progress-bar bg-success" style="width: <?= $percentage ?>%"></div>
                             </div>
@@ -108,214 +135,120 @@
                     </div>
                 </div>
                 <!-- Batas Description -->
-                <!-- List Attachment -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">Card Attachment</div>
-                        <div class="card-tools">
-                            <?php if ($status_id != 'STL-4') : ?>
-                                <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
-                                    <i class="fas fa-file"></i>
-                                </button>
-                            <?php endif; ?>
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <table id="tblAttachment" class="table table-bordered table-striped" style="font-size: small;">
-                            <thead>
-                                <tr>
-                                    <th>Name</th>
-                                    <th>Type</th>
-                                    <th>Uploaded By</th>
-                                    <th class="text-center">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                <?php if (!empty($AttachmentRecord)) :
-                                    foreach ($AttachmentRecord as $record) : ?>
-                                        <tr>
-                                            <td><?= $record->attachment_name ?></td>
-                                            <td><?= $record->attachment_type_name ?></td>
-                                            <td><?= $record->member_upload ?></td>
-                                            <td class="text-center">
-                                                <a id="btnDownload" class="btn btn-xs btn-success disabled" href="<?= base_url('DownloadAttachment/' . $record->attachment_url) ?>">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                                <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <?php if (($member_type == 'MT-2' || $member_id == 'System' || $member_id == $creator || $member_id == $record->creation_user_id) && $status_id != 'STL-4') : ?>
-                                                    <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
-                                                        <i class="fa fa-trash"></i>
-                                                    </a>
-                                                <?php endif; ?>
-                                            </td>
-                                        </tr>
-                                <?php endforeach;
-                                endif; ?>
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-                <!-- Batas List Attachment -->
-                <!-- Card Member -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">
-                            <div class="card-title">Members</div>
-                        </div>
-                        <div class="card-tools">
-                            <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-2') && $status_id != 'STL-4') : ?>
-                                <button type="button" class="btn btn-xs btn-tool" id="btnAdd" data-toggle="modal" data-target="#modal-input-list-member">
-                                    <i class="fa fa-user-plus"></i>
-                                </button>
-                            <?php
-                            endif; ?>
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body p-0">
-                        <div class="col-md-12 text-center">
-                            <span class="badge badge-warning"><?= $total_member ?> Members</span>
-                        </div>
-                        <ul class="users-list clearfix">
-                            <?php if (!empty($ListMemberRecords)) :
-                                foreach ($ListMemberRecords as $record) :
-                                    $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
-                                    $typeM = $record->variable_id;
-                            ?>
-                                    <li>
-                                        <img src="<?= base_url() ?>assets/dist/img/<?= $avatar ?>" alt="User Image" style="width:60px">
-                                        <a class="users-list-name" href="javascript:void(0);"><?= $record->member_name ?></a>
-                                        <span class="badge badge-<?= ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : 'danger') ?>"><?= $record->member_type ?></span>
-                                        <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-2') && $status_id != 'STL-4') : ?>
-                                            <a class="btn btn-xs btn-success" data-bs-toggle="dropdown">
-                                                <i class="fas fa-bars"></i>
-                                            </a>
-                                        <?php endif; ?>
-                                        <ul class="dropdown-menu">
-                                            <li>
-                                                <a class="dropdown-item" data-list_member_id="<?= $record->list_member_id ?>" data-member_id='<?= $record->member_id ?>' data-mtype_id='<?= $typeM ?>' id="slcMember" data-toggle="modal" data-target="#modal-update-list-member">
-                                                    <i class="fa fa-pen"></i> Update Member
-                                                </a>
-                                                <a class="dropdown-item" data-list_member_id="<?= $record->list_member_id ?>" data-member_id='<?= $record->member_id ?>' id="btnDelMember">
-                                                    <i class="fa fa-trash"></i> Delete Member
-                                                </a>
-                                            </li>
-                                        </ul>
-                                    </li>
-                                <?php endforeach; ?>
-                            <?php endif; ?>
-                        </ul>
-                    </div>
-                </div>
-                <!-- Batas Card Member -->
             </div>
-            <div class="col-lg-6">
+            <div class="col-lg-8">
                 <!-- Card To Do List -->
                 <div class="card">
                     <div class="card-header">
-                        <div class="card-title">Task List</div>
-                        <div class="card-tools">
-                            <?php if ($status_id != 'STL-4') : ?>
-                                <button type="button" class="btn btn-tool" id="btnAddTask" data-toggle="modal" data-target="#modal-input-task">
-                                    <i class="fa fa-file-circle-plus"></i>
+                        <div class="row justify-content-between">
+                            <div class="col-md-10" data-card-widget="collapse" style="cursor: pointer;">
+                                Task List
+                            </div>
+                            <div class="card-tools">
+                                <button id="sortedas" type="button" class="btn btn-default"><span id="sortIcon" class="fas"></span></button>
+                                <button id="sortByDue" type="button" class="btn btn-default">DUE</button>
+                                <?php if ($status_id != 'STL-4' && $member_prj_type != 'MT-4') : ?>
+                                    <button type="button" class="btn btn-tool" id="btnAddTask" data-toggle="modal" data-target="#modal-input-task">
+                                        <i class="fa fa-file-circle-plus"></i>
+                                    </button>
+                                <?php endif; ?>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-minus"></i>
                                 </button>
-                            <?php endif; ?>
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
+                            </div>
                         </div>
                     </div>
                     <div class="card-body">
-                        <?php if (!empty($TaskRecords)) : ?>
+                        <div class="form-group row">
+                            <label for="sortCriteria" class="col-sm-2 col-form-label">Sort By:</label>
+                            <div class="col-sm-10">
+                                <select class="form-control" id="sortCriteria">
+                                    <option value="title">Title (Alphabetic)</option>
+                                    <option value="lastchange">Last Change</option>
+                                    <option value="priority">Priority</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="scrollable" style="max-height: 300px; overflow-y: auto;">
                             <ul class="todo-list ui-sortable" data-widget="todo-list">
-                                <?php foreach ($TaskRecords as $record) :
-                                    $showCheckbox = ($status_id != 'STL-4' && ($member_type == 'MT-2' || $member_id == 'System' || $member_id == $record->creation_user_id));
-                                    $remainingDays = 0;
-                                    $badgeClass = '';
-                                    $startDate = strtotime($record->start_date);
-                                    $dueDate = strtotime($record->due_date);
-                                    $currentTime = time();
+                                <?php if (!empty($TaskRecords)) : ?>
+                                    <?php foreach ($TaskRecords as $record) :
+                                        $showCheckbox = ($status_id != 'STL-4' && ($member_type == 'MT-2' || $member_id == 'System' || $member_id == $record->creation_user_id));
+                                        $remainingDays = 0;
+                                        $prior = $record->priority_type_id;
+                                        $badgeClass = '';
+                                        $startDate = strtotime($record->start_date);
+                                        $dueDate = strtotime($record->due_date);
+                                        $currentTime = time();
 
-                                    if ($currentTime <= $startDate) {
-                                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                                        $badgeClass = 'badge-success';
-                                    } elseif ($currentTime < $dueDate) {
-                                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                                        $badgeClass = (round($remainingDays) <= 2) ? 'badge-danger' : 'badge-warning';
-                                    } elseif ($currentTime >= $dueDate) {
-                                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                                        $badgeClass = (round($remainingDays) <= 0) ? 'badge-secondary' : 'badge-secondary';
-                                        $remainingDays = round($remainingDays * (-1));
-                                    }
-                                    $remainingDays = round($remainingDays);
-                                    $statusW = $record->status_id;
-                                ?>
+                                        if ($dueDate !== $startDate) {
+                                            $percentage = ($currentTime - $startDate) / ($dueDate - $startDate) * 100;
+                                            $percentage = max(0, min(100, $percentage));
+                                        } else {
+                                            $percentage = 100;
+                                        }
 
-                                    <li>
-                                        <div class="icheck-primary d-inline">
-                                            <label for="todo1"></label>
-                                            <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?>>
-                                        </div>
-                                        <span class="text"><?= $record->task_name ?></span>
-                                        <small class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Hari</small>
-                                        <span class="text-muted">|| <?= $record->member_name ?> ||</span>
-                                        <div class="tools">
-                                            <?php if ($showCheckbox) : ?>
-                                                <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= $record->member_id ?>"></i>
-                                                <i class="fas fa-trash" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>"></i>
+                                        if ($percentage <= 25) {
+                                            $badgeClass = 'badge-success';
+                                        } elseif ($percentage <= 75) {
+                                            $badgeClass = 'badge-warning';
+                                        } else {
+                                            $badgeClass = 'badge-danger';
+                                        }
+
+                                        $badgePrior =  ($prior == 'PR-1') ? 'danger' : (($prior == 'PR-2') ? 'warning' : 'success');
+
+
+                                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
+                                        $statusW = $record->status_id;
+                                        $bgPriority = ($statusW != 'STL-4' && $remainingDays <= '0') ? '#F08080' : '';
+                                    ?>
+                                        <li class="overflow-auto text-nowrap" style="background-color: <?= $bgPriority ?>;">
+                                            <div class="bg-<?= $badgePrior ?>" style="width: 5px; height: 10px; display: inline-block; margin-right: -20px;"></div>
+                                            <div class="icheck-primary d-inline">
+                                                <label for="todo1"></label>
+                                                <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?>>
+                                            </div>
+                                            <span class="text title"><?= $record->task_name ?></span>
+                                            <div class="tools" style="margin-top:2px;">
+                                                <?php if ($showCheckbox) : ?>
+                                                    <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= $record->member_id ?>"></i>
+                                                    <i class="fas fa-trash" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>"></i>
+                                                <?php endif; ?>
+                                            </div>
+
+                                            <?php if ($statusW != 'STL-4') : ?>
+                                                <small class="badge <?= $badgeClass ?> float-right" style="margin-top: 5px; margin-right: 8px;"><i class="far fa-clock"></i> <?= $remainingDays ?> Days</small>
+                                            <?php else : ?>
+                                                <small class="badge badge-success float-right" style="margin-top: 5px; margin-right: 8px;">DONE</small>
                                             <?php endif; ?>
-                                        </div>
-                                    </li>
 
-                                <?php
-                                endforeach;
-                                ?>
+                                            <span class="text-muted float-right">||
+                                                <?php if ($record->photo_url) : ?>
+                                                    <img src="<?= base_url(); ?>../api-hris/upload/<?= $record->photo_url ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $record->member_name ?>" data-member-name="<?= $record->member_name ?>" data-member-company="<?= $record->company_name ?>" data-src="<?= base_url(); ?>../api-hris/upload/<?= $record->photo_url; ?>">
+                                                <?php else : ?>
+                                                    <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($record->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $record->member_name ?>" data-member-name="<?= $record->member_name ?>" data-member-company="<?= $record->company_name ?>" data-src="<?= base_url(); ?>assets/dist/img/avatar<?= ($record->gender_id == 'GR-001') ? '5' : '3' ?>.png">
+                                                <?php endif; ?> ||</span>
+                                            <span class="text priority" style="display: none;"><?= $prior ?></span>
+                                            <span class="text lastchange" style="display: none;"><?= ($record->change_datetime) ? $record->change_datetime : $record->created_at ?></span>
+                                            <!-- <span class="text-muted">|| <?= $record->member_name ?> ||</span> -->
+                                        </li>
+
+                                    <?php
+                                    endforeach;
+                                    ?>
+
+                                <?php else : ?>
+                                    <div class="text-center">No Task</div>
+                                <?php endif; ?>
                             </ul>
-                        <?php else : ?>
-                            <div class="text-center">No Task</div>
-                        <?php endif; ?>
+                        </div>
                     </div>
                 </div>
                 <!-- Batas Card To Do List -->
-                <!-- Log Activity -->
-                <div class="card">
-                    <div class="card-header">
-                        <div class="card-title">LOG Activity</div>
-                        <div class="card-tools">
-                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    <div class="card-body">
-                        <?php if (!empty($LogRecord)) { ?>
-                            <div class="direct-chat-messages overflow-auto" id="logact">
-                                <?php foreach ($LogRecord as $record) { ?>
-                                    <div class="row" style="font-size: smaller;">
-                                        <div class="col-md-9 overflow-auto text-nowrap" style="max-width: 100%;">
-                                            <?= $record->log ?>
-                                        </div>
-                                        <div class="col-md-3 text-center p-0 text-muted"><?= date("[H:i] D m y", strtotime($record->creation_datetime)) ?></div>
-                                    </div>
-                                <?php } ?>
-                            </div>
-                        <?php } else { ?>
-                            <div class="text-center">No Activity</div>
-                        <?php }
-                        ?>
-                    </div>
-                </div>
-                <!-- Batas Log Activity -->
                 <!-- Message -->
                 <div class="card direct-chat direct-chat-msg">
-                    <div class="card-header">
+                    <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
                         <h3 class="card-title">Comment</h3>
                         <div class="card-tools">
                             <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -336,7 +269,7 @@
                             <div class="input-group">
                                 <input type="text" id="message-input" class="form-control" placeholder="Type your comments..." <?= ($status_id == 'STL-4') ? 'disabled' : '' ?>>
                                 <span class="input-group-append">
-                                    <button type="submit" class="btn btn-primary" <?= ($status_id == 'STL-4') ? 'disabled' : '' ?>>Send</button>
+                                    <button type="submit" class="btn btn-primary" <?= ($status_id == 'STL-4' && $member_prj_type == 'MT-4') ? 'disabled' : '' ?>>Send</button>
                                 </span>
                             </div>
                         </form>
@@ -344,16 +277,161 @@
                 </div>
                 <!-- Batas Message -->
             </div>
+            <!-- List Attachment -->
+            <div class="col-lg-12">
+                <div class="card collapsed-card">
+                    <div class="card-header">
+                        <div class="row justify-content-between">
+                            <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Card Attachment</div>
+                            <div class="card-tools">
+                                <?php if ($status_id != 'STL-4' && $member_prj_type != 'MT-4') : ?>
+                                    <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
+                                        <i class="fas fa-file"></i>
+                                    </button>
+                                <?php endif; ?>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <table id="tblAttachment" class="table table-bordered table-striped" style="font-size: small;">
+                            <thead>
+                                <tr>
+                                    <th data-width="60%">Name</th>
+                                    <th data-width="15%">Uploaded Date</th>
+
+                                    <!-- <th>Type</th> -->
+                                    <th data-width="15%">Uploaded By</th>
+                                    <th data-width="10%" class="text-center">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php if (!empty($AttachmentRecord)) :
+                                    foreach ($AttachmentRecord as $record) : ?>
+                                        <tr>
+                                            <td><?= $record->attachment_name . '.' . $record->attachment_type ?></td>
+                                            <td><?= $record->creation_datetime ?></td>
+                                            <td><?= $record->member_upload ?></td>
+                                            <td class="text-center">
+                                                <a id="btnDownload" class="btn btn-xs btn-success" href="<?= base_url('DownloadAttachment/' . $record->attachment_url) ?>">
+                                                    <i class="fa fa-download"></i>
+                                                </a>
+                                                <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
+                                                    <i class="fas fa-eye"></i>
+                                                </a>
+                                                <?php if (($member_type == 'MT-2' || $member_id == 'System' || $member_id == $creator || $member_id == $record->creation_user_id) && $status_id != 'STL-4') : ?>
+                                                    <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
+                                                        <i class="fa fa-trash"></i>
+                                                    </a>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                <?php endforeach;
+                                endif; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            <!-- Batas List Attachment -->
+            <!-- Card Member -->
+            <div class="col-lg-12">
+                <div class="card collapsed-card">
+                    <div class="card-header">
+                        <div class="row justify-content-between">
+                            <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Members</div>
+                            <div class="card-tools">
+                                <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1') && $status_id != 'STL-4') : ?>
+                                    <button type="button" class="btn btn-xs btn-tool" id="btnAdd" data-toggle="modal" data-target="#modal-input-list-member">
+                                        <i class="fa fa-user-plus"></i>
+                                    </button>
+                                <?php
+                                endif; ?>
+                                <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                    <i class="fas fa-plus"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="card-body p-0">
+                        <div class="col-md-12 text-center">
+                            <span class="badge badge-warning"><?= $total_member ?> Members</span>
+                        </div>
+                        <ul class="users-list clearfix">
+                            <?php if (!empty($ListMemberRecords)) :
+                                foreach ($ListMemberRecords as $record) :
+                                    $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                    $typeM = $record->variable_id;
+                            ?>
+                                    <li>
+                                        <img src="<?= base_url() ?>assets/dist/img/<?= $avatar ?>" alt="User Image" style="width:60px">
+                                        <a class="users-list-name" href="javascript:void(0);"><?= $record->member_name ?></a>
+                                        <a class="btn btn-xs btn-<?= ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : 'danger') ?>" data-bs-toggle="dropdown" <?= (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1') && $status_id != 'STL-4') ? '' : 'disabled' ?>>
+                                            <?= $record->member_type ?>
+                                        </a>
+                                        <ul class="dropdown-menu">
+                                            <li>
+                                                <?php foreach ($MemberTypeRecords as $row) : ?>
+                                                    <a class="dropdown-item" data-list_member_id="<?= $record->list_member_id ?>" data-member_id='<?= $record->member_id ?>' data-mtype_id='<?= $row->variable_id ?>' id="slcMember" data-toggle="modal" data-target="#modal-update-list-member">
+                                                        <i class="fa fa-pen"></i> <?= $row->variable_name ?>
+                                                    </a>
+                                                <?php endforeach; ?>
+                                                <a class="dropdown-item" data-list_member_id="<?= $record->list_member_id ?>" data-member_id='<?= $record->member_id ?>' id="btnDelMember">
+                                                    <i class="fa fa-trash"></i> Delete Member
+                                                </a>
+                                            </li>
+                                        </ul>
+                                    </li>
+                                <?php endforeach; ?>
+                            <?php endif; ?>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+            <!-- Batas Card Member -->
+            <!-- Log Activity -->
+            <div class="col-lg-12">
+                <div class="card collapsed-card">
+                    <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
+                        <div class="card-title">LOG Activity</div>
+                        <div class="card-tools">
+                            <button type="button" class="btn btn-tool" data-card-widget="collapse">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <?php if (!empty($LogRecord)) { ?>
+                            <div class="direct-chat-messages overflow-auto" id="logact">
+                                <?php foreach ($LogRecord as $record) { ?>
+                                    <div class="row" style="font-size: smaller;">
+                                        <div class="col-md-9" style="max-width: 100%;">
+                                            <?= $record->log ?>
+                                        </div>
+                                        <div class="col-md-3 text-center p-0 text-muted"><?= date("[H:i] D m y", strtotime($record->creation_datetime)) ?></div>
+                                    </div>
+                                <?php } ?>
+                            </div>
+                        <?php } else { ?>
+                            <div class="text-center">No Activity</div>
+                        <?php }
+                        ?>
+                    </div>
+                </div>
+            </div>
+            <!-- Batas Log Activity -->
         </div>
     </section>
 </div>
 
 <!--#Project Modal Insert Member-->
-<div class="modal fade" id="modal-input-list-member">
-    <div class="modal-dialog">
+<div class="modal fade" id="modal-input-list-member" role="dialog" aria-labelledby="modal-input-list-member-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Add Card Member</h4>
+                <h5 class="modal-title">Add Card Member</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -368,7 +446,7 @@
                                     <?php if ($member_type == 'MT-3') : ?>
                                         <option value="<?= $member_id ?>">It's You</option>
                                     <?php else :  ?>
-                                        <option value="">-- Select an option --</option>
+                                        <option value="" selected disabled>-- Select an option --</option>
                                         <?php foreach ($ProjectMemberRecords as $row) : ?>
                                             <option value="<?= $row->member_id; ?>">
                                                 <?= $row->member_name ?>
@@ -399,66 +477,12 @@
 </div>
 <!--#EndProject Modal Insert Member-->
 
-<!--#Project Modal Update Member-->
-<div class="modal fade" id="modal-update-list-member">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h4 class="modal-title">Update List Member</h4>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <form>
-                <div class="modal-body">
-                    <div class="row">
-                        <div class="col-lg-12">
-                            <div class="form-group">
-                                <label>Member</label>
-                                <div class="input-group">
-                                    <input type="hidden" id="list_member_id_update" class="form-control" placeholder="Member Id" value="" readonly>
-                                    <select class="form-control select2bs4" name="member_id_update" data-width="100%" id="member_id_update">
-                                        <?php if ($member_type == 'MT-3') : ?>
-                                            <option value="<?= $member_id ?>">It's You</option>
-                                        <?php else :  ?>
-                                            <option value="">-- Select an option --</option>
-                                            <?php foreach ($ProjectMemberRecords as $row) : ?>
-                                                <option value="<?= $row->member_id; ?>">
-                                                    <?= $row->member_name ?>
-                                                </option>
-                                        <?php endforeach;
-                                        endif; ?>
-                                    </select>
-                                </div>
-                            </div>
-                            <div class="form-group">
-                                <label>Member Type</label>
-                                <select class="form-control select2bs4" name="member_type_id_update" id="member_type_id_update" data-width=100%>
-                                    <option value="">-- Choose Type --</option>
-                                    <?php foreach ($MemberTypeRecords as $row) : ?>
-                                        <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?>
-                                        </option>
-                                    <?php endforeach; ?>
-                                </select>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-primary" id="btnUpMember">Update Member</button>
-                </div>
-            </form>
-        </div>
-    </div>
-</div>
-<!--#EndProject Modal Update Member-->
-
 <!--#Project Modal Insert Attachment-->
-<div class="modal fade" id="modal-input-attachment">
-    <div class="modal-dialog">
+<div class="modal fade" id="modal-input-attachment" role="dialog" aria-labelledby="modal-input-attachment-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <div class="modal-title">Add List Attachment</div>
+                <div class="modal-title">Add Card Attachment</div>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -497,11 +521,11 @@
 <!--#EndProject Modal Insert Attachment-->
 
 <!-- Modal Update -->
-<div class="modal fade" id="modal-update-list">
-    <div class="modal-dialog" style="max-width: 920px;">
+<div class="modal fade" id="modal-update-list" role="dialog" aria-labelledby="modal-update-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Update List</h4>
+                <h5 class="modal-title">Update Card</h5>
             </div>
             <form id="">
                 <div class="modal-body">
@@ -521,7 +545,7 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <label for="CheckingPriority">Priority List</label>
+                                <label for="CheckingPriority">Priority Card</label>
                                 <div class="form-group">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="priority_list" value="PR-3">
@@ -576,11 +600,11 @@
 <!-- #End Modal Update -->
 
 <!-- Modal Insert Task -->
-<div class="modal fade" id="modal-input-task">
-    <div class="modal-dialog">
+<div class="modal fade" id="modal-input-task" role="dialog" aria-labelledby="modal-input-task-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 420px;">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">New Task</h4>
+                <h5 class="modal-title">New Task</h5>
             </div>
             <form id="">
                 <div class="modal-body">
@@ -597,7 +621,7 @@
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="priority_task" value="PR-2">
-                                <label class="form-check-label">Medium</label>
+                                <label class="form-check-label">Normal</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="priority_task" value="PR-1">
@@ -645,11 +669,11 @@
 <!-- Modal Insert Task -->
 
 <!-- Modal Update Task -->
-<div class="modal fade" id="modal-update-task">
-    <div class="modal-dialog">
+<div class="modal fade" id="modal-update-task" role="dialog" aria-labelledby="modal-update-task-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document" style="max-width: 420px;">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">Update Task</h4>
+                <h5 class="modal-title">Update Task</h5>
             </div>
             <form id="">
                 <div class="modal-body">
@@ -668,7 +692,7 @@
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="update_priority_task" value="PR-2">
-                                <label class="form-check-label">Medium</label>
+                                <label class="form-check-label">Normal</label>
                             </div>
                             <div class="form-check">
                                 <input class="form-check-input" type="radio" name="update_priority_task" value="PR-1">
@@ -714,8 +738,127 @@
     </div>
 </div>
 <!-- Modal Update Project -->
-
 <script>
+    document.addEventListener("DOMContentLoaded", function() {
+        const taskList = document.querySelector(".todo-list");
+        const sortCriteria = document.querySelector("#sortCriteria");
+        const sortButton = document.querySelector("#sortedas");
+        const sortByDueButton = document.querySelector("#sortByDue");
+
+        let isDescending = false;
+
+        function sortByDue() {
+            const tasks = Array.from(taskList.children);
+            if (tasks.length === 0) {
+                return; // Tidak ada tugas untuk diurutkan
+            }
+            tasks.sort((a, b) => {
+                const aValue = parseInt(a.querySelector(".badge .far").nextSibling.textContent);
+                const bValue = parseInt(b.querySelector(".badge .far").nextSibling.textContent);
+
+                if (isDescending) {
+                    return bValue - aValue;
+                } else {
+                    return aValue - bValue;
+                }
+            });
+
+            // Hapus semua tugas dari daftar
+            taskList.innerHTML = "";
+
+            // Tambahkan tugas yang sudah diurutkan kembali ke daftar
+            tasks.forEach(task => taskList.appendChild(task));
+        }
+
+        function updateSortButtonIcon(isDescending) {
+            if (isDescending) {
+                sortIcon.classList.remove("fa-sort-asc");
+                sortIcon.classList.add("fa-sort-desc");
+            } else {
+                sortIcon.classList.remove("fa-sort-desc");
+                sortIcon.classList.add("fa-sort-asc");
+            }
+        }
+
+        function parsePriority(priorityString) {
+            if (priorityString === "PR-1") {
+                return 3;
+            } else if (priorityString === "PR-2") {
+                return 2;
+            } else {
+                return 1;
+            }
+        }
+
+        function sortByPriority() {
+            const tasks = Array.from(taskList.children);
+            if (tasks.length === 0) {
+                return; // Tidak ada tugas untuk diurutkan
+            }
+            tasks.sort((a, b) => {
+                const aValue = parsePriority(a.querySelector(".priority").textContent);
+                const bValue = parsePriority(b.querySelector(".priority").textContent);
+                return isDescending ? bValue - aValue : aValue - bValue;
+            });
+            tasks.forEach(task => taskList.removeChild(task));
+            tasks.forEach(task => taskList.appendChild(task));
+        }
+
+        function sortByLastChange() {
+            const tasks = Array.from(taskList.children);
+            if (tasks.length === 0) {
+                return; // Tidak ada tugas untuk diurutkan
+            }
+            tasks.sort((a, b) => {
+                const aValue = new Date(a.querySelector(".lastchange").textContent);
+                const bValue = new Date(b.querySelector(".lastchange").textContent);
+                return isDescending ? bValue - aValue : aValue - bValue;
+            });
+            tasks.forEach(task => taskList.removeChild(task));
+            tasks.forEach(task => taskList.appendChild(task));
+        }
+
+        function sortTasks(criteria) {
+            if (criteria === "title") {
+                const tasks = Array.from(taskList.children);
+                if (tasks.length === 0) {
+                    return; // Tidak ada tugas untuk diurutkan
+                }
+                tasks.sort((a, b) => {
+                    const aValue = a.querySelector(".title").textContent;
+                    const bValue = b.querySelector(".title").textContent;
+                    return isDescending ? bValue.localeCompare(aValue) : aValue.localeCompare(bValue);
+                });
+
+                tasks.forEach(task => taskList.removeChild(task));
+                tasks.forEach(task => taskList.appendChild(task));
+            } else if (criteria === "lastchange") {
+                sortByLastChange();
+            } else if (criteria === "priority") {
+                sortByPriority();
+            }
+        }
+
+        sortCriteria.addEventListener("change", function() {
+            const selectedCriteria = this.value;
+            sortTasks(selectedCriteria);
+        });
+        sortButton.addEventListener("click", function() {
+            isDescending = !isDescending;
+            const selectedCriteria = sortCriteria.value;
+            sortTasks(selectedCriteria);
+            updateSortButtonIcon(isDescending);
+        });
+        sortByDueButton.addEventListener("click", function() {
+            sortByDue();
+        });
+
+        sortTasks("title");
+        updateSortButtonIcon(isDescending);
+
+    });
+
+
     $("#tblProjectMember").DataTable({
             responsive: true,
             lengthChange: false,
@@ -742,7 +885,9 @@
         .buttons()
         .container()
         .appendTo("#tblAttachment_wrapper .col-md-6:eq(0)");
+</script>
 
+<script>
     //Function Update List
     $(document).on('click', '#btnUpList', function() {
         var priority = '<?= $priority_type ?>';
@@ -1058,6 +1203,7 @@
             cancelButtonText: 'Cancel'
         }).then((result) => {
             if (result.isConfirmed) {
+                // console.log(delData);
                 delTasked(delData);
             }
         });
@@ -1287,38 +1433,18 @@
 
     //#Update MEMBER
     $(document).on('click', '#slcMember', function() {
-        $('#list_member_id_update').val($(this).data('list_member_id'));
-        $('#member_id_update').val($(this).data('member_id'));
-        $('#member_type_id_update').val($(this).data('mtype_id'));
-    })
-
-    $(document).on('click', '#btnUpMember', function() {
         var listId = '<?= $list_id ?>';
-        var listMId = $('#list_member_id_update').val();
-        var memberId = $('#member_id_update').val();
-        var memberType = $('#member_type_id_update').val();
-        var member_status = 'A';
-
-        if (!listId || !memberId || !memberType) {
-            validasiInfo('Please complete all fields before updating member project!');
-            return;
-        }
+        var listMId = $(this).data('list_member_id');
+        var memberId = $(this).data('member_id');
+        var memberType = $(this).data('mtype_id');
 
         var UpdatingMember = {
             list_id: listId,
             list_member_id: listMId,
             member_id: memberId,
             member_type_id: memberType,
-            r_status: member_status
+            r_status: 'A'
         };
-
-
-        // TOOLS
-        var upBtn = document.getElementById("btnUpMember");
-        upBtn.disabled = true;
-        upBtn.textContent = "Updating...";
-        upBtn.classList.add("disabled");
-
         // console.log(UpdatingMember);
         UpMember(UpdatingMember);
     })
@@ -1479,20 +1605,27 @@
 
                     $.each(response.messages, function(index, message) {
                         var potoBox = (message.gender_id === 'GR-001') ? '5.png' : '3.png';
+                        var potoLive = message.photo_url;
                         if (message.message.trim() !== '') {
                             var messageClass = (message.sender_id == response.current_member_id) ? 'right' : '';
                             var senderName = (message.sender_name === '<?= $this->session->userdata("member_name") ?>') ? 'Anda' : message.sender_name;
 
-                            commentContainer.append(
-                                '<div class="direct-chat-msg ' + messageClass + '">' +
-                                '<div class="direct-chat-infos clearfix">' +
+                            var commentHtml = '<div class="direct-chat-msg ' + messageClass + '">' +
+                                '<div class="direct-chat-info clearfix">' +
                                 '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + senderName + '</span>' +
                                 '<span class="direct-chat-timestamp ' + (messageClass === 'right' ? 'float-left' : 'float-right') + '">' + message.created_at + '</span>' +
-                                '</div>' +
-                                '<img class="direct-chat-img" src="<?= base_url(); ?>assets/dist/img/avatar' + potoBox + '" alt="User Avatar" style="width: 40px; height: 40px;">' +
-                                '<div class="direct-chat-text">' + message.message + '</div>' +
-                                '</div>'
-                            );
+                                '</div>';
+
+                            if (potoLive) {
+                                commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>../api-hris/upload/' + potoLive + '" alt="User Image" class="rounded-circle" style="width: 40px; height: 40px;" title="' + senderName + '">';
+                            } else {
+                                commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>assets/dist/img/avatar' + potoBox + '" alt="User Avatar" style="width: 40px; height: 40px;">';
+                            }
+
+                            commentHtml += '<div class="direct-chat-text">' + message.message + '</div>' +
+                                '</div>';
+
+                            commentContainer.append(commentHtml);
                         }
                     });
 

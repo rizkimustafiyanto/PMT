@@ -68,9 +68,13 @@
                                                             </div>
                                                             <div class="col-6 text-right">
                                                                 <?php foreach ($ProjectMemberRecords as $key) :
-                                                                    if ($row->list_id == $key->list_id) : ?>
-                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
+                                                                    if ($row->list_id == $key->list_id) :
+                                                                        if ($key->photo_url) : ?>
+                                                                            <img src="<?= base_url(); ?>../api-hris/upload/<?= $key->photo_url ?>" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
+                                                                        <?php else : ?>
+                                                                            <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
                                                                 <?php endif;
+                                                                    endif;
                                                                 endforeach; ?>
                                                             </div>
                                                         </div>
@@ -252,11 +256,11 @@
 </div>
 
 <!--#Project Modal Insert Item -->
-<div class="modal fade" id="modal-input-detail">
-    <div class="modal-dialog" style="max-width: 920px;">
+<div class="modal fade" id="modal-input-detail" tabindex="-1" role="dialog" aria-labelledby="modal-input-detail-label" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h4 class="modal-title">New List</h4>
+                <h5 class="modal-title">New Card</h5>
             </div>
             <form id="list_form">
                 <div class="modal-body">
@@ -265,7 +269,7 @@
                             <div class="card card-info card-outline" style="max-height: 300px;">
                                 <div class="card-header">
                                     <input type="hidden" class="form-control" id="stl_status" placeholder="Project ID" name="stl_status" maxlength="20" required readonly>
-                                    <h5 class="card-title" style="width: 90%;"><input type="text" id="list_name" class="form-control" placeholder="List Name"></h5>
+                                    <h5 class="card-title" style="width: 90%;"><input type="text" id="list_name" class="form-control" placeholder="Card Name"></h5>
                                     <div class="card-tools">
                                         <a class="btn btn-tool" href=""><i class="fa fa-pen"></i></a>
                                     </div>
@@ -275,7 +279,7 @@
                         </div>
                         <div class="col-lg-6">
                             <div class="form-group">
-                                <label for="priority_list">Priority Project</label>
+                                <label for="priority_list">Priority Card</label>
                                 <div class="form-group">
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="priority_list" value="PR-3" id="pr3">
@@ -283,7 +287,7 @@
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="priority_list" value="PR-2" id="pr2">
-                                        <label class="form-check-label" for="pr2">Medium</label>
+                                        <label class="form-check-label" for="pr2">Normal</label>
                                     </div>
                                     <div class="form-check">
                                         <input class="form-check-input" type="radio" name="priority_list" value="PR-1" id="pr1">
@@ -312,7 +316,7 @@
                 </div>
                 <div class="card-footer text-right">
                     <div class="btn-group">
-                        <button type="button" class="btn btn-primary" id="AddList">Save List</button>
+                        <button type="button" class="btn btn-primary" id="AddList">Create Card</button>
                     </div>
                 </div>
             </form>
@@ -458,6 +462,10 @@
         });
     }
 
+    function colorSelect(member) {
+        return $('<span style="color: blue;">' + member.text + '</span>');
+    }
+
     function handleClickAddItem() {
         $('#members_list').val([]).trigger('change');
         $('#members_list').select2({
@@ -467,10 +475,11 @@
             data: [
                 <?php foreach ($MemberSelectRecord as $key) { ?> {
                         id: "<?= $key->member_id ?>",
-                        text: "<?= $key->member_name ?>"
+                        text: "<?= $key->company_initial ?>" + " - " + "<?= $key->company_brand_name ?>" + " - " + "<?= $key->member_name ?>"
                     },
                 <?php } ?>
-            ]
+            ],
+            templateSelection: colorSelect
         });
     }
     // #ENDTOOLS

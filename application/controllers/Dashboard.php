@@ -58,6 +58,8 @@ class Dashboard extends BaseController
                     'company_id' => $res->company_id,
                     'division_id' => $res->division_id,
                     'department_id' => $res->department_id,
+                    'photo_url' => $res->photo_url,
+                    'company_brand_id' => $res->company_brand_id,
                     'IsLoggedIn' => true,
                 ];
             }
@@ -462,9 +464,9 @@ class Dashboard extends BaseController
         if (!empty($Countable)) {
             foreach ($Countable as $key) {
                 $totalProject = $key->tot_project;
-                $doneProject = $key->percentage_done % 1 === 0 ? intval($key->percentage_done) : number_format($key->percentage_done, 2, '.', '');
-                $processProject = $key->percentage_process % 1 === 0 ? intval($key->percentage_process) : number_format($key->percentage_process, 2, '.', '');
-                $stuckProject = $key->percentage_stuck % 1 === 0 ? intval($key->percentage_stuck) : number_format($key->percentage_stuck, 2, '.', '');
+                $doneProject =   $key->percentage_done;
+                $processProject = $key->percentage_process;
+                $stuckProject =  $key->percentage_stuck;
             }
         }
 

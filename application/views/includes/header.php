@@ -109,6 +109,14 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 </head>
+<style>
+  #profile-popup {
+    display: none;
+    position: absolute;
+    background-color: transparent;
+    z-index: 999;
+  }
+</style>
 
 <body class="hold-transition sidebar-mini">
   <div class="wrapper">
@@ -123,7 +131,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <a href="<?= base_url(); ?>Home" class="nav-link">Back To Home</a>
         </li> -->
         <li class="nav-item">
-          <div class="row"><strong>Selamat Datang, <?= $this->session->userdata('member_name'); ?></strong></div>
+          <div class="row"><strong>Welcome, <?= $this->session->userdata('member_name'); ?></strong></div>
           <div class="row">Date <?= date('d M Y') ?></div>
         </li>
       </ul>
@@ -138,7 +146,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <i class="fas fa-adjust"></i> Change
           </a>
         </li>
-        <li class="nav-item dropdown">
+        <!-- <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="javascript:void(0);" aria-expanded="false">
             <i class="far fa-comments"></i>
             <?php
@@ -183,32 +191,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
               <?php endforeach; ?>
             </div>
           <?php endif; ?>
-        </li>
-        <!-- <li class="nav-item dropdown">
-          <a class="nav-link" data-toggle="dropdown" href="javascript:void(0);" aria-expanded="false">
-            <i class="far fa-bell"></i>
-            <span class="badge badge-warning navbar-badge">15</span>
-          </a>
-          <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
-            <span class="dropdown-item dropdown-header">15 Notifications</span>
-            <div class="dropdown-divider"></div>
-            <a href="javascript:void(0);" class="dropdown-item">
-              <i class="fas fa-envelope mr-2"></i> 4 new messages
-              <span class="float-right text-muted text-sm">3 mins</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="javascript:void(0);" class="dropdown-item">
-              <i class="fas fa-users mr-2"></i> 8 friend requests
-              <span class="float-right text-muted text-sm">12 hours</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="javascript:void(0);" class="dropdown-item">
-              <i class="fas fa-file mr-2"></i> 3 new reports
-              <span class="float-right text-muted text-sm">2 days</span>
-            </a>
-            <div class="dropdown-divider"></div>
-            <a href="javascript:void(0);" class="dropdown-item dropdown-footer">See All Notifications</a>
-          </div>
         </li> -->
         <li class="nav-item">
           <a class="nav-link" href="<?= base_url(); ?>Profile" aria-expanded="false">
@@ -223,7 +205,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <aside class="main-sidebar elevation-3">
       <!-- Brand Logo -->
       <a href="javascript:void(0);" class="brand-link">
-        <img src="<?php echo base_url(); ?>assets/dist/img/logo_psd.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3 bg-light" style="opacity: .8">
+        <img src="<?= base_url(); ?>assets/dist/img/logo_psd.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3 bg-light" style="opacity: .8">
         <span class="brand-text font-weight-bold">PMT</span>
       </a>
 
@@ -232,7 +214,11 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <img src="<?= base_url(); ?>assets/dist/img/avatar<?= (($this->session->userdata('gender_id')) == 'GR-001') ? '5.png' : '3.png' ?>" class="img-circle elevation-2" alt="User Image">
+            <?php if ($this->session->userdata('photo_url') == null) : ?>
+              <img src="<?= base_url(); ?>assets/dist/img/avatar<?= (($this->session->userdata('gender_id')) == 'GR-001') ? '5.png' : '3.png' ?>" class="img-circle elevation-2" alt="User Image">
+            <?php else : ?>
+              <img src="<?= base_url(); ?>../api-hris/upload/<?= $this->session->userdata('photo_url'); ?>" class="img-circle elevation-2" alt="User Image" style="width: 35px; height: 35px;">
+            <?php endif; ?>
           </div>
           <div class="info">
             <a href="javascript:void(0);" class="d-block"><?= $this->session->userdata('member_name'); ?></a>

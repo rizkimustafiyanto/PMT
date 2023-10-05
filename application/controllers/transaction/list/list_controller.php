@@ -29,17 +29,17 @@ class list_controller extends BaseController
         #Project List
         #============================================================================
         $projectData = $this->project_model->Get([$p_project_id, '', 1, $memberID,]);
-        $ProjectRecords = $projectData;
         $cekRoling = $this->project_member_model->Get(['', $p_project_id, $memberID, '', 4]);
         $ProjectMemberTotalRecords = $this->project_member_model->Get(['', $p_project_id, '', '', 3,]);
         $ProjectTypeRecords = $this->variable_model->GetVariable(['', 4]);
         $data['ProjectTypeRecords'] = $ProjectTypeRecords;
         $data['ProjectMemberRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2]);
         $data['ProjectListRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 6]);
-        $data['MemberRecords'] = $this->member_model->Get(['', 0]);
+        $data['MemberRecords'] = $this->member_model->Get(['', 2]);
         $data['MemberTypeRecords'] = $this->variable_model->GetVariable(['', 2]);
         $data['StatusProjectRecords'] = $this->variable_model->GetVariable(['', 11]);
         $data['MemberSelectRecord'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2]);
+        $data['CollabGroup'] = $this->project_member_model->Get(['', '', '', '', 11]);
 
         #Attachment
         #============================================================================
@@ -66,15 +66,12 @@ class list_controller extends BaseController
         $percentage = 0;
         $total_member = 0;
         $member_type = '';
+        $selected = '';
+        $collabName = '';
+        $collabMember = '';
 
         if (!empty($projectData)) {
-            foreach ($projectData as $key) {
-                $creatorProject = $key->creation_id;
-            }
-        }
-
-        if (!empty($ProjectRecords)) {
-            foreach ($ProjectRecords as $record) {
+            foreach ($projectData as $record) {
                 $project_name = $record->project_name;
                 $project_type = $record->project_type;
                 $start_date = $record->start_date;
@@ -86,6 +83,13 @@ class list_controller extends BaseController
                 $status_id = $record->status_id;
                 $percentage = $record->percentage;
                 $name_project_status = $record->name_project_status;
+                $creatorProject = $record->creation_id;
+                $collabName = $record->collaboration_name;
+                $collabMember = $record->collaboration_member;
+            }
+            $percentage = (empty($percentage)) ? 0 : $percentage;
+            if (strlen($percentage) > 4) {
+                $percentage = number_format($percentage, 2);
             }
         }
 
@@ -107,6 +111,26 @@ class list_controller extends BaseController
             }
         }
 
+        $cekingCol = '';
+        if ($collabMember) {
+            $wordsCollabMember = explode(" ", $collabMember);
+            $wordCountCollabMember = count($wordsCollabMember);
+
+            if ($wordCountCollabMember > 0) {
+                $wordsCollabName = explode(" ", $collabName);
+                $wordCountCollabName = count($wordsCollabName);
+
+                if ($wordCountCollabName > 0) {
+                    $cekingCol = $collabMember;
+                }
+            }
+        }
+
+        if (empty($cekingCol)) {
+            $cekingCol = json_encode($this->session->userdata('company_id'));
+        }
+
+
         #Cek Kebutuhan
         #============================================================================
         $data['member_id'] = $memberID;
@@ -126,10 +150,13 @@ class list_controller extends BaseController
         $data['total_member'] = $total_member;
         $data['member_type'] = $member_type;
         $data['selected'] = $selected;
+        $data['collab_name'] = $collabName;
+        $data['collab_member'] = $cekingCol;
 
         #List List
         #============================================================================
-        $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, ($member_type == 'MT-1' || $member_type == 'MT-2') ? 3 : 1]);
+        $roling = ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_type == 'MT-4');
+        $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, ($roling) ? 3 : 1]);
         $data['StatusItemRecords'] = $this->variable_model->GetVariable(['', 5]);
 
 
@@ -244,10 +271,10 @@ class list_controller extends BaseController
                 $p_list_name = $key->list_name;
             }
             $object = $p_list_name;
-            $text_log = 'List "' . $object . '" to be "' . $var_name . '" by "' . $memberName . '"';
+            $text_log = 'Card "' . $object . '" to be "' . $var_name . '" by "' . $memberName . '"';
         } else {
             $object = $p_list_name;
-            $text_log = 'List "' . $object . '" updated by "' . $memberName . '"';
+            $text_log = 'Card "' . $object . '" updated by "' . $memberName . '"';
         }
 
         $group_id = $p_project_id;
@@ -286,7 +313,7 @@ class list_controller extends BaseController
             $p_list_name = $key->list_name;
         }
         $object = $p_list_name;
-        $text_log = 'List "' . $object . '" deleted by "' . $memberName . '"';
+        $text_log = 'Card "' . $object . '" deleted by "' . $memberName . '"';
         $group_id = $this->input->post('group_id');
         $logging = [
             $text_log,

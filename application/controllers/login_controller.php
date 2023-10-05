@@ -73,6 +73,9 @@ class login_controller extends CI_Controller
                         'company_id' => $res->company_id,
                         'division_id' => $res->division_id,
                         'department_id' => $res->department_id,
+                        'photo_url' => $res->photo_url,
+                        'company_brand_id' => $res->company_brand_id,
+                        'company_brand_name' => $res->company_brand_name,
                         'IsLoggedIn' => true,
                     ];
 

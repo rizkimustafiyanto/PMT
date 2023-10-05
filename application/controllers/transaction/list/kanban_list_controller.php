@@ -44,12 +44,16 @@ class kanban_list_controller extends BaseController
         $todoName = '';
         $inprogressName = '';
         $doneName = '';
+        $collabMember = '';
+        $collabName = '';
 
         if (!empty($ProjectRecords)) {
             foreach ($ProjectRecords as $key) {
                 $tempstart = $key->start_date;
                 $tempdue = $key->due_date;
                 $creator = $key->creation_id;
+                $collabMember = $key->collaboration_member;
+                $collabName = $key->collaboration_name;
             }
         }
         if (!empty($cekRoling)) {
@@ -73,6 +77,25 @@ class kanban_list_controller extends BaseController
                 }
             }
         }
+
+        $cekingCol = '';
+        if ($collabMember) {
+            $wordsCollabMember = explode(" ", $collabMember);
+            $wordCountCollabMember = count($wordsCollabMember);
+
+            if ($wordCountCollabMember > 0) {
+                $wordsCollabName = explode(" ", $collabName);
+                $wordCountCollabName = count($wordsCollabName);
+
+                if ($wordCountCollabName > 0) {
+                    $cekingCol = $collabMember;
+                }
+            }
+        }
+
+        if (empty($cekingCol)) {
+            $cekingCol = json_encode($this->session->userdata('company_id'));
+        }
         #===========================================================================================
 
         #TOOLS
@@ -86,6 +109,7 @@ class kanban_list_controller extends BaseController
         $data['todoName'] = $todoName;
         $data['inprogressName'] = $inprogressName;
         $data['doneName'] = $doneName;
+        $data['collab_member'] = $cekingCol;
 
         #AMBIL
         #============================================================================

@@ -84,6 +84,10 @@ class task_controller extends BaseController
                 $percentage = $key->percentage;
                 $list_type = $key->priority_type;
             }
+            $percentage = (empty($percentage)) ? 0 : $percentage;
+            if (strlen($percentage) > 4) {
+                $percentage = number_format($percentage, 2);
+            }
         }
         if (!empty($ProjectRecords)) {
             foreach ($ProjectRecords as $key) {
@@ -118,7 +122,6 @@ class task_controller extends BaseController
         $data['project_id'] = $p_project_id;
         $data['creator'] = $creatorList;
         $data['member_id'] = $memberID;
-
         $data['list_name'] = $list_name;
         $data['start_date'] = $start_date;
         $data['due_date'] = $due_date;
@@ -136,7 +139,7 @@ class task_controller extends BaseController
 
         #TASK
         #============================================================================
-        $data['TaskRecords'] = $this->task_model->Get(['', $p_list_id, '', '', $memberID, ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_prj_type == 'MT-1') ? 3 : 2]);
+        $data['TaskRecords'] = $this->task_model->Get(['', $p_list_id, '', '', $memberID, ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-4') ? 3 : 2]);
         $data['StatusTaskRecords'] = $this->variable_model->GetVariable(['', 5]);
 
         #============================================================================
@@ -172,6 +175,28 @@ class task_controller extends BaseController
 
         $result = $this->task_model->Insert($task_param);
 
+        // #EMAILING CONFIG
+        // #==============================================================================================================
+        // $memberRecords = $this->list_member_model->Get(['', $list_id, '', 0]);
+
+        // $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
+        // $namaMember = '';
+        // $userMail = [];
+
+        // foreach ($memberRecords as $member) {
+        //     $userMail[] = $member->email;
+        // }
+
+        // $subject_email = 'Create New Project';
+        // $isi_email = "Halo,\n\n\tAda projek baru di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
+        //     $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tTask Name\t: " . $task_name . "\n\nTerima kasih.";
+        // $email = new Email();
+
+        // #END EMAILING CONFIG
+        // #==============================================================================================================
+
+        #LOGGING
+        #==============================================================================================================
         $memberName = $this->session->userdata('member_name');
         $object = $task_name;
         $text_log = 'New task "' . $object . '" created by "' . $memberName . '"';
@@ -181,12 +206,14 @@ class task_controller extends BaseController
             $group_id,
             $creation_user_id
         ];
+        #END LOGGING
+        #==============================================================================================================
 
         if ($result > 0) {
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'Task created successfully'
+                'message' => 'Task created successfully Email addresses: '
             );
             $this->Log_model->Insert($logging);
         } else {
@@ -290,7 +317,6 @@ class task_controller extends BaseController
             $group_id,
             $doer
         ];
-
 
         $result = $this->task_model->Delete($task_id);
 

@@ -158,7 +158,9 @@ $route['insert_message'] = 'messages/Messages_controller/insert_message';
 $route['InsertNewMessages'] = 'messages/Messages_controller/InsertNewMessages';
 $route['DeleteMessages'] = 'messages/Messages_controller/DeleteMessages';
 
-
+// TOOLS
+$route['MemberSelect'] = 'transaction/project/project_controller/SelectProjectMember';
+$route['Pining'] = 'transaction/project/project_controller/PinorUnpinProject';
 //BATAS
 
 /* End of file routes.php */

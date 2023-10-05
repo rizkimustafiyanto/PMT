@@ -6,8 +6,10 @@ if (!empty($profiles)) {
         $profile_divisi = $key->division_name;
         $profile_department = $key->department_name;
         $profile_email = $key->email;
+        $company_name = $key->company_name;
     }
 }
+$potosnya = $this->session->userdata('photo_url');
 
 ?>
 
@@ -48,7 +50,11 @@ if (!empty($profiles)) {
                                 </div>
                             </div>
                             <div class="text-center">
-                                <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($profile_foto == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 90px; height: 90px;">
+                                <?php if ($potosnya) : ?>
+                                    <img src="<?= base_url(); ?>../api-hris/upload/<?= $potosnya ?>" alt="User Image" class="rounded-circle" style="width: 90px; height: 90px;" title="<?= $profile_name ?>">
+                                <?php else : ?>
+                                    <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($profile_foto == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 90px; height: 90px;">
+                                <?php endif; ?>
                             </div>
                             <h3 class="profile-username text-center"><?= $profile_name ?></h3>
                             <p class="text-muted text-center"><?= $profile_divisi ?></p>
