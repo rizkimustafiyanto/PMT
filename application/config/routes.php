@@ -96,6 +96,12 @@ $route['GetVariableById/(:any)'] = 'master/variable_controller/GetVariableById/$
 $route['UpdateVariable'] = 'master/variable_controller/UpdateVariable';
 $route['DeleteVariable/(:any)'] = 'master/variable_controller/DeleteVariable/$1';
 
+// MANAGEMENT MEMBER
+$route['ManageMember'] = 'master/management_member_controller/index';
+$route['InsertManage'] = 'master/management_member_controller/Insert';
+$route['UpdateManage'] = 'master/management_member_controller/Update';
+$route['DeleteManage/(:any)'] = 'master/management_member_controller/Delete/$1';
+
 
 // --------------------- The transactions are below --------------------------------
 
@@ -109,7 +115,7 @@ $route['UpdateProjectMember'] = 'transaction/project/project_controller/UpdatePr
 $route['DeleteProjectMember'] = 'transaction/project/project_controller/DeleteProjectMember';
 
 // LIST
-$route['List/(:any)'] = 'transaction/list/list_controller/List/$1';
+$route['Project/List/(:any)'] = 'transaction/list/list_controller/List/$1';
 $route['UpdateList'] = 'transaction/list/list_controller/UpdateList';
 $route['InsertList'] = 'transaction/list/list_controller/InsertList';
 $route['DeleteList'] = 'transaction/list/list_controller/DeleteList';
@@ -118,13 +124,13 @@ $route['UpdateListMember'] = 'transaction/list/list_controller/UpdateListMember'
 $route['DeleteListMember'] = 'transaction/list/list_controller/DeleteListMember';
 
 // TASK
-$route['Task/(:any)/(:any)'] = 'transaction/task/task_controller/Task/$1/$2';
+$route['Project/List/Task/(:any)/(:any)'] = 'transaction/task/task_controller/Task/$1/$2';
 $route['UpdateTask'] = 'transaction/task/task_controller/UpdateTask';
 $route['InsertTask'] = 'transaction/task/task_controller/InsertTask';
 $route['DeleteTask'] = 'transaction/task/task_controller/DeleteTask';
 
 // KANBAN PROJECT
-$route['KanbanList/(:any)'] = 'transaction/list/kanban_list_controller/KanbanList/$1';
+$route['Project/KanbanList/(:any)'] = 'transaction/list/kanban_list_controller/KanbanList/$1';
 
 // ATTACHMENT
 $route['InsertAttachment'] = 'transaction/tools/Attachment_controller/InsertAttachment';

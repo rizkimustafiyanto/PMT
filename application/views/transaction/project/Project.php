@@ -61,9 +61,9 @@
                                                     <?php foreach ($ProjectMemberRecords as $row) :
                                                         if ($record->project_id == $row->project_id) :
                                                             if ($row->photo_url) : ?>
-                                                                <img src="<?= base_url(); ?>../api-hris/upload/<?= $row->photo_url; ?>" alt="User Image" class="rounded-circle elevation-1 profile-trigger" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>" data-member-name="<?= $row->member_name ?>" data-member-company="<?= $row->company_name ?>" data-src="<?= base_url(); ?>../api-hris/upload/<?= $row->photo_url; ?>">
+                                                                <img src="<?= base_url(); ?>../api-hris/upload/<?= $row->photo_url; ?>" alt="Image" class="rounded-circle elevation-1 profile-trigger" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>" data-member-name="<?= $row->member_name ?>" data-member-company="<?= $row->company_name ?>" data-src="<?= base_url(); ?>../api-hris/upload/<?= $row->photo_url; ?>">
                                                             <?php else : ?>
-                                                                <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle elevation-1 profile-trigger" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>" data-member-name="<?= $row->member_name ?>" data-member-company="<?= $row->company_name ?>" data-src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png">
+                                                                <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="Image" class="rounded-circle elevation-1 profile-trigger" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>" data-member-name="<?= $row->member_name ?>" data-member-company="<?= $row->company_name ?>" data-src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png">
                                                     <?php endif;
                                                         endif;
                                                     endforeach; ?>
@@ -85,11 +85,11 @@
                                                         <button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">
                                                             <i class="fas fa-bars"></i>
                                                         </button>
-                                                        <div class="dropdown-menu" style="box-shadow: none; border-color: transparent;">
-                                                            <a class="dropdown-item btn btn-xs" href="<?= base_url() . 'List/' . $record->project_id; ?>" title="View Detail" style="width: 90px;"><i class="fa fa-eye mr-1"></i>View</a>
-                                                            <a class="dropdown-item btn btn-xs" href="<?= base_url() . 'KanbanList/' . $record->project_id; ?>" title="View Kanban" style="width: 90px;"><i class="fa fa-lg fa-brands fa-flipboard mr-1"></i>Board</a>
+                                                        <div class="dropdown-menu" style="box-shadow: none; border-color: transparent; width: 50px;">
+                                                            <a class="dropdown-item btn btn-xs" href="<?= base_url() . 'Project/List/' . $record->project_id; ?>" title="View Detail" style="width: 60px;"><i class="fa fa-eye mr-1"></i>View</a>
+                                                            <a class="dropdown-item btn btn-xs" href="<?= base_url() . 'Project/KanbanList/' . $record->project_id; ?>" title="View Kanban" style="width: 60px;"><i class="fa fa-lg fa-brands fa-flipboard mr-1"></i>Board</a>
                                                             <?php if (($member_id == 'System' || $record->member_type_id == 'MT-1') && $record->status_id != 'STW-2') : ?>
-                                                                <a class="dropdown-item btn btn-xs" id="btnDeleteProject" data-project-id="<?= $record->project_id; ?>" title="Delete Project" style="width: 90px;"><i class="fa fa-trash mr-1"></i>Delete</a>
+                                                                <a class="dropdown-item btn btn-xs" id="btnDeleteProject" data-project-id="<?= $record->project_id; ?>" title="Delete Project" style="width: 60px;"><i class="fa fa-trash mr-1"></i>Delete</a>
                                                             <?php endif; ?>
                                                         </div>
                                                     </div>
@@ -161,20 +161,17 @@
                                     <select class="form-control" id="collab_project" name="collab_project[]" multiple="multiple"></select>
                                 </div>
                                 <div class="form-group">
-                                    <div class="row">
-                                        <div class="col">
-                                            <label for="startProject">Start Date</label>
-                                            <input type="date" class="form-control" id="project_start" required>
-                                        </div>
-                                        <div class="col">
-                                            <label for="endProject">End Date</label>
-                                            <input type="date" class="form-control" id="project_due" required>
+                                    <label for="dateRange">Date Range</label>
+                                    <div class="input-group">
+                                        <input type="text" class="form-control" id="dateRange">
+                                        <div class="input-group-append">
+                                            <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="form-group">
                                     <label for="AssignMember" class="mr-2">Assign Member</label>
-                                    <select class="form-control" id="members_project" name="members_project[]" multiple="multiple"></select>
+                                    <select class="form-control" id="members_project" name="members_project[]" multiple="multiple" style="width: 100%;"></select>
                                 </div>
 
                             </div>
@@ -192,13 +189,27 @@
 </div>
 
 <script>
+    $(document).on('click', '#btnAdd', function() {
+        handleCollabMember();
+    })
+    $("#dateRange").daterangepicker({
+        opens: 'left',
+        autoApply: true,
+        startDate: moment(),
+        endDate: moment(),
+        locale: {
+            format: 'YYYY-MM-DD',
+        }
+    });
     $(document).on('click', '#AddProject', function() {
         var checkbox = $("#ptypec");
         var projectType = checkbox.prop("checked") ? $("#project_type1").val() : $("#project_type").val();
         var title = $('#project_name').val();
         // var projectType = $('#project_type').val();
-        var projectStart = $('#project_start').val();
-        var projectDue = $('#project_due').val();
+        var dateRange = $('#dateRange').val();
+        var dates = dateRange.split(' - ');
+        var startDate = dates[0];
+        var endDate = dates[1];
         var description = $('#project_description').summernote('code');
         var membersProject = $('#members_project').val();
 
@@ -208,7 +219,7 @@
             return '"' + pc + '"';
         }).join(', ') : JSON.stringify(projectCollab);
 
-        if (!title || !projectStart || !projectDue || !description) {
+        if (!title || !startDate || !endDate || !description) {
             validasiInfo('Please complete all fields before inserting project!');
             return;
         }
@@ -216,8 +227,8 @@
         var AddProject = {
             title: title,
             projectType: projectType,
-            start: projectStart,
-            due: projectDue,
+            start: startDate,
+            due: endDate,
             description: description,
             membersProject: JSON.stringify(membersProject),
             collab_member: projectCollabString !== '' ? projectCollabString : JSON.stringify('<?= $this->session->userdata("company_id") ?>')
@@ -228,7 +239,8 @@
         addBtnProject.disabled = true;
         addBtnProject.textContent = "Creating...";
         addBtnProject.classList.add("disabled");
-        // console.log(AddProject);
+        console.log(AddProject);
+        loadIng();
         addProject(AddProject);
     })
 
@@ -239,6 +251,7 @@
             data: AddProject,
             success: function(response) {
                 $('#modal-input-project').modal('hide');
+                Swal.close();
                 Swal.fire({
                     icon: response.status,
                     title: response.title,
@@ -337,11 +350,6 @@
         });
     }
 
-
-    function colorSelect(member) {
-        return $('<span style="color: blue;">' + member.text + '</span>');
-    }
-
     function handleCollab() {
         $('#collab_project').val([]).trigger('change');
         $('#collab_project').select2({
@@ -357,6 +365,7 @@
             ],
             templateSelection: colorSelect
         });
+        warnaMultiple();
     }
 
     function handleCollabMember() {
@@ -373,7 +382,7 @@
             },
             dataType: 'JSON',
             success: function(response) {
-
+                console.log(response);
                 var membersData = [];
                 $.each(response.SelectM, function(index, isi) {
                     membersData.push({
@@ -381,7 +390,6 @@
                         text: isi.company_initial + ' - ' + isi.company_brand_name + ' - ' + isi.member_name
                     });
                 });
-
                 $('#members_project').empty().select2({
                     placeholder: '-- Choose Members --',
                     allowClear: true,
@@ -389,7 +397,7 @@
                     data: membersData,
                     templateSelection: colorSelect
                 });
-
+                warnaMultiple();
             }
         });
     }

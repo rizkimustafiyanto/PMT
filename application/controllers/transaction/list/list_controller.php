@@ -16,6 +16,7 @@ class list_controller extends BaseController
         $this->load->model('transaction/tools/Attachment_model');
         $this->load->model('transaction/tools/Log_model');
         $this->load->model('master/member_model');
+        $this->load->model('master/management_member_model');
         $this->load->model('master/variable_model');
         $this->load->library('email');
         $this->load->library('email/Email');
@@ -32,14 +33,16 @@ class list_controller extends BaseController
         $cekRoling = $this->project_member_model->Get(['', $p_project_id, $memberID, '', 4]);
         $ProjectMemberTotalRecords = $this->project_member_model->Get(['', $p_project_id, '', '', 3,]);
         $ProjectTypeRecords = $this->variable_model->GetVariable(['', 4]);
+        $manageAccess = $this->management_member_model->Get([$memberID, 1]);
         $data['ProjectTypeRecords'] = $ProjectTypeRecords;
-        $data['ProjectMemberRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2]);
+        $data['ProjectMemberRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 8]);
         $data['ProjectListRecords'] = $this->project_member_model->Get(['', $p_project_id, '', '', 6]);
         $data['MemberRecords'] = $this->member_model->Get(['', 2]);
         $data['MemberTypeRecords'] = $this->variable_model->GetVariable(['', 2]);
         $data['StatusProjectRecords'] = $this->variable_model->GetVariable(['', 11]);
         $data['MemberSelectRecord'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2]);
         $data['CollabGroup'] = $this->project_member_model->Get(['', '', '', '', 11]);
+        $data['ManageRecord'] = $this->management_member_model->Get(['', 0]);
 
         #Attachment
         #============================================================================
@@ -69,6 +72,8 @@ class list_controller extends BaseController
         $selected = '';
         $collabName = '';
         $collabMember = '';
+        $manageAkses = '';
+        $batas_akses = '';
 
         if (!empty($projectData)) {
             foreach ($projectData as $record) {
@@ -130,32 +135,43 @@ class list_controller extends BaseController
             $cekingCol = json_encode($this->session->userdata('company_id'));
         }
 
+        if (!empty($manageAccess)) {
+            foreach ($manageAccess as $key) {
+                $manageAkses = $key->akses;
+            }
+            $batas_akses = ($manageAkses != '0' && $status_id != 'STW-2');
+        } else {
+            $batas_akses = (($memberID == 'System' || $memberID == $creatorProject || $member_type == 'MT-2' || $member_type != 'MT-4') && $status_id != 'STW-2');
+        }
+
 
         #Cek Kebutuhan
         #============================================================================
-        $data['member_id'] = $memberID;
-        $data['creator'] = $creatorProject;
-        $data['project_id'] = $p_project_id;
-        $data['project_name'] = $project_name;
-        $data['project_type'] = $project_type;
-        $data['description'] = $description;
-        $data['record_status'] = $record_status;
-        $data['name_record_status'] = $name_record_status;
-        $data['creation_id'] = $creation_id;
-        $data['status_id'] = $status_id;
-        $data['name_project_status'] = $name_project_status;
-        $data['start_date'] = $start_date;
-        $data['due_date'] = $due_date;
-        $data['percentage'] = $percentage;
-        $data['total_member'] = $total_member;
-        $data['member_type'] = $member_type;
-        $data['selected'] = $selected;
-        $data['collab_name'] = $collabName;
-        $data['collab_member'] = $cekingCol;
+        $data['member_id'] = $memberID ?? '-';
+        $data['creator'] = $creatorProject ?? '-';
+        $data['project_id'] = $p_project_id ?? '-';
+        $data['project_name'] = $project_name ?? '-';
+        $data['project_type'] = $project_type ?? '-';
+        $data['description'] = $description ?? '-';
+        $data['record_status'] = $record_status ?? '-';
+        $data['name_record_status'] = $name_record_status ?? '-';
+        $data['creation_id'] = $creation_id ?? '-';
+        $data['status_id'] = $status_id ?? '-';
+        $data['name_project_status'] = $name_project_status ?? '-';
+        $data['start_date'] = $start_date ?? '-';
+        $data['due_date'] = $due_date ?? '-';
+        $data['percentage'] = $percentage ?? '-';
+        $data['total_member'] = $total_member ?? '-';
+        $data['member_type'] = $member_type ?? '-';
+        $data['selected'] = $selected ?? '-';
+        $data['collab_name'] = $collabName ?? '-';
+        $data['collab_member'] = $cekingCol ?? '-';
+        $data['manage_access'] = $manageAkses;
+        $data['batas_akses'] = $batas_akses;
 
         #List List
         #============================================================================
-        $roling = ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_type == 'MT-4');
+        $roling = ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_type == 'MT-4' || $member_type == 'MT-I');
         $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, ($roling) ? 3 : 1]);
         $data['StatusItemRecords'] = $this->variable_model->GetVariable(['', 5]);
 
@@ -196,6 +212,42 @@ class list_controller extends BaseController
             $record_status
         ];
         $result = $this->list_model->Insert($list_param);
+
+        // #EMAILING CONFIG
+        // #=============================================================================================================
+        $project_name = '';
+        $card_name = $list_name;
+        $projectFind = $this->project_model->Get([$project_id, '', 1, '']);
+        foreach ($projectFind as $key) {
+            $project_name = $key->project_name;
+        }
+        $cardFind = $this->list_model->Get(['', $project_id, '', '', '', '', 4]);
+        foreach ($cardFind as $key) {
+            $list_id = $key->list_id;
+        }
+        $memberRecords = $this->list_member_model->Get(['', $list_id, '', 0]);
+        $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
+        $subjectEmail = 'New Card';
+        $urlmail = base_url() . 'home';
+        // $urlmail = base_url() . 'Project/List/Task' . $project_id . '/' . $list_id;
+        $creator_name = $this->session->userdata('member_name');
+        $namaMember = [];
+        $userMail = [];
+        $creator_level = [];
+        $status = '';
+        foreach ($memberRecords as $member) {
+            $userMail[] = $member->email;
+            $namaMember[] = $member->member_name;
+            $creator_level[] = $member->member_type;
+        }
+        $flagging = '1';
+        $i = 0;
+        $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
+        for ($i = 0; $i < $countNamaMember; $i++) {
+            $this->sendingEmail($userMail[$i], $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $card_name, $flagging, $status);
+        }
+        // #END CONFIG
+        // #==============================================================================================================
 
         $memberName = $this->session->userdata('member_name');
         $object = $list_name;
@@ -283,6 +335,38 @@ class list_controller extends BaseController
             $group_id,
             $p_change_user_id
         ];
+
+        // #EMAILING CONFIG
+        // #=============================================================================================================
+        $project_name = '';
+        $card_name = $p_list_name;
+        $projectFind = $this->project_model->Get([$p_project_id, '', 1, '']);
+        foreach ($projectFind as $key) {
+            $project_name = $key->project_name;
+        }
+        $memberRecords = $this->list_member_model->Get(['', $p_list_id, '', 0]);
+        $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
+        $subjectEmail = ($flag == '1') ? 'Update Status Card' : 'Update Card';
+        $urlmail = base_url() . 'Project/List/Task' . $p_project_id . '/' . $p_list_id;
+        $creator_name = $this->session->userdata('member_name');
+        $namaMember = [];
+        $userMail = [];
+        $creator_level = [];
+        foreach ($memberRecords as $member) {
+            $userMail[] = $member->email;
+            $namaMember[] = $member->member_name;
+            $creator_level[] = $member->member_type;
+        }
+        $status = ($flag == '1') ? $var_name : '';
+        $flagging = ($flag == '1') ? '3' : '2';
+        $i = 0;
+        $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
+        for ($i = 0; $i < $countNamaMember; $i++) {
+            $this->sendingEmail($userMail[$i], $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $card_name, $flagging, $status);
+        }
+        // #END CONFIG
+        // #==============================================================================================================
+
 
         if ($result > 0) {
             $response = array(
@@ -373,7 +457,44 @@ class list_controller extends BaseController
             $creation_user_id
         ];
 
-        if ($result > 0) {
+        // #EMAILING CONFIG
+        // #=============================================================================================================
+        $project_name = '';
+        $card_name = '';
+        $project_id = '';
+        $cardFind = $this->list_model->Get([$list_id, '', '', '', '', '', 5]);
+        foreach ($cardFind as $key) {
+            $list_id = $key->list_id;
+            $project_id = $key->project_id;
+            $project_name = $key->project_name;
+        }
+        $memberRecords = $this->list_member_model->Get(['', $list_id, '', 0]);
+        $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
+        $subjectEmail = 'New Card';
+        $urlmail = base_url() . 'home';
+        // $urlmail = base_url() . 'Project/List/Task' . $project_id . '/' . $list_id;
+        $creator_name = $this->session->userdata('member_name');
+        $namaMember = [];
+        $userMail = [];
+        $creator_level = [];
+        $status = '';
+        foreach ($memberRecords as $member) {
+            if ($member_id == $member->member_id) {
+                $userMail[] = $member->email;
+                $namaMember[] = $member->member_name;
+                $creator_level[] = $member->member_type;
+            }
+        }
+        $flagging = '1';
+        $i = 0;
+        $countNamaMember = count($namaMember);
+        // #END CONFIG
+        // #==============================================================================================================
+
+        if ($result === 'success') {
+            for ($i = 0; $i < $countNamaMember; $i++) {
+                $this->sendingEmail($userMail[$i], $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $card_name, $flagging, $status);
+            }
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
@@ -384,7 +505,7 @@ class list_controller extends BaseController
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'Failed to create card member!'
+                'message' => $result
             );
         }
 
@@ -489,5 +610,72 @@ class list_controller extends BaseController
 
         header('Content-Type: application/json');
         echo json_encode($response);
+    }
+
+    //TOOLS
+    #====================================================================
+    function sendingEmail($penerima, $namaPenerima, $namaProject, $creatorName, $creator_level, $subjectEmail, $urlmail, $card_name, $flagging, $status)
+    {
+        $subject_email = $subjectEmail;
+        $namaPenerima = $namaPenerima;
+        $namaProject = $namaProject;
+        $creator = $creatorName;
+        $emailPenerima = $penerima;
+        $isi_email = '';
+
+        if ($flagging == '1') {
+            $isi_email = '
+        <html>
+        <head>
+            <meta charset="utf-8">
+        </head>
+        <body>
+            <h2 style="text-align: center;"><strong>New&nbsp;Card</strong></h2>
+            <p>&nbsp;</p>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi ' . $creator_level . ' pada Card ' . $card_name . ' untuk Project ' . $namaProject . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            > </p>
+            <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
+            <p>&nbsp;</p>
+        </body>
+        </html>';
+        } elseif ($flagging == '2') {
+            $isi_email = '
+        <html>
+        <head>
+            <meta charset="utf-8">
+        </head>
+        <body>
+            <h2 style="text-align: center;"><strong>Update&nbsp;Card</strong></h2>
+            <p>&nbsp;</p>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br />
+            Di informasikan untuk Card ' . $card_name . ' telah dilakukan perubahan data.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            > </p>
+            <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
+            <p>&nbsp;</p>
+        </body>
+        </html>';
+        } elseif ($flagging == '3') {
+            $isi_email = '
+        <html>
+        <head>
+            <meta charset="utf-8">
+        </head>
+        <body>
+            <h2 style="text-align: center;"><strong>Update&nbsp;Card</strong></h2>
+            <p>&nbsp;</p>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br />
+            Di informasikan untuk Card ' . $card_name . ' saat ini untuk statusnya adalah ' . $status . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            > </p>
+            <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
+            <p>&nbsp;</p>
+        </body>
+        </html>';
+        } elseif ($flagging == '4') {
+        } elseif ($flagging == '5') {
+        } else {
+        }
+
+        $email = new Email();
+        $email->sendEmail($emailPenerima, $subject_email, $isi_email);
     }
 }

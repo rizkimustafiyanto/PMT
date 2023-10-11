@@ -27,6 +27,9 @@
     <div style="height: 20px;"></div>
     <!-- Main content -->
     <section class="content">
+        <!-- <div class="loading-container">
+            <div class="loading-circle"></div>
+        </div> -->
         <div class="container-fluid">
             <div class="row">
                 <div class="col-12">
@@ -45,10 +48,10 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="col-sm-12 text-right">
-                            <a class="btn btn-sm btn-danger" href="<?= base_url() . 'List/' . $project_id; ?>">
+                            <a class="btn btn-sm btn-danger" href="javascript:void(0);" onclick="history.go(-1); return false;">
                                 <i class="fa fa-lg fa-reply"></i>
                             </a>
-                            <a class="btn btn-sm btn-info" href="<?= base_url() . 'KanbanList/' . $project_id; ?>">
+                            <a class="btn btn-sm btn-info" href="<?= base_url() . 'Project/KanbanList/' . $project_id; ?>">
                                 <i class="fa fa-lg fa-brands fa-flipboard"></i> Board
                             </a>
                         </div>
@@ -67,7 +70,7 @@
                                 Description
                             </div>
                             <div class="card-tools">
-                                <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1') && $status_id != 'STL-4') : ?>
+                                <?php if ($batas_akses) : ?>
                                     <button type="button" class="btn btn-xs btn-tool" id="btnUpList" style="font-size: 10px;" data-toggle="modal" data-target="#modal-update-list">
                                         <i class="fa fa-lg fa-pen"></i>
                                     </button>
@@ -141,13 +144,13 @@
                 <div class="card">
                     <div class="card-header">
                         <div class="row justify-content-between">
-                            <div class="col-md-10" data-card-widget="collapse" style="cursor: pointer;">
+                            <div class="col-md-9" data-card-widget="collapse" style="cursor: pointer;">
                                 Task List
                             </div>
                             <div class="card-tools">
                                 <button id="sortedas" type="button" class="btn btn-default"><span id="sortIcon" class="fas"></span></button>
                                 <button id="sortByDue" type="button" class="btn btn-default">DUE</button>
-                                <?php if ($status_id != 'STL-4' && $member_prj_type != 'MT-4') : ?>
+                                <?php if ($batas_akses || $member_type == 'MT-3') : ?>
                                     <button type="button" class="btn btn-tool" id="btnAddTask" data-toggle="modal" data-target="#modal-input-task">
                                         <i class="fa fa-file-circle-plus"></i>
                                     </button>
@@ -267,9 +270,9 @@
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
                             <div class="input-group">
-                                <input type="text" id="message-input" class="form-control" placeholder="Type your comments..." <?= ($status_id == 'STL-4') ? 'disabled' : '' ?>>
+                                <input type="text" id="message-input" class="form-control" placeholder="Type your comments..." <?= ($batas_akses) ? '' : 'readonly' ?>>
                                 <span class="input-group-append">
-                                    <button type="submit" class="btn btn-primary" <?= ($status_id == 'STL-4' && $member_prj_type == 'MT-4') ? 'disabled' : '' ?>>Send</button>
+                                    <button type="submit" class="btn btn-primary" <?= ($batas_akses) ? '' : 'disabled' ?>>Send</button>
                                 </span>
                             </div>
                         </form>
@@ -284,7 +287,7 @@
                         <div class="row justify-content-between">
                             <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Card Attachment</div>
                             <div class="card-tools">
-                                <?php if ($status_id != 'STL-4' && $member_prj_type != 'MT-4') : ?>
+                                <?php if ($batas_akses) : ?>
                                     <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
                                         <i class="fas fa-file"></i>
                                     </button>
@@ -343,7 +346,7 @@
                         <div class="row justify-content-between">
                             <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Members</div>
                             <div class="card-tools">
-                                <?php if (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1') && $status_id != 'STL-4') : ?>
+                                <?php if ($batas_akses) : ?>
                                     <button type="button" class="btn btn-xs btn-tool" id="btnAdd" data-toggle="modal" data-target="#modal-input-list-member">
                                         <i class="fa fa-user-plus"></i>
                                     </button>
@@ -368,7 +371,7 @@
                                     <li>
                                         <img src="<?= base_url() ?>assets/dist/img/<?= $avatar ?>" alt="User Image" style="width:60px">
                                         <a class="users-list-name" href="javascript:void(0);"><?= $record->member_name ?></a>
-                                        <a class="btn btn-xs btn-<?= ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : 'danger') ?>" data-bs-toggle="dropdown" <?= (($member_id == 'System' || $member_id == $creator || $member_type == 'MT-2' || $member_prj_type == 'MT-1') && $status_id != 'STL-4') ? '' : 'disabled' ?>>
+                                        <a class="btn btn-xs btn-<?= ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : 'danger') ?>" data-bs-toggle="dropdown" <?= ($batas_akses) ? '' : 'disabled' ?>>
                                             <?= $record->member_type ?>
                                         </a>
                                         <ul class="dropdown-menu">
@@ -442,7 +445,7 @@
                         <div class="col-lg-12">
                             <label>Member</label>
                             <div class="input-group">
-                                <select class="form-control select2bs4" name="member_id" data-width="100%" id="member_id">
+                                <select class="form-control select2bs4" name="member_id" data-width="100%" id="member_id" style="width: 100%;">
                                     <?php if ($member_type == 'MT-3') : ?>
                                         <option value="<?= $member_id ?>">It's You</option>
                                     <?php else :  ?>
@@ -457,7 +460,7 @@
                             </div>
                             <br>
                             <label>Member Type</label>
-                            <select class="form-control select2bs4" name="member_type_id" id="member_type_id" data-width=100%>
+                            <select class="form-control select2bs4" name="member_type_id" id="member_type_id" data-width="100%" style="width: 100%;">
                                 <option value="">-- Choose Type --</option>
                                 <?php foreach ($MemberTypeRecords as $row) : ?>
                                     <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?>
@@ -562,20 +565,17 @@
                                 </div>
                             </div>
                             <div class="form-group">
-                                <div class="row">
-                                    <div class="col">
-                                        <label for="startProject">Start Date</label>
-                                        <input type="date" class="form-control" id="list_start" value="<?= $start_date ?>">
-                                    </div>
-                                    <div class="col">
-                                        <label for="endProject">End Date</label>
-                                        <input type="date" class="form-control" id="list_due" value="<?= $due_date ?>">
+                                <label for="dateRange">Date Range</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="dateRange">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                     </div>
                                 </div>
                             </div>
                             <div class="form-group">
                                 <label for="list_status" class="mr-2">List Status</label>
-                                <select class="form-control select2bs4" name="list_status" id="list_status">
+                                <select class="form-control select2bs4" name="list_status" id="list_status" style="width: 100%;">
                                     <option value="<?= $status_id ?>" selected>-- Select an option --</option>
                                     <?php foreach ($StatusTaskRecords as $row) {
                                         $selectStatus = $row->variable_id == $status_id
@@ -631,7 +631,7 @@
                     </div>
                     <div class="form-group">
                         <label for="MemberTask" class="mr-2">Assign Member</label>
-                        <select class="form-control select2bs4" id="members_task" name="members_task">
+                        <select class="form-control select2bs4" id="members_task" name="members_task" style="width: 100%;">
                             <option value="" selected disabled>-- Select an option --</option>
                             <?php if ($member_type == 'MT-3') : ?>
                                 <option value="<?= $member_id ?>">It's You</option>
@@ -645,14 +645,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <div class="row">
-                            <div class="col">
-                                <label for="startTaskProject">Start Date</label>
-                                <input type="date" class="form-control" id="task_start">
-                            </div>
-                            <div class="col">
-                                <label for="dueTaskProject">Due Date</label>
-                                <input type="date" class="form-control" id="task_due">
+                        <label for="dateRange">Date Range</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="dateRange2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
                         </div>
                     </div>
@@ -702,7 +699,7 @@
                     </div>
                     <div class="form-group">
                         <label for="MemberTask" class="mr-2">Assign Member</label>
-                        <select class="form-control select2bs4" id="update_members_task" name="update_members_task">
+                        <select class="form-control select2bs4" id="update_members_task" name="update_members_task" style="width: 100%;">
                             <option value="" selected disabled>-- Select an option --</option>
                             <?php if ($member_type == 'MT-3') : ?>
                                 <option value="<?= $member_id ?>">It's You</option>
@@ -716,14 +713,11 @@
                         </select>
                     </div>
                     <div class="form-group">
-                        <div class="row">
-                            <div class="col">
-                                <label for="startTaskProject">Start Date</label>
-                                <input type="date" class="form-control" id="update_task_start">
-                            </div>
-                            <div class="col">
-                                <label for="dueTaskProject">Due Date</label>
-                                <input type="date" class="form-control" id="update_task_due">
+                        <label for="dateRange">Date Range</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="dateRange2up">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
                         </div>
                     </div>
@@ -892,13 +886,18 @@
     $(document).on('click', '#btnUpList', function() {
         var priority = '<?= $priority_type ?>';
         $("input[name='priority_list'][value='" + priority + "']").prop("checked", true);
+        date2In1();
     })
 
     $(document).on('click', '#btnUpdateList', function() {
+        var dateRange = $('#dateRange').val();
+        var dates = dateRange.split(' - ');
         var id = '<?= $list_id ?>';
         var title = $('#list_name').val();
-        var listStart = $('#list_start').val();
-        var listDue = $('#list_due').val();
+        var listStart = dates[0];
+        var listDue = dates[1];
+        // var listStart = $('#list_start').val();
+        // var listDue = $('#list_due').val();
         var priority = $("input[name='priority_list']:checked").val();
         var description = $('#list_description').summernote('code');
         var listStatus = $('#list_status').val();
@@ -935,6 +934,7 @@
         updateButton.classList.add("disabled");
 
         // console.log(UpdateList);
+        loadIng();
         updateList(UpdateList);
     })
 
@@ -945,6 +945,7 @@
             data: UpdateList,
             success: function(response) {
                 $('#modal-update-list').modal('hide');
+                Swal.close();
                 Swal.fire({
                     icon: response.status,
                     title: response.title,
@@ -976,11 +977,40 @@
     // End Function Update List
 
     // Function Add Task
+    $(document).on('click', '#btnAddTask', function() {
+        var $memberSelect = $('.select2-selection');
+        var terpilihText = $('.select2-selection__rendered');
+        var savedTheme = localStorage.getItem('theme');
+        if (savedTheme === 'dark') {
+            $memberSelect.css({
+                'background-color': '##343a40',
+                'border-color': '#6c757d',
+                'color': '#fff'
+            });
+            terpilihText.css({
+                'color': 'white'
+            })
+        } else {
+            $memberSelect.css({
+                'background-color': '#fff',
+                'color': '#333'
+            });
+            terpilihText.css({
+                'color': '#333'
+            })
+        }
+        date2In1();
+    })
+
     $(document).on('click', '#AddTask', function() {
+        var dateRange = $('#dateRange2').val();
+        var dates = dateRange.split(' - ');
         var listId = '<?= $list_id ?>';
         var title = $('#task_name').val();
-        var taskStart = $('#task_start').val();
-        var taskDue = $('#task_due').val();
+        var taskStart = dates[0];
+        var taskDue = dates[1];
+        // var taskStart = $('#task_start').val();
+        // var taskDue = $('#task_due').val();
         var membersTask = $('#members_task').val();
         var priority = $("input[name='priority_task']:checked").val();
 
@@ -1014,6 +1044,7 @@
         addBtnProject.classList.add("disabled");
 
         // console.log(AddingItem);
+        loadIng();
         addTask(AddingItem);
     })
 
@@ -1023,6 +1054,7 @@
             type: 'POST',
             data: AddingItem,
             success: function(response) {
+                Swal.close();
                 $('#modal-input-task').modal('hide');
                 Swal.fire({
                     icon: response.status,
@@ -1031,7 +1063,7 @@
                     toast: true,
                     position: 'center',
                     showConfirmButton: false,
-                    timer: 3000,
+                    timer: 2000,
                     timerProgressBar: true,
                     didOpen: toast => {
                         toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -1064,15 +1096,36 @@
         $('#update_task_due').val($(this).data('due'));
         $('#update_members_task').val($(this).data('task_member'));
 
+        var startData = $(this).data('start');
+        var dueData = $(this).data('due');
+        var today = moment().format('YYYY-MM-DD');
+        var sevenDaysLater = moment().add(7, 'days').format('YYYY-MM-DD');
+        var startDate = startData ? moment(startData, 'YYYY-MM-DD') : moment(today, 'YYYY-MM-DD');
+        var dueDate = dueData ? moment(dueData, 'YYYY-MM-DD') : moment(sevenDaysLater, 'YYYY-MM-DD');
+
+        $("#dateRange2up").daterangepicker({
+            opens: 'left',
+            autoApply: true,
+            startDate: startDate,
+            endDate: dueDate,
+            locale: {
+                format: 'YYYY-MM-DD',
+            }
+        });
+
         $('#modal-update-task').modal('show');
     })
 
     $(document).on('click', '#UpdateTask', function() {
+        var dateRange = $('#dateRange2up').val();
+        var dates = dateRange.split(' - ');
         var id = $('#update_task_id').val();
         var list_id = $('#update_list_id_task').val();
         var title = $('#update_task_name').val();
-        var projectStart = $('#update_task_start').val();
-        var projectDue = $('#update_task_due').val();
+        var projectStart = dates[0];
+        var projectDue = dates[1];
+        // var projectStart = $('#update_task_start').val();
+        // var projectDue = $('#update_task_due').val();
         var priority = $("input[name='update_priority_task']:checked").val();
         var member_task = $('#update_members_task').val();
 
@@ -1109,6 +1162,7 @@
         updateButton.classList.add("disabled");
 
         // console.log(UpdateTask);
+        loadIng();
         updateTask(UpdateTask);
         $('#modal-update-task').modal('hide');
     })
@@ -1128,6 +1182,7 @@
                 memberId: '',
                 flag: 1
             };
+            loadIng();
             updateTask(UpdateTask);
         } else {
             var UpdateTask = {
@@ -1137,10 +1192,11 @@
                 start: '',
                 due: '',
                 priority: '',
-                status: 'STL-2',
+                status: 'STL-1',
                 memberId: '',
                 flag: 1
             };
+            loadIng();
             updateTask(UpdateTask);
         }
     });
@@ -1151,6 +1207,7 @@
             type: 'POST',
             data: UpdateTask,
             success: function(response) {
+                Swal.close();
                 Swal.fire({
                     icon: response.status,
                     title: response.title,
@@ -1158,7 +1215,7 @@
                     toast: true,
                     position: 'center',
                     showConfirmButton: false,
-                    timer: 3000,
+                    timer: 2000,
                     timerProgressBar: true,
                     didOpen: toast => {
                         toast.addEventListener('mouseenter', Swal.stopTimer)
@@ -1204,6 +1261,7 @@
         }).then((result) => {
             if (result.isConfirmed) {
                 // console.log(delData);
+                loadIng();
                 delTasked(delData);
             }
         });
@@ -1215,6 +1273,7 @@
             type: 'POST',
             data: params,
             success: function(response) {
+                Swal.close();
                 Swal.fire({
                     icon: response.status,
                     title: response.title,
@@ -1392,6 +1451,7 @@
         addBtn.classList.add("disabled");
 
         // console.log(AddingMember);
+        loadIng();
         InMember(AddingMember);
     })
 
@@ -1402,6 +1462,7 @@
             data: AddingMember,
             success: function(response) {
                 $('#modal-input-list-member').modal('hide');
+                Swal.close();
                 Swal.fire({
                     icon: response.status,
                     title: response.title,
@@ -1563,6 +1624,22 @@
                 toast.addEventListener('mouseleave', Swal.resumeTimer)
             }
         });
+    }
+
+    function date2In1() {
+        var startDate = moment('<?= $start_date ?? date('Y-m-d') ?>', 'YYYY-MM-DD');
+        var dueDate = moment('<?= $due_date ?? date('Y-m-d', strtotime('+7 days')) ?>', 'YYYY-MM-DD');
+
+        $("#dateRange,#dateRange2").daterangepicker({
+            opens: 'left',
+            autoApply: true,
+            startDate: startDate,
+            endDate: dueDate,
+            locale: {
+                format: 'YYYY-MM-DD',
+            }
+        });
+        dateRangeTheme();
     }
 
     function actBot() {

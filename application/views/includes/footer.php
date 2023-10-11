@@ -26,7 +26,8 @@
 
 
 <!-- Page specific script -->
-
+<!-- Select2 -->
+<script src="<?= base_url(); ?>assets/plugins/select2/js/select2.full.min.js"></script>
 <script>
   $(function() {
     $("#example1")
@@ -107,6 +108,27 @@
     })
 
   });
+  // TOOLS SELECT MULTIPLE
+  function warnaMultiple() {
+    var savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      $('.select2-selection').css({
+        'background-color': '#343a40',
+        'border-color': '#6c757d',
+        'color': '#fff'
+      });
+    } else {
+      $('.select2-selection').css({
+        'background-color': '#fff',
+        'border-color': '#ccc',
+        'color': '#000'
+      });
+    }
+  }
+
+  function colorSelect(member) {
+    return $('<span style="color: #006fe6;">' + member.text + '</span>');
+  }
 
   //SUMMERNOTES
   $(document).ready(function() {
@@ -139,6 +161,34 @@
       });
     });
   });
+  // TOOLS DATERANGE
+  function dateRangeLightTheme() {
+    $(".calendar-table").css("background-color", "#fff");
+    $(".calendar-table").css("color", "#000");
+  }
+
+  function dateRangeDarkTheme() {
+    $(".calendar-table").css("background-color", "#333");
+    $(".calendar-table").css("color", "#fff");
+  }
+
+  function dateRangeTheme() {
+    var savedTheme = localStorage.getItem('theme');
+    if (savedTheme === 'dark') {
+      dateRangeDarkTheme();
+    } else {
+      dateRangeLightTheme();
+    }
+  }
+  //TOOLS Loading
+  function loadIng() {
+    Swal.fire({
+      html: '<div class="loading-container"><div class="loading-circle"></div></div>',
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      onBeforeOpen: () => {}
+    });
+  }
 </script>
 <!-- For Profile -->
 <script>
@@ -182,6 +232,15 @@
   $(document).ready(function() {
     var body = $('body');
     var themeBtn = $('#themeBtn');
+    var mnusValue = $('#menuactive').data('mnus');
+    // console.log(mnusValue);
+
+    if (mnusValue === 'Dashboard') {
+      body.removeClass('sidebar-collapse');
+    } else {
+      body.addClass('sidebar-collapse');
+    }
+
 
     // Tambahkan kelas tema terang saat halaman dimuat
     body.addClass('light-mode');
@@ -189,6 +248,8 @@
     $('.main-sidebar').addClass('sidebar-light-primary');
 
     themeBtn.on('click', function() {
+      warnaMultiple();
+      dateRangeTheme();
       body.toggleClass('dark-mode');
       $('.main-header').toggleClass('navbar-dark');
       $('.main-sidebar').toggleClass('sidebar-dark-primary');
@@ -216,6 +277,8 @@
   });
 </script>
 <!-- <script type="text/javascript" src="javascript/counter.js"></script> -->
+
+
 </body>
 
 </html>

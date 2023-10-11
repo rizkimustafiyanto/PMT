@@ -16,10 +16,17 @@ class list_member_model extends CI_Model
 
     function Insert($parameter)
     {
-        $procedure = 'call usp_xt_list_member_insert(?,?,?,?)';
+        $procedure = 'call usp_xt_list_member_insert(?,?,?,?,@result_message)';
         $result = $this->db->query($procedure, $parameter);
 
-        return true;
+        $result_message_query = $this->db->query('SELECT @result_message AS message');
+        $result_message = $result_message_query->row()->message;
+
+        if ($result_message === 'success') {
+            return 'success';
+        } else {
+            return $result_message;
+        }
     }
 
     function Update($parameter)

@@ -76,45 +76,40 @@ class project_controller extends BaseController
             $collaborate_member
         ];
 
-        // // Pencarian member
-        // $member_parameter = [
-        //     'p_member_id' => '',
-        //     'p_flag' => 0,
-        // ];
-        // $memberRecords = $this->member_model->get($member_parameter);
-
-        // //Konfigurasi Email
-        // $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
-        // $namaMember = '';
-        // $userMail = '';
-
-        // foreach ($memberRecords as $member) {
-        //     if ($member->member_id == $creation_user_id) {
-        //         $namaMember = $member->member_name;
-        //         $userMail = $member->email;
-        //         break;
-        //     }
-        // }
-
-        // $subject_email = 'Create New Project';
-        // //Isi pesan
-        // $isi_email = "Halo,\n\n\tAda projek baru di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
-        //     $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tProject Name\t: " . $project_name . "\n\nTerima kasih.";
-        // $email = new Email(); //Pemanggilan fungsi email pada library
-
         $result = $this->project_model->Insert($Project_parameter);
 
         if ($result > 0) {
-            //Mengirim email
-            // if ($email->sendEmail($penerima, $subject_email, $isi_email)) {
-            //     $this->session->set_flashdata('success', 'Project has been create ! Email notification sent.');
-            // } else {
-            //     $this->session->set_flashdata('error', 'Project has been create ! but Failed to send email notification.');
-            //     //echo $email->getErrorInfo();
-            // }
-            // $logMessage = 'Project has been created. Project Name: ' . $project_name . ' Created By ' . $namaMember;
-            // $operation = 'Create';
-            // writeToLog($logMessage, $operation);
+            // #EMAILING CONFIG
+            // #==============================================================================================================
+            $projectFind = $this->project_model->Get(['', '', 6, '']);
+            foreach ($projectFind as $key) {
+                $project_id = $key->project_id;
+            }
+            $memberRecords = $this->project_member_model->Get(['', $project_id, '', '', 8]);
+            $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
+            $subjectEmail = 'New Project';
+            $urlmail = base_url() . 'home';
+            // $urlmail = base_url() . 'Project/List/' . $project_id;
+            $creator_name = '';
+            $namaMember = [];
+            $userMail = [];
+            $creator_level = [];
+            foreach ($memberRecords as $member) {
+                $userMail[] = $member->email;
+                $namaMember[] = $member->member_name;
+                $creator_level[] = $member->member_type;
+                if ($creation_user_id == $member->member_id) {
+                    $creator_name = $member->member_name;
+                }
+            }
+            $flagging = '1';
+            $i = 0;
+            $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
+            for ($i = 0; $i < $countNamaMember; $i++) {
+                $this->sendingEmail($userMail[$i], $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
+            }
+            // #END CONFIG
+            // #==============================================================================================================
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
@@ -157,47 +152,37 @@ class project_controller extends BaseController
             $p_collab_member,
             $flag
         ];
-        // // Pencarian member
-        // $member_parameter = [
-        //     'p_member_id' => '',
-        //     'p_flag' => 0,
-        // ];
-        // $memberRecords = $this->member_model->get($member_parameter);
-
-        // //Konfigurasi Email
-        // $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
-        // $namaMember = '';
-        // $userMail = '';
-
-        // foreach ($memberRecords as $member) {
-        //     if ($member->member_id == $p_change_user_id) {
-        //         $namaMember = $member->member_name;
-        //         $userMail = $member->email;
-        //         break;
-        //     }
-        // }
-
-        // $subject_email = 'Updated Project';
-        // //Isi pesan
-        // $isi_email = "Halo,\n\n\tAda projek update di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
-        //     $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tProject Name\t: " . $p_project_name . "\n\nTerima kasih.";
-        // $email = new Email(); //Pemanggilan fungsi email pada library
 
         $result = $this->project_model->Update($param);
 
+        // #EMAILING CONFIG
+        // #==============================================================================================================
+        $memberRecords = $this->project_member_model->Get(['', $p_project_id, '', '', 8]);
+        $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
+        $subjectEmail = 'Update Project';
+        $urlmail = base_url() . 'Project/List/' . $p_project_id;
+        $creator_name = '';
+        $namaMember = [];
+        $userMail = [];
+        $creator_level = [];
+        foreach ($memberRecords as $member) {
+            $userMail[] = $member->email;
+            $namaMember[] = $member->member_name;
+            $creator_level[] = $member->member_type;
+            if ($p_change_user_id == $member->member_id) {
+                $creator_name = $member->member_name;
+            }
+        }
+        $flagging = '1';
+        $i = 0;
+        $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
+        for ($i = 0; $i < $countNamaMember; $i++) {
+            $this->sendingEmail($userMail[$i], $namaMember[$i], $p_project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
+        }
+        // #END CONFIG
+        // #==============================================================================================================
+
         if ($result > 0) {
-            //Mengirim email
-            // if ($email->sendEmail($penerima, $subject_email, $isi_email)) {
-            //     $this->session->set_flashdata('success', 'Project has been update ! Email notification sent.');
-            // } else {
-            //     $this->session->set_flashdata('error', 'Project has been update ! but Failed to send email notification.');
-            //     //echo $email->getErrorInfo();
-            // }
-            // $logMessage = 'Project has been updated. Project Name: ' . $project_name . ' updated By ' . $namaMember;
-            // $operation = 'Update';
-            // writeToLog($logMessage, $operation);
-            // $this->session->set_flashdata('success', 'Project Updated');
-            // echo json_encode($result);
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
@@ -236,14 +221,6 @@ class project_controller extends BaseController
     function SelectProjectMember()
     {
         $group_project = $this->input->post('pro_group');
-
-        if (is_array($group_project)) {
-            $group_project = array_map(function ($item) {
-                return str_replace('"', '', $item);
-            }, $group_project);
-            $group_project = implode(', ', $group_project);
-        }
-
         $data['SelectM'] = $this->project_member_model->Get(['', $group_project, '', '', 10]);
         echo json_encode($data);
     }
@@ -267,33 +244,50 @@ class project_controller extends BaseController
 
         $result = $this->project_member_model->Insert($project_param);
 
-        // LOGGING
-        $memberName = $this->session->userdata('member_name');
-        $dataMember = $this->member_model->Get([$member_id, 1]);
-        foreach ($dataMember as $key) {
-            $thismember = $key->member_name;
+        // #EMAILING CONFIG
+        // #==============================================================================================================
+        $project_name = '';
+        $projectFind = $this->project_model->Get([$project_id, '', 1, '']);
+        foreach ($projectFind as $key) {
+            $project_name = $key->project_name;
         }
-        $object = $thismember;
-        $text_log = 'Member "' . $object . '" inserted by "' . $memberName . '"';
-        $group_id = $this->input->post('group_id');
-        $logging = [
-            $text_log,
-            $group_id,
-            $creation_user_id
-        ];
+        $memberRecords = $this->project_member_model->Get(['', $project_id, '', '', 8]);
+        $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
+        $subjectEmail = 'Project Member';
+        $urlmail = base_url() . 'home';
+        // $urlmail = base_url() . 'Project/List/' . $project_id;
+        $creator_name = '';
+        $namaMember = [];
+        $userMail = [];
+        $creator_level = [];
+        foreach ($memberRecords as $member) {
+            $userMail[] = $member->email;
+            $namaMember[] = $member->member_name;
+            $creator_level[] = $member->member_type;
+            if ($creation_user_id == $member->member_id) {
+                $creator_name = $member->member_name;
+            }
+        }
+        $flagging = '1';
+        $i = 0;
+        $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
+        // #END CONFIG
+        // #==============================================================================================================
 
-        if ($result > 0) {
+        if ($result === 'success') {
+            for ($i = 0; $i < $countNamaMember; $i++) {
+                $this->sendingEmail($userMail[$i], $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
+            }
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
                 'message' => 'Project member insert successfully'
             );
-            $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'Failed to create project member!'
+                'message' => $result
             );
         }
 
@@ -400,8 +394,6 @@ class project_controller extends BaseController
     // END EORKSPACE MEMBER
     #===========================================================================
 
-
-
     // PINNED PROJECT
     #===========================================================================
     function PinorUnpinProject()
@@ -431,5 +423,54 @@ class project_controller extends BaseController
 
         header('Content-Type: application/json');
         echo json_encode($response);
+    }
+
+    function sendingEmail($penerima, $namaPenerima, $namaProject, $creatorName, $creator_level, $subjectEmail, $urlmail, $flagging)
+    {
+        $subject_email = $subjectEmail;
+        $namaPenerima = $namaPenerima;
+        $namaProject = $namaProject;
+        $creator = $creatorName;
+        $emailPenerima = $penerima;
+        $isi_email = '';
+
+        if ($flagging == '1') {
+            $isi_email = '
+        <html>
+        <head>
+            <meta charset="utf-8">
+        </head>
+        <body>
+            <h2 style="text-align: center;"><strong>New&nbsp;Project</strong></h2>
+            <p>&nbsp;</p>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi ' . $creator_level . ' pada Project ' . $namaProject . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            > </p>
+            <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
+            <p>&nbsp;</p>
+        </body>
+        </html>';
+        } elseif ($flagging == '2') {
+            $isi_email = '
+        <html>
+        <head>
+            <meta charset="utf-8">
+        </head>
+        <body>
+            <h2 style="text-align: center;"><strong>New&nbsp;Project</strong></h2>
+            <p>&nbsp;</p>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi ' . $creator_level . ' pada Project ' . $namaProject . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            > </p>
+            <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
+            <p>&nbsp;</p>
+        </body>
+        </html>';
+        } elseif ($flagging == '3') {
+        } elseif ($flagging == '4') {
+        } elseif ($flagging == '5') {
+        } else {
+        }
+
+        $email = new Email();
+        $email->sendEmail($emailPenerima, $subject_email, $isi_email);
     }
 }

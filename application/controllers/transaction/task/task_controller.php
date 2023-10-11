@@ -16,6 +16,7 @@ class task_controller extends BaseController
         $this->load->model('transaction/task/task_model');
         $this->load->model('transaction/tools/Attachment_model');
         $this->load->model('transaction/tools/Log_model');
+        $this->load->model('master/management_member_model');
         $this->load->model('master/member_model');
         $this->load->model('master/variable_model');
         $this->load->library('email');
@@ -36,6 +37,7 @@ class task_controller extends BaseController
 
         #PROJECT
         #============================================================================
+        $manageAccess = $this->management_member_model->Get([$memberID, 1]);
         $ProjectRecords = $this->project_model->Get([$p_project_id, '', 1, $memberID]);
         $data['MemberTypeRecords'] = $this->variable_model->GetVariable(['', 2]);
         $data['ProjectTypeRecords'] = $this->variable_model->GetVariable(['', 4]);
@@ -70,6 +72,8 @@ class task_controller extends BaseController
         $total_member = 0;
         $member_type = '';
         $member_prj_type = '';
+        $manageAkses = '';
+        $batas_akses = '';
 
         if (!empty($listData)) {
             foreach ($listData as $key) {
@@ -114,26 +118,36 @@ class task_controller extends BaseController
             }
         }
 
+        if (!empty($manageAccess)) {
+            foreach ($manageAccess as $key) {
+                $manageAkses = $key->akses;
+            }
+            $batas_akses = ($manageAkses != '0' && $status_id != 'STL-4');
+        } else {
+            $batas_akses = (($memberID == 'System' || $memberID == $creatorList || $member_type == 'MT-2' || $member_prj_type == 'MT-1') && $status_id != 'STL-4');
+        }
+
         #AMBIL
         #============================================================================
-        $data['prj_start'] = $start;
-        $data['prj_due'] = $due;
-        $data['list_id'] = $p_list_id;
-        $data['project_id'] = $p_project_id;
-        $data['creator'] = $creatorList;
-        $data['member_id'] = $memberID;
-        $data['list_name'] = $list_name;
-        $data['start_date'] = $start_date;
-        $data['due_date'] = $due_date;
-        $data['priority_type'] = $priority_type;
-        $data['status_id'] = $status_id;
-        $data['status_name'] = $status_name;
-        $data['percentage'] = $percentage;
-        $data['description'] = $description;
-        $data['list_type'] = $list_type;
-        $data['total_member'] = $total_member;
-        $data['member_type'] = $member_type;
-        $data['member_prj_type'] = $member_prj_type;
+        $data['prj_start'] = $start ?? '-';
+        $data['prj_due'] = $due ?? '-';
+        $data['list_id'] = $p_list_id ?? '-';
+        $data['project_id'] = $p_project_id ?? '-';
+        $data['creator'] = $creatorList ?? '-';
+        $data['member_id'] = $memberID ?? '-';
+        $data['list_name'] = $list_name ?? '-';
+        $data['start_date'] = $start_date ?? '-';
+        $data['due_date'] = $due_date ?? '-';
+        $data['priority_type'] = $priority_type ?? '-';
+        $data['status_id'] = $status_id ?? '-';
+        $data['status_name'] = $status_name ?? '-';
+        $data['percentage'] = $percentage ?? '-';
+        $data['description'] = $description ?? '-';
+        $data['list_type'] = $list_type ?? '-';
+        $data['total_member'] = $total_member ?? '-';
+        $data['member_type'] = $member_type ?? '-';
+        $data['member_prj_type'] = $member_prj_type ?? '-';
+        $data['batas_akses'] = $batas_akses;
 
         #============================================================================
 
@@ -177,20 +191,39 @@ class task_controller extends BaseController
 
         // #EMAILING CONFIG
         // #==============================================================================================================
-        // $memberRecords = $this->list_member_model->Get(['', $list_id, '', 0]);
-
-        // $penerima = 'pt.ujicobaku@gmail.com'; //Send Email Percobaan
-        // $namaMember = '';
-        // $userMail = [];
-
-        // foreach ($memberRecords as $member) {
-        //     $userMail[] = $member->email;
-        // }
-
-        // $subject_email = 'Create New Project';
-        // $isi_email = "Halo,\n\n\tAda projek baru di PMT. Berikut adalah detailnya:\n\n\tNama\t\t\t\t: " .
-        //     $namaMember . "\n\tEmail\t\t\t\t: " . $userMail . "\n\tTask Name\t: " . $task_name . "\n\nTerima kasih.";
-        // $email = new Email();
+        $project_id = '';
+        $projectName = '';
+        $cardName = '';
+        $memberRecords = $this->list_member_model->Get(['', $list_id, '', 0]);
+        $taskFinding = $this->task_model->Get(['', $list_id, '', '', '', 5]);
+        $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
+        $creator_name = '';
+        $namaMember = [];
+        $userMail = '';
+        foreach ($memberRecords as $member) {
+            if ($member_id == $member->member_id) {
+                $namaMember[] = $member->member_name;
+                $userMail = $member->email;
+            }
+            if ($creation_user_id == $member->member_id) {
+                $creator_name = $member->member_name;
+            }
+        }
+        foreach ($taskFinding as $key) {
+            $project_id = $key->project_id;
+            $projectName = $key->project_name;
+            $cardName = $key->list_name;
+        }
+        $subjectEmail = 'New Task';
+        $urlmail = base_url() . 'home';
+        // $urlmail = base_url() . 'Project/List/Task' . $project_id . '/' . $list_id;
+        $flagging = '1';
+        $status = '';
+        $i = 0;
+        $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
+        for ($i = 0; $i < $countNamaMember; $i++) {
+            $this->sendingEmail($userMail[$i], $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
+        }
 
         // #END EMAILING CONFIG
         // #==============================================================================================================
@@ -213,14 +246,15 @@ class task_controller extends BaseController
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'Task created successfully Email addresses: '
+                'message' => 'Task created successfully'
+                // 'message' => 'Task created successfully Email addresses: ' . implode(', ', $userMail)
             );
             $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',
                 'title' => 'Error',
-                'message' => 'Failed to create item'
+                'message' => 'Failed to create task'
             );
         }
 
@@ -282,6 +316,45 @@ class task_controller extends BaseController
             $p_change_user_id
         ];
 
+        // #EMAILING CONFIG
+        // #==============================================================================================================
+        $project_id = '';
+        $projectName = '';
+        $cardName = '';
+        $memberRecords = $this->list_member_model->Get(['', $list_id, '', 0]);
+        $taskFinding = $this->task_model->Get(['', $list_id, '', '', '', 5]);
+        $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
+        $creator_name = '';
+        $namaMember = [];
+        $userMail = '';
+        foreach ($memberRecords as $member) {
+            if ($member->variable_id == 'MT-2') {
+                $creator_name = $member->member_name;
+                $userMail = $member->email;
+                $namaMember[] = $member->member_name;
+            }
+        }
+        foreach ($taskFinding as $key) {
+            $project_id = $key->project_id;
+            $projectName = $key->project_name;
+            $cardName = $key->list_name;
+        }
+        $subjectEmail = ($flag == '1') ? 'Update Task Status' : 'Update Task';
+        $urlmail = base_url() . 'home';
+        // $urlmail = base_url() . 'Project/List/Task' . $project_id . '/' . $list_id;
+        $flagging = ($flag == '1') ? '3' : '2';
+        $status = ($flag == '1') ? $var_name : '';
+        $i = 0;
+        $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
+        if ($flag == '1') {
+            for ($i = 0; $i < $countNamaMember; $i++) {
+                $this->sendingEmail($userMail[$i], $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
+            }
+        }
+
+        // #END EMAILING CONFIG
+        // #==============================================================================================================
+
         if ($result > 0) {
             $response = array(
                 'status' => 'success',
@@ -337,5 +410,71 @@ class task_controller extends BaseController
 
         header('Content-Type: application/json');
         echo json_encode($response);
+    }
+
+    //TOOLS
+    #====================================================================
+    function sendingEmail($penerima, $namaPenerima, $namaProject, $creatorName, $subjectEmail, $urlmail, $card_name, $task_name, $flagging, $status)
+    {
+        $subject_email = $subjectEmail;
+        $namaPenerima = $namaPenerima;
+        $namaProject = $namaProject;
+        $creator = $creatorName;
+        $emailPenerima = $penerima;
+        $isi_email = '';
+
+        if ($flagging == '1') {
+            $isi_email = '
+        <html>
+        <head>
+            <meta charset="utf-8">
+        </head>
+        <body>
+            <h2 style="text-align: center;"><strong>New&nbsp;Task</strong></h2>
+            <p>&nbsp;</p>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan pada Task ' . $task_name . ' di Card ' . $card_name . ' untuk Project ' . $namaProject . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            </p>
+            <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
+            <p>&nbsp;</p>
+        </body>
+        </html>';
+        } elseif ($flagging == '2') {
+            $isi_email = '
+        <html>
+        <head>
+            <meta charset="utf-8">
+        </head>
+        <body>
+            <h2 style="text-align: center;"><strong>New&nbsp;Project</strong></h2>
+            <p>&nbsp;</p>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi member pada Project ' . $namaProject . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            > </p>
+            <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
+            <p>&nbsp;</p>
+        </body>
+        </html>';
+        } elseif ($flagging == '3') {
+            $isi_email = '
+        <html>
+        <head>
+            <meta charset="utf-8">
+        </head>
+        <body>
+            <h2 style="text-align: center;"><strong>Update&nbsp;Card</strong></h2>
+            <p>&nbsp;</p>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br />
+            Di informasikan untuk Task ' . $task_name . 'saat ini untuk statusnya adalah ' . $status . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            > </p>
+            <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
+            <p>&nbsp;</p>
+        </body>
+        </html>';
+        } elseif ($flagging == '4') {
+        } elseif ($flagging == '5') {
+        } else {
+        }
+
+        $email = new Email();
+        $email->sendEmail($emailPenerima, $subject_email, $isi_email);
     }
 }

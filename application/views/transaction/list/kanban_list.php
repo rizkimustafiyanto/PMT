@@ -33,7 +33,7 @@
                                 <div class="card-header" style="font-size: 10px;">
                                     <div class="card-title" style="font-size: 12px;"><?= $stcukName ?></div>
                                     <div class="card-tools" style="font-size: 10px;">
-                                        <?php if ($member_id == $creator || $lvlUser == 'MT-2') : ?>
+                                        <?php if ($batas_akses) : ?>
                                             <a class="btn btn-tool" id="addListSTL-3" data-status_stl="STL-3" data-toggle="modal" data-target="#modal-input-detail"><i class="fa fa-plus"></i></a>
                                         <?php endif; ?>
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -41,7 +41,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="card-body sortable" data-status="STL-3">
+                                <div class="card-body sortable" id="sortable-STL-3" data-status="STL-3">
                                     <?php if (!empty($ListRecords)) {
                                         foreach ($ListRecords as $row) : if (($row->status_id) == 'STL-3') :
                                                 $tipeItem = ($row->priority_type_id == 'PR-3') ? 'success' : (($row->priority_type_id == 'PR-2') ? 'warning' : 'danger');
@@ -50,7 +50,7 @@
                                                     <div class="card-header">
                                                         <div class="row">
                                                             <div class="col-md-8"><?= $row->list_name ?></div>
-                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
+                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
                                                         </div>
                                                     </div>
                                                     <div class="card-footer">
@@ -91,7 +91,7 @@
                                 <div class="card-header" style="font-size: 10px;">
                                     <div class="card-title" style="font-size: 12px;"><?= $todoName ?></div>
                                     <div class="card-tools" style="font-size: 10px;">
-                                        <?php if ($member_id == $creator || $lvlUser == 'MT-2') : ?>
+                                        <?php if ($batas_akses) : ?>
                                             <a class="btn btn-tool" id="addListSTL-1" data-status_stl="STL-1" data-toggle="modal" data-target="#modal-input-detail"><i class="fa fa-plus"></i></a>
                                         <?php endif; ?>
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -99,7 +99,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="card-body sortable" data-status="STL-1">
+                                <div class="card-body sortable" id="sortable-STL-1" data-status="STL-1">
                                     <?php if (!empty($ListRecords)) {
                                         foreach ($ListRecords as $row) : if (($row->status_id) == 'STL-1') :
                                                 $tipeItem = ($row->priority_type_id == 'PR-3') ? 'success' : (($row->priority_type_id == 'PR-2') ? 'warning' : 'danger');
@@ -108,7 +108,7 @@
                                                     <div class="card-header">
                                                         <div class="row">
                                                             <div class="col-md-8"><?= $row->list_name ?></div>
-                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
+                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
                                                         </div>
                                                     </div>
                                                     <div class="card-footer">
@@ -145,7 +145,7 @@
                                 <div class="card-header" style="font-size: 10px;">
                                     <div class="card-title" style="font-size: 12px;"><?= $inprogressName ?></div>
                                     <div class="card-tools" style="font-size: 10px;">
-                                        <?php if ($member_id == $creator || $lvlUser == 'MT-2') : ?>
+                                        <?php if ($batas_akses) : ?>
                                             <a class="btn btn-tool" id="addListSTL-2" data-status_stl="STL-2" data-toggle="modal" data-target="#modal-input-detail"><i class="fa fa-plus"></i></a>
                                         <?php endif; ?>
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -153,7 +153,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="card-body sortable" data-status="STL-2">
+                                <div class="card-body sortable" id="sortable-STL-2" data-status="STL-2">
                                     <?php if (!empty($ListRecords)) {
                                         foreach ($ListRecords as $row) : if (($row->status_id) == 'STL-2') :
                                                 $tipeItem = ($row->priority_type_id == 'PR-3') ? 'success' : (($row->priority_type_id == 'PR-2') ? 'warning' : 'danger');
@@ -162,7 +162,7 @@
                                                     <div class="card-header">
                                                         <div class="row">
                                                             <div class="col-md-8"><?= $row->list_name ?></div>
-                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
+                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
                                                         </div>
                                                     </div>
                                                     <div class="card-footer">
@@ -199,7 +199,7 @@
                                 <div class="card-header" style="font-size: 10px;">
                                     <div class="card-title" style="font-size: 12px;"><?= $doneName ?></div>
                                     <div class="card-tools" style="font-size: 10px;">
-                                        <?php if ($member_id == $creator || $lvlUser == 'MT-2') : ?>
+                                        <?php if ($batas_akses) : ?>
                                             <a class="btn btn-tool" id="addListSTL-4" data-status_stl="STL-4" data-toggle="modal" data-target="#modal-input-detail"><i class="fa fa-plus"></i></a>
                                         <?php endif; ?>
                                         <button type="button" class="btn btn-tool" data-card-widget="collapse">
@@ -207,7 +207,7 @@
                                         </button>
                                     </div>
                                 </div>
-                                <div class="card-body sortable" data-status="STL-4">
+                                <div class="card-body sortable" id="sortable-STL-4" data-status="STL-4">
                                     <?php if (!empty($ListRecords)) {
                                         foreach ($ListRecords as $row) : if (($row->status_id) == 'STL-4') :
                                                 $tipeItem = ($row->priority_type_id == 'PR-3') ? 'success' : (($row->priority_type_id == 'PR-2') ? 'warning' : 'danger');
@@ -216,7 +216,7 @@
                                                     <div class="card-header">
                                                         <div class="row">
                                                             <div class="col-md-8"><?= $row->list_name ?></div>
-                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
+                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
                                                         </div>
                                                     </div>
                                                     <div class="card-footer">
@@ -295,19 +295,24 @@
                                     </div>
                                 </div>
                             </div>
-                            <div class="form-group">
-                                <label for="members_list" class="mr-2">Assign Member</label>
-                                <select class="form-control" id="members_list" name="members_list[]" multiple="multiple"></select>
+                            <div class="row col-lg-12 justify-content-between">
+                                <div>
+                                    <label for="members_list" class="mr-2">Assign Member</label>
+                                </div>
+                                <div>
+                                    <input type="checkbox" name="pmemberc" id="pmemberc" onchange="handleClickAddItem()">
+                                    <label for="pmemberc" class="mr-2">All Member</label>
+                                </div>
                             </div>
                             <div class="form-group">
-                                <div class="row">
-                                    <div class="col">
-                                        <label for="list_start">Start Date</label>
-                                        <input type="date" class="form-control" id="list_start">
-                                    </div>
-                                    <div class="col">
-                                        <label for="list_due">Due Date</label>
-                                        <input type="date" class="form-control" id="list_due">
+                                <select class="form-control" id="members_list" name="members_list[]" multiple="multiple" style="width: 100%;"></select>
+                            </div>
+                            <div class="form-group">
+                                <label for="dateRange">Date Range</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="dateRange">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                                     </div>
                                 </div>
                             </div>
@@ -324,16 +329,20 @@
     </div>
 </div>
 
+
 <!--#EndProject Modal Insert Item -->
 
 <script>
     $(document).ready(function() {
-        var lvlUser = '<?= $lvlUser ?>';
-        // bawaan adminLTE sortable
-        if ('<?= $member_id ?>' == '<?= $creator ?>' || lvlUser === 'MT-2') {
-            $(".sortable").sortable({
+        var aksessing = '<?= $batas_akses ?>';
+        // Bawaan adminLTE sortable
+        if (aksessing) {
+            $("#sortable-STL-3, #sortable-STL-1, #sortable-STL-2, #sortable-STL-4").sortable({
                 connectWith: ".sortable",
-                update: function(event, ui) {
+                start: function(event, ui) {
+                    console.log("pindahin");
+                },
+                stop: function(event, ui) {
                     var project_id = ui.item.data("id");
                     var newStatus = ui.item.closest(".sortable").data("status");
 
@@ -343,6 +352,8 @@
                         status: newStatus,
                         flag: 1
                     };
+                    console.log('oke');
+
                     $.ajax({
                         url: '<?= base_url(); ?>UpdateList',
                         type: "POST",
@@ -356,8 +367,10 @@
                     });
                 }
             });
+
         }
     });
+
 
     // Function Add Item Project
     $(document).on('click', '#addListSTL-1 ,#addListSTL-2, #addListSTL-3, #addListSTL-4', function() {
@@ -365,13 +378,16 @@
         console.log(itemStatus);
         $('#stl_status').val(itemStatus);
         handleClickAddItem();
+        date2In1();
     })
 
     $(document).on('click', '#AddList', function() {
+        var dateRange = $('#dateRange').val();
+        var dates = dateRange.split(' - ');
         var itemId = '<?= $ProjectId ?>';
         var title = $('#list_name').val();
-        var itemStart = $('#list_start').val();
-        var itemDue = $('#list_due').val();
+        var itemStart = dates[0];
+        var itemDue = dates[1];
         var description = $('#list_description').summernote('code');
         var membersItem = $('#members_list').val();
         var priority = $("input[name='priority_list']:checked").val();
@@ -462,25 +478,46 @@
         });
     }
 
-    function colorSelect(member) {
-        return $('<span style="color: blue;">' + member.text + '</span>');
+    function date2In1() {
+        var startDate = moment('<?= $tempstart ?? date('Y-m-d') ?>', 'YYYY-MM-DD');
+        var dueDate = moment('<?= $tempdue ?? date('Y-m-d', strtotime('+7 days')) ?>', 'YYYY-MM-DD');
+
+        $("#dateRange").daterangepicker({
+            opens: 'left',
+            autoApply: true,
+            startDate: startDate,
+            endDate: dueDate,
+            locale: {
+                format: 'YYYY-MM-DD',
+            }
+        });
+        dateRangeTheme();
     }
 
     function handleClickAddItem() {
-        $('#members_list').val([]).trigger('change');
+        const membsArray = [];
+        <?php foreach ($MemberSelectRecord as $key) { ?>
+            membsArray.push({
+                id: "<?= $key->member_id ?>",
+                text: "<?= $key->company_initial ?>" + " - " + "<?= $key->company_brand_name ?>" + " - " + "<?= $key->member_name ?>"
+            });
+        <?php } ?>
+
         $('#members_list').select2({
             placeholder: '-- Choose Members --',
             allowClear: true,
             minimumInputLength: 0,
-            data: [
-                <?php foreach ($MemberSelectRecord as $key) { ?> {
-                        id: "<?= $key->member_id ?>",
-                        text: "<?= $key->company_initial ?>" + " - " + "<?= $key->company_brand_name ?>" + " - " + "<?= $key->member_name ?>"
-                    },
-                <?php } ?>
-            ],
+            data: membsArray,
             templateSelection: colorSelect
         });
+
+        const checks = document.getElementById("pmemberc");
+        if (checks.checked) {
+            $('#members_list').val(membsArray.map(item => item.id)).trigger('change');
+        } else {
+            $('#members_list').val([]).trigger('change');
+        }
+        warnaMultiple();
     }
     // #ENDTOOLS
 </script>

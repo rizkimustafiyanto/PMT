@@ -75,8 +75,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="<?= base_url(); ?>assets/dist/js/adminlte.min.js"></script>
   <!-- Bootstrap 4 -->
   <script src="<?= base_url(); ?>assets/plugins/bootstrap/js/bootstrap.bundle.min.js"></script>
-  <!-- Select2 -->
-  <script src="<?= base_url(); ?>assets/plugins/select2/js/select2.full.min.js"></script>
   <!-- Bootstrap4 Duallistbox -->
   <script src="<?= base_url(); ?>assets/plugins/bootstrap4-duallistbox/jquery.bootstrap-duallistbox.min.js">
   </script>
@@ -99,6 +97,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- AdminLTE for demo purposes -->
 
   <!-- Tambahan -->
+  <link rel="stylesheet" href="<?= base_url(); ?>assets/plugins/select2/css/select2.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="<?= base_url() ?>assets/plugins/summernote/summernote.min.css">
@@ -116,9 +115,36 @@ scratch. This page gets rid of all links and provides the needed markup only.
     background-color: transparent;
     z-index: 999;
   }
+
+  /* CSS untuk animasi lingkaran loading */
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  .loading-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 10vh;
+  }
+
+  .loading-circle {
+    border: 6px solid #3498db;
+    border-top: 6px solid #A52A2A;
+    border-radius: 50%;
+    width: 10%;
+    height: 7%;
+    animation: spin 1s linear infinite;
+  }
 </style>
 
-<body class="hold-transition sidebar-mini">
+<body class="hold-transition sidebar-mini sidebar-collapse">
   <div class="wrapper">
 
     <!-- Navbar -->
@@ -142,7 +168,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-link" href="javascript:void(0);" id="themeBtn">
+          <a class="nav-link" href="javascript:void(0);" id="themeBtn" title="Change Theme">
             <i class="fas fa-adjust"></i> Change
           </a>
         </li>
@@ -193,8 +219,13 @@ scratch. This page gets rid of all links and provides the needed markup only.
           <?php endif; ?>
         </li> -->
         <li class="nav-item">
-          <a class="nav-link" href="<?= base_url(); ?>Profile" aria-expanded="false">
+          <a class="nav-link" href="<?= base_url(); ?>Profile" aria-expanded="false" title="Profile">
             <i class="far fa-user"></i>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" href="<?= base_url(); ?>logout" role="button" title="Logout">
+            <i class="fa fa-power-off"></i>
           </a>
         </li>
       </ul>
@@ -202,7 +233,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     <!-- Navbar -->
 
     <!-- Main Sidebar Container -->
-    <aside class="main-sidebar elevation-3">
+    <aside class="main-sidebar  elevation-3">
       <!-- Brand Logo -->
       <a href="javascript:void(0);" class="brand-link">
         <img src="<?= base_url(); ?>assets/dist/img/logo_psd.png" alt="AdminLTE Logo" class="brand-image img-circle elevation-3 bg-light" style="opacity: .8">
@@ -221,7 +252,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
             <?php endif; ?>
           </div>
           <div class="info">
-            <a href="javascript:void(0);" class="d-block"><?= $this->session->userdata('member_name'); ?></a>
+            <a href="<?= base_url(); ?>Profile" class="d-block"><?= $this->session->userdata('member_name'); ?></a>
           </div>
         </div>
 
@@ -312,7 +343,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
                 // main menu tanpa sub menu
               ?>
                 <li class="nav-item">
-                  <a class="nav-link <?= ($main->menu_url == $current_url) ? 'active' : ''; ?>" href="<?= $main->menu_url; ?>">
+                  <a class="nav-link <?= ($main->menu_url == $current_url) ? 'active' : ''; ?>" href="<?= $main->menu_url; ?>" <?= ($main->menu_url == $current_url) ? 'id="menuactive" data-mnus="' . $main->menu_name . '"' : ''; ?>>
                     <i class="<?= $main->menu_icon; ?>"></i>
                     <p><?= $main->menu_name; ?>
                       <?php
