@@ -222,7 +222,7 @@ class task_controller extends BaseController
         $i = 0;
         $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
         for ($i = 0; $i < $countNamaMember; $i++) {
-            $this->sendingEmail($userMail[$i], $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
+            $this->sendingEmail($penerima, $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
         }
 
         // #END EMAILING CONFIG
@@ -348,7 +348,7 @@ class task_controller extends BaseController
         $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
         if ($flag == '1') {
             for ($i = 0; $i < $countNamaMember; $i++) {
-                $this->sendingEmail($userMail[$i], $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
+                $this->sendingEmail($penerima, $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
             }
         }
 
@@ -448,7 +448,7 @@ class task_controller extends BaseController
             <h2 style="text-align: center;"><strong>New&nbsp;Project</strong></h2>
             <p>&nbsp;</p>
             <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi member pada Project ' . $namaProject . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
-            > </p>
+            </p>
             <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
             <p>&nbsp;</p>
         </body>
@@ -464,7 +464,7 @@ class task_controller extends BaseController
             <p>&nbsp;</p>
             <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br />
             Di informasikan untuk Task ' . $task_name . 'saat ini untuk statusnya adalah ' . $status . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
-            > </p>
+            </p>
             <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
             <p>&nbsp;</p>
         </body>

@@ -106,7 +106,7 @@ class project_controller extends BaseController
             $i = 0;
             $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
             for ($i = 0; $i < $countNamaMember; $i++) {
-                $this->sendingEmail($userMail[$i], $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
+                $this->sendingEmail($penerima, $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
             }
             // #END CONFIG
             // #==============================================================================================================
@@ -177,7 +177,7 @@ class project_controller extends BaseController
         $i = 0;
         $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
         for ($i = 0; $i < $countNamaMember; $i++) {
-            $this->sendingEmail($userMail[$i], $namaMember[$i], $p_project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
+            $this->sendingEmail($penerima, $namaMember[$i], $p_project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
         }
         // #END CONFIG
         // #==============================================================================================================
@@ -276,7 +276,7 @@ class project_controller extends BaseController
 
         if ($result === 'success') {
             for ($i = 0; $i < $countNamaMember; $i++) {
-                $this->sendingEmail($userMail[$i], $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
+                $this->sendingEmail($penerima, $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
             }
             $response = array(
                 'status' => 'success',
@@ -444,7 +444,7 @@ class project_controller extends BaseController
             <h2 style="text-align: center;"><strong>New&nbsp;Project</strong></h2>
             <p>&nbsp;</p>
             <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi ' . $creator_level . ' pada Project ' . $namaProject . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
-            > </p>
+            </p>
             <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
             <p>&nbsp;</p>
         </body>
@@ -459,7 +459,7 @@ class project_controller extends BaseController
             <h2 style="text-align: center;"><strong>New&nbsp;Project</strong></h2>
             <p>&nbsp;</p>
             <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi ' . $creator_level . ' pada Project ' . $namaProject . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
-            > </p>
+            </p>
             <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
             <p>&nbsp;</p>
         </body>
