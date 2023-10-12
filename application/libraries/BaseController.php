@@ -64,6 +64,23 @@ class BaseController extends CI_Controller
     /**
      * This function is used to check the access
      */
+    function webSiteActive()
+    {
+        $memberID = $this->session->userdata('member_id');
+        if ($memberID != 'System') {
+            $this->load->model('maintenance/maintenance_model');
+            $getting_maintenance = $this->maintenance_model->Get(['', 2]);
+            $statusWebsite = '';
+            if (!empty($getting_maintenance)) {
+                foreach ($getting_maintenance as $key) {
+                    $statusWebsite = $key->status_down;
+                }
+            }
+            if ($statusWebsite == '1') {
+                redirect('MaintenanceView');
+            }
+        }
+    }
     function isAdmin()
     {
         if ($this->role_id != ROLE_ADMIN) {

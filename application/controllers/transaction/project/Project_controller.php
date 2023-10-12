@@ -19,6 +19,7 @@ class project_controller extends BaseController
         $this->load->library('email/Email');
         $this->load->helper('log_helper');
         $this->IsLoggedIn();
+        $this->webSiteActive();
     }
 
     public function index()

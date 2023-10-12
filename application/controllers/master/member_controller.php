@@ -14,6 +14,7 @@ class member_controller extends BaseController
         $this->load->model('transaction/point_transaction_model');
 
         $this->IsLoggedIn();
+        $this->webSiteActive();
     }
 
     public function index()

@@ -22,6 +22,7 @@ class task_controller extends BaseController
         $this->load->library('email');
         $this->load->library('email/Email');
         $this->IsLoggedIn();
+        $this->webSiteActive();
     }
 
     public function Task($p_project_id = '', $p_list_id = '')

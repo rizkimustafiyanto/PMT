@@ -417,7 +417,12 @@
             membersList: JSON.stringify(membersItem)
         };
 
+        var addBtnProject = document.getElementById("AddList");
+        addBtnProject.disabled = true;
+        addBtnProject.textContent = "Creating...";
+        addBtnProject.classList.add("disabled");
         // console.log(AddItem);
+        loadIng();
         addItemProject(AddItem);
     });
 
@@ -428,6 +433,7 @@
             data: AddItem,
             success: function(response) {
                 $('#modal-input-detail').modal('hide');
+                Swal.close();
                 Swal.fire({
                     icon: response.status,
                     title: response.title,
@@ -443,7 +449,7 @@
                     }
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
-                        window.location.reload(); // Reload the page
+                        window.location.href = '<?= base_url() ?>/Project/List/Task/' + response.project + '/' + response.card; // Reload the page
                     }
                 });
 

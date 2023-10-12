@@ -347,7 +347,7 @@
                             <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Members</div>
                             <div class="card-tools">
                                 <?php if ($batas_akses) : ?>
-                                    <button type="button" class="btn btn-xs btn-tool" id="btnAdd" data-toggle="modal" data-target="#modal-input-list-member">
+                                    <button type="button" class="btn btn-xs btn-tool" id="btnAddMember" data-toggle="modal" data-target="#modal-input-list-member">
                                         <i class="fa fa-user-plus"></i>
                                     </button>
                                 <?php
@@ -977,7 +977,7 @@
     // End Function Update List
 
     // Function Add Task
-    $(document).on('click', '#btnAddTask', function() {
+    $(document).on('click', '#btnAddTask, #btnAddMember', function() {
         var $memberSelect = $('.select2-selection');
         var terpilihText = $('.select2-selection__rendered');
         var savedTheme = localStorage.getItem('theme');

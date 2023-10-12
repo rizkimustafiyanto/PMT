@@ -19,6 +19,7 @@ class kanban_list_controller extends BaseController
         $this->load->library('email');
         $this->load->library('email/Email');
         $this->IsLoggedIn();
+        $this->webSiteActive();
     }
 
     public function KanbanList($p_project_id = '')

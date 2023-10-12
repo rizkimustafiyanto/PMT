@@ -11,6 +11,7 @@ class Log_controller extends BaseController
         parent::__construct();
         $this->load->model('transaction/tools/Log_model');
         $this->IsLoggedIn();
+        $this->webSiteActive();
     }
 
     // ATTACHMENT

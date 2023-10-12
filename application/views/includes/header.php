@@ -117,16 +117,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   }
 
   /* CSS untuk animasi lingkaran loading */
-  @keyframes spin {
-    0% {
-      transform: rotate(0deg);
-    }
-
-    100% {
-      transform: rotate(360deg);
-    }
-  }
-
   .loading-container {
     display: flex;
     justify-content: center;
@@ -135,12 +125,23 @@ scratch. This page gets rid of all links and provides the needed markup only.
   }
 
   .loading-circle {
-    border: 6px solid #3498db;
-    border-top: 6px solid #A52A2A;
+    border: 6px solid #ffffff;
+    border-top: 6px solid blue;
     border-radius: 50%;
-    width: 10%;
-    height: 7%;
-    animation: spin 1s linear infinite;
+    width: 60px;
+    height: 60px;
+    animation: spin 2s linear infinite;
+    /* Perpanjang durasi animasi untuk 360 derajat */
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+
+    100% {
+      transform: rotate(360deg);
+    }
   }
 </style>
 

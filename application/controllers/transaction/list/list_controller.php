@@ -21,6 +21,7 @@ class list_controller extends BaseController
         $this->load->library('email');
         $this->load->library('email/Email');
         $this->IsLoggedIn();
+        $this->webSiteActive();
     }
 
     public function List($p_project_id = '')
@@ -263,7 +264,9 @@ class list_controller extends BaseController
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'Card created successfully'
+                'message' => 'Card created successfully',
+                'project' => $project_id,
+                'card' => $list_id
             );
             $this->Log_model->Insert($logging);
         } else {

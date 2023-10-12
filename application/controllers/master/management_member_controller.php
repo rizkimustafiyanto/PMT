@@ -12,6 +12,7 @@ class management_member_controller extends BaseController
         $this->load->model('master/management_member_model');
         $this->load->model('master/member_model');
         $this->IsLoggedIn();
+        $this->webSiteActive();
     }
 
     public function index()

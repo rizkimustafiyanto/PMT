@@ -22,6 +22,20 @@ class login_controller extends CI_Controller
         $this->IsLoggedIn();
     }
 
+    function webSiteActive()
+    {
+        $this->load->model('maintenance/maintenance_model');
+        $getting_maintenance = $this->maintenance_model->Get(['', 2]);
+        $statusWebsite = '';
+        if (!empty($getting_maintenance)) {
+            foreach ($getting_maintenance as $key) {
+                $statusWebsite = $key->status_down;
+            }
+        }
+        if ($statusWebsite == '1') {
+            redirect('MaintenanceView');
+        }
+    }
     function IsLoggedIn()
     {
         $IsLoggedIn = $this->session->userdata('IsLoggedIn');

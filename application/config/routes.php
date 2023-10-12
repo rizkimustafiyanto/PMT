@@ -167,6 +167,13 @@ $route['DeleteMessages'] = 'messages/Messages_controller/DeleteMessages';
 // TOOLS
 $route['MemberSelect'] = 'transaction/project/project_controller/SelectProjectMember';
 $route['Pining'] = 'transaction/project/project_controller/PinorUnpinProject';
+
+
+// WEBSITE
+$route['MaintenanceList'] = 'maintenance/maintenance_controller';
+$route['MaintenanceView'] = 'maintenance/maintenance_controller/maintenance_view';
+$route['insertDowntime'] = 'maintenance/maintenance_controller/insertDowntime';
+$route['updateDowntime'] = 'maintenance/maintenance_controller/updateDowntime';
 //BATAS
 
 /* End of file routes.php */
