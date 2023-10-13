@@ -114,7 +114,8 @@ class project_controller extends BaseController
             $response = array(
                 'status' => 'success',
                 'title' => 'Success',
-                'message' => 'Project created successfully'
+                'message' => 'Project created successfully',
+                'project' => $project_id
             );
         } else {
             $response = array(

@@ -267,7 +267,7 @@
                     }
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
-                        window.location.reload(); // Reload the page
+                        window.location.href = '<?= base_url() ?>/Project/List/' + response.project; // Reload the page
                     }
                 });
 

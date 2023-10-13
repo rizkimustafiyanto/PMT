@@ -1012,7 +1012,7 @@
                     }
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
-                        window.location.reload(); // Reload the page
+                        window.location.href = '<?= base_url() ?>/Project/List/Task/' + response.project + '/' + response.card; // Reload the page
                     }
                 });
 

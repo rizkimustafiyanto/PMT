@@ -121,7 +121,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 10vh;
+    height: 11vh;
   }
 
   .loading-circle {
