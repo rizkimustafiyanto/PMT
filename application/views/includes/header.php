@@ -121,15 +121,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
     display: flex;
     justify-content: center;
     align-items: center;
-    height: 11vh;
+    min-height: 18vh;
   }
 
   .loading-circle {
     border: 6px solid #ffffff;
     border-top: 6px solid blue;
     border-radius: 50%;
-    width: 60px;
-    height: 60px;
+    width: 50px;
+    height: 50px;
     animation: spin 2s linear infinite;
     /* Perpanjang durasi animasi untuk 360 derajat */
   }

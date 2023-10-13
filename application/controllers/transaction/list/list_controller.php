@@ -142,7 +142,11 @@ class list_controller extends BaseController
             }
             $batas_akses = ($manageAkses != '0' && $status_id != 'STW-2');
         } else {
-            $batas_akses = (($memberID == 'System' || $memberID == $creatorProject || $member_type == 'MT-2' || $member_type != 'MT-4') && $status_id != 'STW-2');
+            if ($memberID == 'System') {
+                $batas_akses = ($memberID == 'System');
+            } else {
+                $batas_akses = (($memberID == 'System' || $memberID == $creatorProject || $member_type == 'MT-2' || $member_type != 'MT-4') && $status_id != 'STW-2');
+            }
         }
 
 
@@ -446,6 +450,7 @@ class list_controller extends BaseController
         $result = $this->list_member_model->Insert($item_param);
 
         // LOGGING
+        $thismember = '';
         $memberName = $this->session->userdata('member_name');
         $dataMember = $this->member_model->Get([$member_id, 1]);
         foreach ($dataMember as $key) {
@@ -473,7 +478,7 @@ class list_controller extends BaseController
         }
         $memberRecords = $this->list_member_model->Get(['', $list_id, '', 0]);
         $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
-        $subjectEmail = 'New Card';
+        $subjectEmail = 'New Member';
         $urlmail = base_url() . 'home';
         // $urlmail = base_url() . 'Project/List/Task' . $project_id . '/' . $list_id;
         $creator_name = $this->session->userdata('member_name');
