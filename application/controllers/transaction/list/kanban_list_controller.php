@@ -18,13 +18,14 @@ class kanban_list_controller extends BaseController
         $this->load->model('master/variable_model');
         $this->load->library('email');
         $this->load->library('email/Email');
+        $this->load->helper('enkripbro');
         $this->IsLoggedIn();
-        $this->webSiteActive();
     }
 
     public function KanbanList($p_project_id = '')
     {
         $memberID = $this->session->userdata('member_id');
+        $p_project_id = dekripbro($p_project_id);
         #SELECT MEMBER
         #===========================================================================================
         $data['MemberSelectRecord'] = $this->project_member_model->Get(['', $p_project_id, '', '', 2]);
@@ -40,6 +41,7 @@ class kanban_list_controller extends BaseController
         $data['ProjectMemberRecords'] = $ProjectMembers;
 
         $tempstart = '';
+        $project_name = '';
         $tempdue = '';
         $creator = '';
         $lvlUser = '';
@@ -57,6 +59,7 @@ class kanban_list_controller extends BaseController
                 $creator = $key->creation_id;
                 $collabMember = $key->collaboration_member;
                 $collabName = $key->collaboration_name;
+                $project_name = $key->project_name;
             }
         }
         if (!empty($cekRoling)) {
@@ -125,6 +128,7 @@ class kanban_list_controller extends BaseController
         $data['doneName'] = $doneName ?? '-';
         $data['collab_member'] = $cekingCol ?? '-';
         $data['batas_akses'] = $batas_akses;
+        $data['project_name'] = $project_name;
 
         #AMBIL
         #============================================================================

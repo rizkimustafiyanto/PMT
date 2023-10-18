@@ -13,7 +13,6 @@ class calendar_controller extends BaseController
         $this->load->model('master/member_model');
 
         $this->IsLoggedIn();
-        $this->webSiteActive();
     }
 
     function index()

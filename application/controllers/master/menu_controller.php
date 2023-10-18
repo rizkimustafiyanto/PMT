@@ -11,7 +11,6 @@ class menu_controller extends BaseController
         parent::__construct();
         $this->load->model('master/menu_model');
         $this->IsLoggedIn();
-        $this->webSiteActive();
     }
 
     public function index()

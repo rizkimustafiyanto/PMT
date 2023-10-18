@@ -24,7 +24,7 @@
     }
 </style>
 <div class="content-wrapper">
-    <div style="height: 20px;"></div>
+    <div style="height: 5px;"></div>
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
@@ -45,10 +45,10 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="col-sm-12 text-right">
-                            <a class="btn btn-sm btn-danger" id="btnBack" href="<?= base_url() . 'Project'; ?>">
+                            <a class="btn btn-sm btn-danger" id="btnBack" href="<?= base_url() ?>Project">
                                 <i class="fa fa-lg fa-reply"></i>
                             </a>
-                            <a class="btn btn-sm btn-info" href="<?= base_url() . 'Project/KanbanList/' . $project_id; ?>">
+                            <a class="btn btn-sm btn-info" href="<?= base_url() . 'Project/KanbanList/' . enkripbro($project_id); ?>">
                                 <i class="fa fa-lg fa-brands fa-flipboard"></i> Board
                             </a>
                         </div>
@@ -199,6 +199,10 @@
 
                                         $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
 
+                                        $encry_pro_id = enkripbro($record->project_id);
+                                        $encry_lst_id = enkripbro($record->list_id);
+                                        $url = base_url() . 'Project/List/Task/' . $encry_pro_id . '/' . $encry_lst_id;
+
                                 ?>
                                         <tr>
                                             <td>
@@ -219,12 +223,6 @@
                                                     <span class="float-center small"><b><?= $completed; ?> %</b></span>
                                                 </div>
                                             </td>
-                                            <!-- <td class="text-center">
-                                                <span class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Days</span>
-                                            </td> -->
-                                            <!-- <td class="text-center">
-                                                <span class="badge <?= $statusClass ?>"><?= $record->list_status ?></span>
-                                            </td> -->
                                             <td>
                                                 <?php foreach ($ProjectListRecords as $key) :
                                                     if ($record->list_id == $key->list_id) :
@@ -247,7 +245,7 @@
                                                         <i class="fas fa-bars"></i>
                                                     </button>
                                                     <div class="dropdown-menu" style="box-shadow: none; border-color: transparent;">
-                                                        <a class="dropdown-item btn btn-xs" href="<?= base_url() . 'Project/List/Task/' . $record->project_id . '/' . $record->list_id ?>" title="View Detail" style="width: 60px;"><i class="fa fa-eye mr-1"></i>View</a>
+                                                        <a class="dropdown-item btn btn-xs" href="<?= $url ?>" title="View Detail" style="width: 60px;"><i class="fa fa-eye mr-1"></i>View</a>
                                                         <?php if ($batas_akses || $member_id == $record->creation_user_id) : ?>
                                                             <a id="slcList" class="dropdown-item btn btn-xs" style="width: 60px;" data-list_id="<?= $record->list_id ?>" data-project_id="<?= $record->project_id ?>" data-list_name="<?= $record->list_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-list_status="<?= $record->status_id ?>" data-list_description='<?= $record->description; ?>' data-toggle="modal" data-target="#modal-update-list" title="Update Card">
                                                                 <i class="fa fa-pen mr-1"></i>Edit
@@ -583,7 +581,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            <div class="card card-info card-outline" style="max-height: 300px;">
+                            <div class="card card-info card-outline">
                                 <div class="card-header">
                                     <h5 class="card-title" style="width: 90%;">
                                         <input type="text" id="project_name" class="form-control" placeholder="Project Name" value="<?= $project_name ?>">
@@ -1012,7 +1010,7 @@
                     }
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
-                        window.location.href = '<?= base_url() ?>/Project/List/Task/' + response.project + '/' + response.card; // Reload the page
+                        window.location.href = '<?= base_url() ?>Project/List/Task/' + response.project + '/' + response.card; // Reload the page
                     }
                 });
 
@@ -1163,6 +1161,7 @@
             cancelButtonText: 'Batal'
         }).then((result) => {
             if (result.isConfirmed) {
+                // console.log(deleteData);
                 loadIng();
                 delListed(deleteData);
             }
@@ -1544,7 +1543,6 @@
         });
     }
     // #TOOOLS
-
     $(document).ready(function() {
         document.getElementById("member-btn").addEventListener("click", function() {
             document.getElementById("regular-div").style.display = "block";

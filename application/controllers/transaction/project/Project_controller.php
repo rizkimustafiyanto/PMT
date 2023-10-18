@@ -13,13 +13,14 @@ class project_controller extends BaseController
         $this->load->model('transaction/project/project_member_model');
         $this->load->model('transaction/tools/Attachment_model');
         $this->load->model('transaction/tools/Log_model');
+        $this->load->model('master/management_member_model');
         $this->load->model('master/member_model');
         $this->load->model('master/variable_model');
         $this->load->library('email');
         $this->load->library('email/Email');
         $this->load->helper('log_helper');
+        $this->load->helper('enkripbro');
         $this->IsLoggedIn();
-        $this->webSiteActive();
     }
 
     public function index()
@@ -36,6 +37,7 @@ class project_controller extends BaseController
         $data['ProjectTypeRecords'] = $this->variable_model->GetVariable(['', 4]);
         $data['tempmember'] = $this->member_model->Get([0, 2]);
         $data['CollabGroup'] = $this->project_member_model->Get(['', '', '', '', 11]);
+        $data['ManageRecord'] = $this->management_member_model->Get(['', 0]);
 
         #============================================================================
 
@@ -89,7 +91,9 @@ class project_controller extends BaseController
             $memberRecords = $this->project_member_model->Get(['', $project_id, '', '', 8]);
             $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
             $subjectEmail = 'New Project';
-            $urlmail = base_url() . 'home';
+            // $urlmail = base_url() . 'Home';
+            $urlmail = 'http://apps.persada-group.com:8086/home/Dashboard';
+            // $urlmail = 'http://apps.persada-group.com:8086/home/Dashboard';
             // $urlmail = base_url() . 'Project/List/' . $project_id;
             $creator_name = '';
             $namaMember = [];
@@ -107,7 +111,7 @@ class project_controller extends BaseController
             $i = 0;
             $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
             for ($i = 0; $i < $countNamaMember; $i++) {
-                $this->sendingEmail($penerima, $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
+                $this->sendingEmail($userMail[$i], $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
             }
             // #END CONFIG
             // #==============================================================================================================
@@ -115,7 +119,7 @@ class project_controller extends BaseController
                 'status' => 'success',
                 'title' => 'Success',
                 'message' => 'Project created successfully',
-                'project' => $project_id
+                'project' => enkripbro($project_id)
             );
         } else {
             $response = array(
@@ -162,7 +166,8 @@ class project_controller extends BaseController
         $memberRecords = $this->project_member_model->Get(['', $p_project_id, '', '', 8]);
         $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
         $subjectEmail = 'Update Project';
-        $urlmail = base_url() . 'Project/List/' . $p_project_id;
+        // $urlmail = base_url() . 'Home';
+        $urlmail = 'http://apps.persada-group.com:8086/home/Dashboard';
         $creator_name = '';
         $namaMember = [];
         $userMail = [];
@@ -179,7 +184,7 @@ class project_controller extends BaseController
         $i = 0;
         $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
         for ($i = 0; $i < $countNamaMember; $i++) {
-            $this->sendingEmail($penerima, $namaMember[$i], $p_project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
+            $this->sendingEmail($userMail[$i], $namaMember[$i], $p_project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
         }
         // #END CONFIG
         // #==============================================================================================================
@@ -256,7 +261,8 @@ class project_controller extends BaseController
         $memberRecords = $this->project_member_model->Get(['', $project_id, '', '', 8]);
         $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
         $subjectEmail = 'Project Member';
-        $urlmail = base_url() . 'home';
+        // $urlmail = base_url() . 'Home';
+        $urlmail = 'http://apps.persada-group.com:8086/home/Dashboard';
         // $urlmail = base_url() . 'Project/List/' . $project_id;
         $creator_name = '';
         $namaMember = [];
@@ -278,7 +284,7 @@ class project_controller extends BaseController
 
         if ($result === 'success') {
             for ($i = 0; $i < $countNamaMember; $i++) {
-                $this->sendingEmail($penerima, $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
+                $this->sendingEmail($userMail[$i], $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $flagging);
             }
             $response = array(
                 'status' => 'success',

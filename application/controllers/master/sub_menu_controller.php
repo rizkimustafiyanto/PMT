@@ -13,7 +13,6 @@ class sub_menu_controller extends BaseController
         $this->load->model('master/menu_model');
 
         $this->IsLoggedIn();
-        $this->webSiteActive();
     }
 
     public function index()

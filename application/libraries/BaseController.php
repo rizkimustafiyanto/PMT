@@ -58,6 +58,8 @@ class BaseController extends CI_Controller
             $this->global['user_name'] = $this->user_name;
             $this->global['role_id'] = $this->role_id;
             $this->global['role_name'] = $this->role_name;
+
+            $this->webSiteActive();
         }
     }
 
@@ -66,8 +68,9 @@ class BaseController extends CI_Controller
      */
     function webSiteActive()
     {
+        $userID = $this->session->userdata('user_id');
         $memberID = $this->session->userdata('member_id');
-        if ($memberID != 'System') {
+        if ($memberID != 'System' && $userID != 'System') {
             $this->load->model('maintenance/maintenance_model');
             $getting_maintenance = $this->maintenance_model->Get(['', 2]);
             $statusWebsite = '';

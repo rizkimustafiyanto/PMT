@@ -1,7 +1,7 @@
 <!-- Dropdown Toggle -->
 <script src="<?= base_url(); ?>assets/dist/js/addition/js.js"></script>
 <div class="content-wrapper">
-    <div style="height: 20px;"></div>
+    <!-- <div style="height: 20px;"></div> -->
     <!-- Main content -->
     <section class="content">
         <div class="container-fluid">
@@ -16,12 +16,12 @@
             <div class="card-header">
                 <div class="row" style="margin-bottom: -10px;">
                     <div class="col-sm-6">
-                        <h4>Project Board</h4>
-                    </div>
-                    <div class="col-sm-6 text-right">
-                        <a class="btn btn-sm btn-danger" id="btnBack" href="javascript:void(0);" onclick="history.go(-1); return false;">
-                            <i class="fa fa-lg fa-reply"></i>
-                        </a>
+                        <p>Project <strong>
+                                <a href="<?= base_url() ?>Project/List/<?= enkripbro($ProjectId) ?>" class="text-muted">
+                                    <?= $project_name ?>
+                                </a>
+                            </strong>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -50,7 +50,7 @@
                                                     <div class="card-header">
                                                         <div class="row">
                                                             <div class="col-md-8"><?= $row->list_name ?></div>
-                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
+                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . enkripbro($ProjectId) . '/' . enkripbro($row->list_id); ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
                                                         </div>
                                                     </div>
                                                     <div class="card-footer">
@@ -108,7 +108,7 @@
                                                     <div class="card-header">
                                                         <div class="row">
                                                             <div class="col-md-8"><?= $row->list_name ?></div>
-                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
+                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . enkripbro($ProjectId) . '/' . enkripbro($row->list_id); ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
                                                         </div>
                                                     </div>
                                                     <div class="card-footer">
@@ -162,7 +162,7 @@
                                                     <div class="card-header">
                                                         <div class="row">
                                                             <div class="col-md-8"><?= $row->list_name ?></div>
-                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
+                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . enkripbro($ProjectId) . '/' . enkripbro($row->list_id); ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
                                                         </div>
                                                     </div>
                                                     <div class="card-footer">
@@ -216,7 +216,7 @@
                                                     <div class="card-header">
                                                         <div class="row">
                                                             <div class="col-md-8"><?= $row->list_name ?></div>
-                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . $ProjectId . '/' . $row->list_id; ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
+                                                            <div class="col-md-4 text-right p-0"><a class="btn btn-tool" href="<?= base_url() . 'Project/List/Task/' . enkripbro($ProjectId) . '/' . enkripbro($row->list_id); ?>"><i class="fa fa-pen" style="font-size: 10px;"></i></a></div>
                                                         </div>
                                                     </div>
                                                     <div class="card-footer">
@@ -266,7 +266,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            <div class="card card-info card-outline" style="max-height: 300px;">
+                            <div class="card card-info card-outline">
                                 <div class="card-header">
                                     <input type="hidden" class="form-control" id="stl_status" placeholder="Project ID" name="stl_status" maxlength="20" required readonly>
                                     <h5 class="card-title" style="width: 90%;"><input type="text" id="list_name" class="form-control" placeholder="Card Name"></h5>

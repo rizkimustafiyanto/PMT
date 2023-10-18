@@ -17,7 +17,6 @@ class Attachment_controller extends BaseController
         $this->load->library('email/Email');
         $this->load->helper('log_helper');
         $this->IsLoggedIn();
-        $this->webSiteActive();
         $this->load->helper(array('url', 'download'));
     }
 

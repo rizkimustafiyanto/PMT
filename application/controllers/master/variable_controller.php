@@ -11,7 +11,6 @@ class variable_controller extends BaseController
         parent::__construct();
         $this->load->model('master/variable_model');
         $this->IsLoggedIn();
-        $this->webSiteActive();
     }
 
     public function index()

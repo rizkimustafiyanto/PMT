@@ -5,10 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>PMT | Login</title>
+  <link rel="icon" href="<?= base_url(); ?>assets/dist/img/logo_psd.png" type="image/x-icon">
 
   <!-- Google Font: Source Sans Pro -->
-  <link rel="stylesheet"
-    href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback">
   <!-- Font Awesome -->
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/plugins/fontawesome-free/css/all.min.css">
   <!-- icheck bootstrap -->
@@ -30,28 +30,28 @@
         <div class="row">
           <div class="col-md-12">
             <?php echo validation_errors(
-                '<div class="alert alert-danger alert-dismissable">',
-                ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button></div>'
+              '<div class="alert alert-danger alert-dismissable">',
+              ' <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button></div>'
             ); ?>
           </div>
         </div>
-        <?php if ($this->session->flashdata('success')): ?>
-        <div class="alert alert-success">
-          <?= $this->session->flashdata('success') ?>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <?= $this->session->unset_userdata('success') ?>
+        <?php if ($this->session->flashdata('success')) : ?>
+          <div class="alert alert-success">
+            <?= $this->session->flashdata('success') ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <?= $this->session->unset_userdata('success') ?>
         <?php endif; ?>
-        <?php if ($this->session->flashdata('error')): ?>
-        <div class="alert alert-danger">
-          <?= $this->session->flashdata('error') ?>
-          <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-            <span aria-hidden="true">&times;</span>
-          </button>
-        </div>
-        <?= $this->session->unset_userdata('error') ?>
+        <?php if ($this->session->flashdata('error')) : ?>
+          <div class="alert alert-danger">
+            <?= $this->session->flashdata('error') ?>
+            <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <?= $this->session->unset_userdata('error') ?>
         <?php endif; ?>
         <form action="<?php echo base_url(); ?>Login" method="post">
           <div class="input-group mb-3">

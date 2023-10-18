@@ -14,7 +14,6 @@ class menu_role_controller extends BaseController
         $this->load->model('master/role_model');
         $this->load->model('master/menu_model');
         $this->IsLoggedIn();
-        $this->webSiteActive();
     }
 
     public function index()

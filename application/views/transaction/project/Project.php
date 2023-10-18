@@ -1,5 +1,5 @@
 <div class="content-wrapper">
-    <div style="height: 20px;"></div>
+    <div style="height: 15px;"></div>
     <section class="content">
         <div class="container-fluid">
             <div class="row">
@@ -36,6 +36,10 @@
                                     <?php
                                     if (!empty($ProjectRecords)) :
                                         foreach ($ProjectRecords as $index => $record) :
+                                            $encry_pro_id = enkripbro($record->project_id);
+                                            $url = base_url() . 'Project/List/' . $encry_pro_id;
+                                            $urlkanban = base_url() . 'Project/KanbanList/' . $encry_pro_id;
+
                                             $percent = $record->percentage;
                                             $percent = (empty($percent)) ? 0 : $percent;
                                             if (strlen($percent) > 4) {
@@ -86,8 +90,8 @@
                                                             <i class="fas fa-bars"></i>
                                                         </button>
                                                         <div class="dropdown-menu" style="box-shadow: none; border-color: transparent; width: 50px;">
-                                                            <a class="dropdown-item btn btn-xs" href="<?= base_url() . 'Project/List/' . $record->project_id; ?>" title="View Detail" style="width: 60px;"><i class="fa fa-eye mr-1"></i>View</a>
-                                                            <a class="dropdown-item btn btn-xs" href="<?= base_url() . 'Project/KanbanList/' . $record->project_id; ?>" title="View Kanban" style="width: 60px;"><i class="fa fa-lg fa-brands fa-flipboard mr-1"></i>Board</a>
+                                                            <a class="dropdown-item btn btn-xs" href="<?= $url ?>" title="View Detail" style="width: 60px;"><i class="fa fa-eye mr-1"></i>View</a>
+                                                            <a class="dropdown-item btn btn-xs" href="<?= $urlkanban ?>" title="View Kanban" style="width: 60px;"><i class="fa fa-lg fa-brands fa-flipboard mr-1"></i>Board</a>
                                                             <?php if (($member_id == 'System' || $record->member_type_id == 'MT-1') && $record->status_id != 'STW-2') : ?>
                                                                 <a class="dropdown-item btn btn-xs" id="btnDeleteProject" data-project-id="<?= $record->project_id; ?>" title="Delete Project" style="width: 60px;"><i class="fa fa-trash mr-1"></i>Delete</a>
                                                             <?php endif; ?>
@@ -117,7 +121,7 @@
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-lg-6">
-                                <div class="card card-info card-outline" style="max-height: 300px;">
+                                <div class="card card-info card-outline">
                                     <div class="card-header">
                                         <h5 class="card-title" style="width: 90%;"><input type="text" id="project_name" class="form-control" placeholder="Project Name" required></h5>
                                         <div class="card-tools">
@@ -169,9 +173,21 @@
                                         </div>
                                     </div>
                                 </div>
+                                <div class="row col-lg-12 justify-content-between">
+                                    <div>
+                                        <label for="AssignMember" class="mr-2">Assign Member</label>
+                                    </div>
+                                    <div>
+                                        <input type="checkbox" name="pmanagec" id="pmanagec" onchange="toggleManage()">
+                                        <label for="project_manage" class="mr-2">Management Member</label>
+                                    </div>
+                                </div>
                                 <div class="form-group">
-                                    <label for="AssignMember" class="mr-2">Assign Member</label>
                                     <select class="form-control" id="members_project" name="members_project[]" multiple="multiple" style="width: 100%;"></select>
+                                </div>
+                                <div class="form-group" id="pmanage">
+                                    <label for="Management">Management</label>
+                                    <select class="form-control" id="manage_project" name="manage_project[]" multiple="multiple"></select>
                                 </div>
 
                             </div>
@@ -212,12 +228,16 @@
         var endDate = dates[1];
         var description = $('#project_description').summernote('code');
         var membersProject = $('#members_project').val();
+        var managesProject = $('#manage_project').val();
 
         var pcollabC = document.getElementById("pcollabc");
         var projectCollab = pcollabC.checked ? $("#collab_project").val() : '<?= $this->session->userdata("company_id") ?>';
         var projectCollabString = pcollabC.checked ? projectCollab.map(function(pc) {
             return '"' + pc + '"';
         }).join(', ') : JSON.stringify(projectCollab);
+
+        var pmanageC = document.getElementById("pmanagec");
+        var projectMems = pmanageC.checked ? managesProject.concat(membersProject) : membersProject;
 
         if (!title || !startDate || !endDate || !description) {
             validasiInfo('Please complete all fields before inserting project!');
@@ -230,7 +250,7 @@
             start: startDate,
             due: endDate,
             description: description,
-            membersProject: JSON.stringify(membersProject),
+            membersProject: JSON.stringify(projectMems),
             collab_member: projectCollabString !== '' ? projectCollabString : JSON.stringify('<?= $this->session->userdata("company_id") ?>')
         };
 
@@ -239,7 +259,7 @@
         addBtnProject.disabled = true;
         addBtnProject.textContent = "Creating...";
         addBtnProject.classList.add("disabled");
-        console.log(AddProject);
+        // console.log(AddProject);
         loadIng();
         addProject(AddProject);
     })
@@ -267,7 +287,7 @@
                     }
                 }).then((result) => {
                     if (result.dismiss === Swal.DismissReason.timer) {
-                        window.location.href = '<?= base_url() ?>/Project/List/' + response.project; // Reload the page
+                        window.location.href = '<?= base_url() ?>Project/List/' + response.project; // Reload the page
                     }
                 });
 
@@ -382,7 +402,7 @@
             },
             dataType: 'JSON',
             success: function(response) {
-                console.log(response);
+                // console.log(response);
                 var membersData = [];
                 $.each(response.SelectM, function(index, isi) {
                     membersData.push({
@@ -434,6 +454,36 @@
         }
     };
 
+    function toggleManage() {
+        const checks = document.getElementById("pmanagec");
+        const projectManage = document.getElementById("pmanage");
+
+        if (checks.checked) {
+            projectManage.style.display = "block";
+            handleManage();
+        } else {
+            projectManage.style.display = "none";
+        }
+    };
+
+    function handleManage() {
+        $('#manage_project').val([]).trigger('change');
+        $('#manage_project').select2({
+            placeholder: '-- Choose Group --',
+            allowClear: true,
+            minimumInputLength: 0,
+            data: [
+                <?php foreach ($ManageRecord as $key) { ?> {
+                        id: "<?= $key->member_id ?>",
+                        text: "<?= $key->company_initial ?>" + ' - ' + "<?= $key->member_name ?>"
+                    },
+                <?php } ?>
+            ],
+            templateSelection: colorSelect
+        });
+        warnaMultiple();
+    }
+
     $('#collab_project').on('change', function() {
         handleCollabMember();
     });
@@ -442,6 +492,7 @@
     $(document).ready(function() {
         toggleCollab();
         toggleProjectType();
+        toggleManage();
 
         $("#tblProject")
             .DataTable({

@@ -31,7 +31,6 @@ class Dashboard extends BaseController
      */
     public function index()
     {
-        $this->webSiteActive();
         $data = $this->dataDash();
 
         $this->global['pageTitle'] = 'CodeInsect : Dashboard';
@@ -66,8 +65,6 @@ class Dashboard extends BaseController
             }
 
             $this->session->set_userdata($sessionArray);
-
-            $this->webSiteActive();
             redirect('/Dashboard');
         } else {
             redirect('../home/Dashboard');

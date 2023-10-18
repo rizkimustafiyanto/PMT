@@ -13,7 +13,6 @@ class member_role_controller extends BaseController
         $this->load->model('master/member_model');
         $this->load->model('master/role_model');
         $this->IsLoggedIn();
-        $this->webSiteActive();
     }
 
     public function index()

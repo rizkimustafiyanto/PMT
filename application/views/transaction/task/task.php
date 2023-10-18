@@ -24,7 +24,7 @@
     }
 </style>
 <div class="content-wrapper">
-    <div style="height: 20px;"></div>
+    <div style="height: 5px;"></div>
     <!-- Main content -->
     <section class="content">
         <!-- <div class="loading-container">
@@ -48,10 +48,7 @@
                     </div>
                     <div class="col-sm-6">
                         <div class="col-sm-12 text-right">
-                            <a class="btn btn-sm btn-danger" href="javascript:void(0);" onclick="history.go(-1); return false;">
-                                <i class="fa fa-lg fa-reply"></i>
-                            </a>
-                            <a class="btn btn-sm btn-info" href="<?= base_url() . 'Project/KanbanList/' . $project_id; ?>">
+                            <a class="btn btn-sm btn-info" href="<?= base_url() . 'Project/KanbanList/' . enkripbro($project_id); ?>" id="btnBoard">
                                 <i class="fa fa-lg fa-brands fa-flipboard"></i> Board
                             </a>
                         </div>
@@ -84,6 +81,17 @@
                         </div>
                     </Div>
                     <div class="card-body">
+                        <div class="row col-md-12" style="margin-bottom: -15px;">
+                            <div class="col-md-6">
+                                <strong><i class="fas fa-file-alt mr-1"></i> Project Name</strong>
+                            </div>
+                            <div class="col-md-6">
+                                <a href="<?= base_url() ?>Project/List/<?= enkripbro($project_id) ?>" class="text-muted">
+                                    <p><?= $project_name ?></p>
+                                </a>
+                            </div>
+                        </div>
+                        <hr>
                         <div class="row col-md-12" style="margin-bottom: -15px;">
                             <div class="col-md-6">
                                 <strong><i class="fas fa-file-alt mr-1"></i> Card Name</strong>
@@ -150,7 +158,7 @@
                             <div class="card-tools">
                                 <button id="sortedas" type="button" class="btn btn-default"><span id="sortIcon" class="fas"></span></button>
                                 <button id="sortByDue" type="button" class="btn btn-default">DUE</button>
-                                <?php if ($batas_akses || $member_type == 'MT-3') : ?>
+                                <?php if (($batas_akses) || ($member_type == 'MT-3' && $status_id != 'STL-4')) : ?>
                                     <button type="button" class="btn btn-tool" id="btnAddTask" data-toggle="modal" data-target="#modal-input-task">
                                         <i class="fa fa-file-circle-plus"></i>
                                     </button>
@@ -270,9 +278,9 @@
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
                             <div class="input-group">
-                                <input type="text" id="message-input" class="form-control" placeholder="Type your comments..." <?= ($batas_akses) ? '' : 'readonly' ?>>
+                                <input type="text" id="message-input" class="form-control" placeholder="Type your comments..." <?= (($batas_akses) || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'readonly' ?> autocomplete="off">
                                 <span class="input-group-append">
-                                    <button type="submit" class="btn btn-primary" <?= ($batas_akses) ? '' : 'disabled' ?>>Send</button>
+                                    <button type="submit" class="btn btn-primary" <?= (($batas_akses) || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'disabled' ?>>Send</button>
                                 </span>
                             </div>
                         </form>
@@ -850,6 +858,12 @@
         sortTasks("title");
         updateSortButtonIcon(isDescending);
 
+        const referrer = document.referrer;
+        console.log(referrer);
+        const previousDetail = "<?= base_url() ?>Project/List/<?= $project_id ?>";
+        if (referrer === previousDetail) {
+            $('#btnBoard').toggle(false);
+        }
     });
 
 
@@ -977,7 +991,7 @@
     // End Function Update List
 
     // Function Add Task
-    $(document).on('click', '#btnAddTask, #btnAddMember', function() {
+    $(document).on('click', '#btnAddTask, #btnAddMember, i.fa-edit', function() {
         var $memberSelect = $('.select2-selection');
         var terpilihText = $('.select2-selection__rendered');
         var savedTheme = localStorage.getItem('theme');
@@ -1609,6 +1623,10 @@
     }
 
     // #TOOOLS
+    function goBack() {
+        history.go(-1);
+    }
+
     function validasiInfo(message) {
         Swal.fire({
             icon: 'error',

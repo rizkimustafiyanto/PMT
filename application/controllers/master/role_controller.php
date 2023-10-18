@@ -11,7 +11,6 @@ class role_controller extends BaseController
         parent::__construct();
         $this->load->model('master/role_model');
         $this->IsLoggedIn();
-        $this->webSiteActive();
     }
 
     public function index()

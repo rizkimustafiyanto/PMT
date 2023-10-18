@@ -13,12 +13,11 @@ class maintenance_controller extends BaseController
         $this->load->model('master/member_model');
         $this->load->library('email');
         $this->load->library('email/Email');
-        $this->IsLoggedIn();
     }
 
     public function index()
     {
-
+        $this->IsLoggedIn();
         #AMBIL
         #============================================================================
         $data['MaintenanceRecords'] = $this->maintenance_model->Get(['', 0]);
@@ -48,6 +47,7 @@ class maintenance_controller extends BaseController
 
     public function insertDowntime()
     {
+        $this->IsLoggedIn();
         if ($this->isAdmin() == true) {
             $this->loadThis();
         } else {
@@ -82,6 +82,7 @@ class maintenance_controller extends BaseController
 
     function updateDowntime()
     {
+        $this->IsLoggedIn();
         if ($this->isAdmin() == true) {
             $this->loadThis();
         } else {

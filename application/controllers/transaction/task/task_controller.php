@@ -21,13 +21,15 @@ class task_controller extends BaseController
         $this->load->model('master/variable_model');
         $this->load->library('email');
         $this->load->library('email/Email');
+        $this->load->helper('enkripbro');
         $this->IsLoggedIn();
-        $this->webSiteActive();
     }
 
     public function Task($p_project_id = '', $p_list_id = '')
     {
         $memberID =  $this->session->userdata('member_id');
+        $p_project_id = dekripbro($p_project_id);
+        $p_list_id = dekripbro($p_list_id);
 
         #LIST
         #============================================================================
@@ -62,6 +64,7 @@ class task_controller extends BaseController
         #============================================================================
         $creatorList = '';
         $list_name = '';
+        $project_name = '';
         $start_date = '';
         $due_date = '';
         $priority_type = '';
@@ -88,6 +91,7 @@ class task_controller extends BaseController
                 $status_id = $key->status_id;
                 $percentage = $key->percentage;
                 $list_type = $key->priority_type;
+                $project_name = $key->project_name;
             }
             $percentage = (empty($percentage)) ? 0 : $percentage;
             if (strlen($percentage) > 4) {
@@ -149,6 +153,7 @@ class task_controller extends BaseController
         $data['member_type'] = $member_type ?? '-';
         $data['member_prj_type'] = $member_prj_type ?? '-';
         $data['batas_akses'] = $batas_akses;
+        $data['project_name'] = $project_name ?? '-';
 
         #============================================================================
 
@@ -200,11 +205,11 @@ class task_controller extends BaseController
         $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
         $creator_name = '';
         $namaMember = [];
-        $userMail = '';
+        $userMail = [];
         foreach ($memberRecords as $member) {
             if ($member_id == $member->member_id) {
                 $namaMember[] = $member->member_name;
-                $userMail = $member->email;
+                $userMail[] = $member->email;
             }
             if ($creation_user_id == $member->member_id) {
                 $creator_name = $member->member_name;
@@ -216,14 +221,15 @@ class task_controller extends BaseController
             $cardName = $key->list_name;
         }
         $subjectEmail = 'New Task';
-        $urlmail = base_url() . 'home';
+        // $urlmail = base_url() . 'home';
+        $urlmail = 'http://apps.persada-group.com:8086/home/Dashboard';
         // $urlmail = base_url() . 'Project/List/Task' . $project_id . '/' . $list_id;
         $flagging = '1';
         $status = '';
         $i = 0;
         $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
         for ($i = 0; $i < $countNamaMember; $i++) {
-            $this->sendingEmail($penerima, $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
+            $this->sendingEmail($userMail[$i], $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
         }
 
         // #END EMAILING CONFIG
@@ -327,11 +333,11 @@ class task_controller extends BaseController
         $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
         $creator_name = '';
         $namaMember = [];
-        $userMail = '';
+        $userMail = [];
         foreach ($memberRecords as $member) {
             if ($member->variable_id == 'MT-2') {
                 $creator_name = $member->member_name;
-                $userMail = $member->email;
+                $userMail[] = $member->email;
                 $namaMember[] = $member->member_name;
             }
         }
@@ -341,7 +347,8 @@ class task_controller extends BaseController
             $cardName = $key->list_name;
         }
         $subjectEmail = ($flag == '1') ? 'Update Task Status' : 'Update Task';
-        $urlmail = base_url() . 'home';
+        // $urlmail = base_url() . 'home';
+        $urlmail = 'http://apps.persada-group.com:8086/home/Dashboard';
         // $urlmail = base_url() . 'Project/List/Task' . $project_id . '/' . $list_id;
         $flagging = ($flag == '1') ? '3' : '2';
         $status = ($flag == '1') ? $var_name : '';
@@ -349,7 +356,7 @@ class task_controller extends BaseController
         $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
         if ($flag == '1') {
             for ($i = 0; $i < $countNamaMember; $i++) {
-                $this->sendingEmail($penerima, $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
+                $this->sendingEmail($userMail[$i], $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
             }
         }
 

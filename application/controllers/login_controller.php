@@ -22,20 +22,6 @@ class login_controller extends CI_Controller
         $this->IsLoggedIn();
     }
 
-    function webSiteActive()
-    {
-        $this->load->model('maintenance/maintenance_model');
-        $getting_maintenance = $this->maintenance_model->Get(['', 2]);
-        $statusWebsite = '';
-        if (!empty($getting_maintenance)) {
-            foreach ($getting_maintenance as $key) {
-                $statusWebsite = $key->status_down;
-            }
-        }
-        if ($statusWebsite == '1') {
-            redirect('MaintenanceView');
-        }
-    }
     function IsLoggedIn()
     {
         $IsLoggedIn = $this->session->userdata('IsLoggedIn');
@@ -44,6 +30,25 @@ class login_controller extends CI_Controller
             $this->load->view('login');
         } else {
             redirect('/Dashboard');
+        }
+    }
+
+    function webSiteActive()
+    {
+        $userID = $this->session->userdata('user_id');
+        $memberID = $this->session->userdata('member_id');
+        if ($memberID != 'System' && $userID != 'System') {
+            $this->load->model('maintenance/maintenance_model');
+            $getting_maintenance = $this->maintenance_model->Get(['', 2]);
+            $statusWebsite = '';
+            if (!empty($getting_maintenance)) {
+                foreach ($getting_maintenance as $key) {
+                    $statusWebsite = $key->status_down;
+                }
+            }
+            if ($statusWebsite == '1') {
+                redirect('MaintenanceView');
+            }
         }
     }
 
@@ -96,6 +101,7 @@ class login_controller extends CI_Controller
                     $this->session->set_userdata($sessionArray);
 
                     redirect('/Dashboard');
+                    // $this->webSiteActive();
                 }
             } else {
                 $this->session->set_flashdata(
