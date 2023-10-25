@@ -64,11 +64,16 @@
                                                 <td class="text-nowrap">
                                                     <?php foreach ($ProjectMemberRecords as $row) :
                                                         if ($record->project_id == $row->project_id) :
-                                                            if ($row->photo_url) : ?>
-                                                                <img src="<?= base_url(); ?>../api-hris/upload/<?= $row->photo_url; ?>" alt="Image" class="rounded-circle elevation-1 profile-trigger" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>" data-member-name="<?= $row->member_name ?>" data-member-company="<?= $row->company_name ?>" data-src="<?= base_url(); ?>../api-hris/upload/<?= $row->photo_url; ?>">
-                                                            <?php else : ?>
-                                                                <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="Image" class="rounded-circle elevation-1 profile-trigger" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>" data-member-name="<?= $row->member_name ?>" data-member-company="<?= $row->company_name ?>" data-src="<?= base_url(); ?>assets/dist/img/avatar<?= ($row->gender_id == 'GR-001') ? '5' : '3' ?>.png">
-                                                    <?php endif;
+                                                            $avatar = $row->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                                            $photo_url = $row->photo_url;
+                                                            if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+                                                                $photo_url = 'assets/dist/img/' . $avatar;
+                                                            } else {
+                                                                $photo_url = '../api-hris/upload/' . $row->photo_url;
+                                                            }
+                                                    ?>
+                                                            <img src="<?= base_url() . $photo_url ?>" alt="Image" class="rounded-circle elevation-1 profile-trigger" style="width: 30px; height: 30px;" title="<?= $row->member_name ?>" data-member-name="<?= $row->member_name ?>" data-member-company="<?= $row->company_name ?>" data-src="<?= base_url() . $photo_url ?>">
+                                                    <?php
                                                         endif;
                                                     endforeach; ?>
                                                 </td>
@@ -179,7 +184,7 @@
                                     </div>
                                     <div>
                                         <input type="checkbox" name="pmanagec" id="pmanagec" onchange="toggleManage()">
-                                        <label for="project_manage" class="mr-2">Management Member</label>
+                                        <label for="project_manage" class="mr-2">Management</label>
                                     </div>
                                 </div>
                                 <div class="form-group">

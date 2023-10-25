@@ -69,11 +69,16 @@
                                                             <div class="col-6 text-right">
                                                                 <?php foreach ($ProjectMemberRecords as $key) :
                                                                     if ($row->list_id == $key->list_id) :
-                                                                        if ($key->photo_url) : ?>
-                                                                            <img src="<?= base_url(); ?>../api-hris/upload/<?= $key->photo_url ?>" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
-                                                                        <?php else : ?>
-                                                                            <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
-                                                                <?php endif;
+                                                                        $avatar = $key->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                                                        $photo_url = $key->photo_url;
+                                                                        if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+                                                                            $photo_url = 'assets/dist/img/' . $avatar;
+                                                                        } else {
+                                                                            $photo_url = '../api-hris/upload/' . $key->photo_url;
+                                                                        }
+                                                                ?>
+                                                                        <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
+                                                                <?php
                                                                     endif;
                                                                 endforeach; ?>
                                                             </div>
@@ -126,8 +131,16 @@
                                                             </div>
                                                             <div class="col-6 text-right">
                                                                 <?php foreach ($ProjectMemberRecords as $key) :
-                                                                    if ($row->list_id == $key->list_id) : ?>
-                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
+                                                                    if ($row->list_id == $key->list_id) :
+                                                                        $avatar = $key->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                                                        $photo_url = $key->photo_url;
+                                                                        if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+                                                                            $photo_url = 'assets/dist/img/' . $avatar;
+                                                                        } else {
+                                                                            $photo_url = '../api-hris/upload/' . $key->photo_url;
+                                                                        }
+                                                                ?>
+                                                                        <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
                                                                 <?php endif;
                                                                 endforeach; ?>
                                                             </div>
@@ -180,8 +193,16 @@
                                                             </div>
                                                             <div class="col-6 text-right">
                                                                 <?php foreach ($ProjectMemberRecords as $key) :
-                                                                    if ($row->list_id == $key->list_id) : ?>
-                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
+                                                                    if ($row->list_id == $key->list_id) :
+                                                                        $avatar = $key->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                                                        $photo_url = $key->photo_url;
+                                                                        if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+                                                                            $photo_url = 'assets/dist/img/' . $avatar;
+                                                                        } else {
+                                                                            $photo_url = '../api-hris/upload/' . $key->photo_url;
+                                                                        }
+                                                                ?>
+                                                                        <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
                                                                 <?php endif;
                                                                 endforeach; ?>
                                                             </div>
@@ -234,8 +255,16 @@
                                                             </div>
                                                             <div class="col-6 text-right">
                                                                 <?php foreach ($ProjectMemberRecords as $key) :
-                                                                    if ($row->list_id == $key->list_id) : ?>
-                                                                        <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($key->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
+                                                                    if ($row->list_id == $key->list_id) :
+                                                                        $avatar = $key->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                                                        $photo_url = $key->photo_url;
+                                                                        if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+                                                                            $photo_url = 'assets/dist/img/' . $avatar;
+                                                                        } else {
+                                                                            $photo_url = '../api-hris/upload/' . $key->photo_url;
+                                                                        }
+                                                                ?>
+                                                                        <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>">
                                                                 <?php endif;
                                                                 endforeach; ?>
                                                             </div>
@@ -295,6 +324,15 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="dateRange">Date Range</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="dateRange">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row col-lg-12 justify-content-between">
                                 <div>
                                     <label for="members_list" class="mr-2">Assign Member</label>
@@ -306,15 +344,6 @@
                             </div>
                             <div class="form-group">
                                 <select class="form-control" id="members_list" name="members_list[]" multiple="multiple" style="width: 100%;"></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="dateRange">Date Range</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="dateRange">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -353,12 +382,14 @@
                         flag: 1
                     };
                     console.log('oke');
+                    loadIng();
 
                     $.ajax({
                         url: '<?= base_url(); ?>UpdateList',
                         type: "POST",
                         data: updateData,
                         success: function(response) {
+                            Swal.close();
                             console.log(response.message);
                         },
                         error: function(xhr, status, error) {

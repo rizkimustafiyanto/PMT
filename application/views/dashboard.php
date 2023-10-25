@@ -134,37 +134,47 @@
                   <?php if (!empty($MyTask)) : ?>
                     <?php foreach ($MyTask as $record) :
                       $remainingDays = 0;
+                      $prior = $record->priority_type_id;
                       $badgeClass = '';
                       $startDate = strtotime($record->start_date);
                       $dueDate = strtotime($record->due_date);
                       $currentTime = time();
 
-                      if ($currentTime <= $startDate) {
-                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                        $badgeClass = 'badge-success';
-                      } elseif ($currentTime < $dueDate) {
-                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                        $badgeClass = (round($remainingDays) <= 2) ? 'badge-danger' : 'badge-warning';
-                      } elseif ($currentTime >= $dueDate) {
-                        $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
-                        $badgeClass = (round($remainingDays) <= 0) ? 'badge-secondary' : 'badge-secondary';
-                        $remainingDays = round($remainingDays * (-1));
+                      if ($dueDate !== $startDate) {
+                        $percentage = ($currentTime - $startDate) / ($dueDate - $startDate) * 100;
+                        $percentage = max(0, min(100, $percentage));
+                      } else {
+                        $percentage = 100;
                       }
-                      $remainingDays = round($remainingDays);
 
+                      if ($percentage <= 25) {
+                        $badgeClass = 'badge-success';
+                      } elseif ($percentage <= 75) {
+                        $badgeClass = 'badge-warning';
+                      } else {
+                        $badgeClass = 'badge-danger';
+                      }
+
+                      $badgePrior =  ($prior == 'PR-1') ? 'danger' : (($prior == 'PR-2') ? 'warning' : 'success');
+
+
+                      $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
                       $statusW = $record->status_id;
+                      $bgPriority = ($statusW != 'STL-4' && $remainingDays <= '0') ? '#F08080' : '';
                     ?>
 
                       <li class="overflow-auto text-nowrap">
                         <div class="icheck-primary d-inline">
                           <label for="todo1"></label>
-                          <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?> disabled>
+                          <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?>>
                         </div>
                         <span class="text"><?= $record->task_name ?></span>
-                        <small class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Hari</small>
-                        <div class="tools">
-                          <!-- <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= $record->member_id ?>"></i> -->
-                        </div>
+                        <?php if ($statusW != 'STL-4') : ?>
+                          <small class="badge <?= $badgeClass ?> float-right" style="margin-top: 5px; margin-right: 8px;"><i class="far fa-clock"></i> <?= $remainingDays ?> Days</small>
+                        <?php else : ?>
+                          <small class="badge badge-success float-right" style="margin-top: 5px; margin-right: 8px;">DONE</small>
+                        <?php endif; ?>
+
                       </li>
 
                     <?php
@@ -285,8 +295,77 @@
 <script>
   $(document).ready(function() {
     $(".ui-sortable").sortable({
-      // Opsi untuk CRUD
+
     });
+    $(document).on('change', 'input[name="todo1"]', function() {
+      var isChecked = $(this).is(":checked");
+      var id = $(this).data('task_id_check');
+      if (isChecked) {
+        var UpdateTask = {
+          id: id,
+          list_id: '',
+          title: '',
+          start: '',
+          due: '',
+          priority: '',
+          status: 'STL-4',
+          memberId: '',
+          flag: 3
+        };
+        loadIng();
+        updateTask(UpdateTask);
+      } else {
+        var UpdateTask = {
+          id: id,
+          list_id: '',
+          title: '',
+          start: '',
+          due: '',
+          priority: '',
+          status: 'STL-1',
+          memberId: '',
+          flag: 3
+        };
+        loadIng();
+        updateTask(UpdateTask);
+      }
+    });
+
+    function updateTask(UpdateTask) {
+      $.ajax({
+        url: '<?= base_url(); ?>UpdateTask',
+        type: 'POST',
+        data: UpdateTask,
+        success: function(response) {
+          Swal.close();
+          Swal.fire({
+            icon: response.status,
+            title: response.title,
+            text: response.message,
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 2000,
+            timerProgressBar: true,
+            didOpen: toast => {
+              toast.addEventListener('mouseenter', Swal.stopTimer)
+              toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+          }).then((result) => {
+            if (result.dismiss === Swal.DismissReason.timer) {
+              window.location.reload(); // Reload the page
+            }
+          });
+
+        },
+        error: function(xhr, status, error) {
+          console.log(error);
+        }
+        // complete: function() {
+        //     $('#loading-overlay').hide();
+        // }
+      });
+    }
   });
 </script>
 <script>

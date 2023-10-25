@@ -16,7 +16,7 @@
   <!-- To the right -->
 
   <!-- Default to the left -->
-  <strong>Copyright PMT version 1.0.0 &copy; 2023 <a href="https://persada-group.com/psd/">Persada Solusi Data</a>.</strong> All rights reserved.
+  <strong>Copyright PMT version 1.0.3 &copy; 2023 <a href="https://persada-group.com/psd/">Persada Solusi Data</a>.</strong> All rights reserved.
 </footer>
 </div>
 <!-- ./wrapper -->
@@ -28,6 +28,49 @@
 <!-- Page specific script -->
 <!-- Select2 -->
 <script src="<?= base_url(); ?>assets/plugins/select2/js/select2.full.min.js"></script>
+
+<!-- EMOJI -->
+<script>
+  function convertEmojiToHtmlDec(message) {
+    var convertedMessage = message.replace(/([\uD800-\uDBFF][\uDC00-\uDFFF])/g, function(match) {
+      var emojiDecValue = match.codePointAt(0);
+      return '&#' + emojiDecValue;
+    });
+    return convertedMessage;
+  }
+
+  function toggleEmojiPicker() {
+    var emojiPicker = document.querySelector('.emoji-picker');
+    if (emojiPicker.style.display === 'none' || emojiPicker.style.display === '') {
+      emojiPicker.style.display = 'block';
+    } else {
+      emojiPicker.style.display = 'none';
+    }
+    event.stopPropagation();
+  }
+
+  function insertEmoji(emoji) {
+    var textarea = document.getElementById('message-input');
+    var cursorPosition = textarea.selectionStart;
+    var textBeforeCursor = textarea.value.substring(0, cursorPosition);
+    var textAfterCursor = textarea.value.substring(cursorPosition);
+    var emojiToAdd = ' ' + emoji + ' ';
+    var updatedText = textBeforeCursor + emojiToAdd + textAfterCursor;
+    textarea.value = updatedText;
+    textarea.selectionStart = cursorPosition + emojiToAdd.length;
+    textarea.selectionEnd = cursorPosition + emojiToAdd.length;
+    textarea.focus();
+  }
+
+  document.addEventListener('click', function(event) {
+    var emojiPicker = document.querySelector('.emoji-picker');
+    if (emojiPicker.style.display === 'block' && !emojiPicker.contains(event.target)) {
+      emojiPicker.style.display = 'none';
+    }
+  });
+</script>
+<!-- END EMOJI -->
+
 <script>
   $(function() {
     $("#example1")
@@ -108,6 +151,25 @@
     })
 
   });
+  // TOOLS BUTTON MESSAGE
+  function handleKeyDown(event) {
+    if (event.key === 'Enter' && event.shiftKey) {
+      event.preventDefault();
+      const messageInput = document.getElementById('message-input');
+      messageInput.value += '\n';
+      adjustInputHeight(messageInput);
+    }
+  }
+
+  function adjustInputHeight(input) {
+    input.style.height = 'auto';
+    input.style.height = input.scrollHeight + 'px';
+    input.style.overflow = "hidden";
+    if (input.value.trim() === '') {
+      input.style.height = 40 + 'px';
+    }
+  }
+
   // TOOLS SELECT MULTIPLE
   function warnaMultiple() {
     var savedTheme = localStorage.getItem('theme');
@@ -225,6 +287,11 @@
     if (profilePopup.style.display === "block" && !profilePopup.contains(event.target)) {
       profilePopup.style.display = "none";
     }
+  });
+
+  var profileImage = document.getElementById("profile-image");
+  profileImage.addEventListener("click", function() {
+    window.open(profileImage.src, "_blank");
   });
 </script>
 <!-- Untuk Ganti Theme -->

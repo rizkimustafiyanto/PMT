@@ -101,8 +101,10 @@
                                 </label>
                             </div>
                             <div id="shared-member-div">
-                                <select class="form-control" id="shared-members" name="shared-members[]" multiple="multiple"></select>
+                                <select class="form-control" id="shared-members" name="shared-members[]" multiple="multiple" style="width: 100%;"></select>
                             </div>
+                        </div>
+                        <div class="form-group">
                             <div class="checkbox">
                                 <label>
                                     <input type="checkbox" id="location-checkbox">
@@ -421,8 +423,6 @@
 
         // Untuk update bro
         $(document).on('click', '#edit-save-event', function() {
-            $('#edit-save-event').prop('disabled', true);
-            $('#loading-overlay').show();
             var eventId = $('#eventID').val();
             var eventTitle = $('#eventDetailModal #event-title-date').val();
             var creationDate = $('#creationDate').val();
@@ -430,6 +430,11 @@
             var endDateTime = $('#event-end-date').val();
             var noteDate = $('#event-note-date').val();
             var locDate = $('#event-location-date').val();
+
+            if (!eventID || !eventTitle || !startDateTime || !creationDate || !endDateTime || !noteDate) {
+                validasiInfo('Please complete all fields before update events items!');
+                return;
+            }
 
             var eventUpdate = {
                 event_id: eventId,
@@ -442,6 +447,8 @@
                 flag: 2
             };
             // console.log(eventUpdate);
+            $('#edit-save-event').prop('disabled', true);
+            $('#loading-overlay').show();
             updateEventDates(eventUpdate);
         });
 
@@ -466,9 +473,6 @@
 
         // CREATE
         $(document).on('click', '#save-add-event', function() {
-            $('#save-add-event').prop('disabled', true);
-            $('#loading-overlay').show();
-
             var title = $('#event-title').val();
             var color = $('#event-color').val();
             var allDay = $('#all-day').val();
@@ -478,6 +482,11 @@
             var location = $('#event-location').val();
             var shareTo = $('#shared-members').val();
             var groupId = $('#group-id').val();
+
+            if (!title || !startDate || !endDate || !eventNote) {
+                validasiInfo('Please complete all fields before add events items!');
+                return;
+            }
 
             var eventData = {
                 title: title,
@@ -491,11 +500,13 @@
                 groupId: groupId
             };
 
+            $('#save-add-event').prop('disabled', true);
+            $('#loading-overlay').show();
             addEventCalendar(eventData);
         });
 
         function addEventCalendar(eventData) {
-            console.log(eventData);
+            // console.log(eventData);
             $.ajax({
                 url: '<?= base_url(); ?>AddEvent',
                 type: 'POST',
@@ -580,7 +591,6 @@
                     // console.log(error);
                 },
                 complete: function() {
-                    // Setelah permintaan AJAX selesai, termasuk jika terjadi error
                     $('#loading-overlay').hide();
                 }
             });
@@ -589,7 +599,7 @@
 
         // Tools untuk progressing
         function formatNotes(notes) {
-            const urlRegex = /(https?:\/\/[^\s]+)/g; // Regular expression to match URLs
+            const urlRegex = /(https?:\/\/[^\s]+)/g;
             return notes.replace(urlRegex, '<a href="$&" target="_blank">$&</a>');
         }
 
@@ -621,7 +631,6 @@
                     // console.log(error + "oke");
                 },
                 complete: function() {
-                    // Setelah permintaan AJAX selesai, termasuk jika terjadi error
                     $('#loading-overlay').hide();
                 }
             });
@@ -632,6 +641,23 @@
         isiCalendar();
         getEventColors();
     });
+
+    function validasiInfo(message) {
+        Swal.fire({
+            icon: 'error',
+            title: 'Peringatan',
+            text: message,
+            toast: true,
+            position: 'center',
+            showConfirmButton: false,
+            timer: 3000,
+            timerProgressBar: true,
+            didOpen: toast => {
+                toast.addEventListener('mouseenter', Swal.stopTimer)
+                toast.addEventListener('mouseleave', Swal.resumeTimer)
+            }
+        });
+    }
 </script>
 
 <?php if ($this->session->flashdata('success')) : ?>

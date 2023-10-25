@@ -67,7 +67,7 @@
                                 Description
                             </div>
                             <div class="card-tools">
-                                <?php if ($batas_akses) : ?>
+                                <?php if ($batas_akses && $status_id != 'STL-4') : ?>
                                     <button type="button" class="btn btn-xs btn-tool" id="btnUpList" style="font-size: 10px;" data-toggle="modal" data-target="#modal-update-list">
                                         <i class="fa fa-lg fa-pen"></i>
                                     </button>
@@ -158,7 +158,7 @@
                             <div class="card-tools">
                                 <button id="sortedas" type="button" class="btn btn-default"><span id="sortIcon" class="fas"></span></button>
                                 <button id="sortByDue" type="button" class="btn btn-default">DUE</button>
-                                <?php if (($batas_akses) || ($member_type == 'MT-3' && $status_id != 'STL-4')) : ?>
+                                <?php if (($batas_akses) || ($member_type == 'MT-3')) : ?>
                                     <button type="button" class="btn btn-tool" id="btnAddTask" data-toggle="modal" data-target="#modal-input-task">
                                         <i class="fa fa-file-circle-plus"></i>
                                     </button>
@@ -213,6 +213,14 @@
                                         $remainingDays = round(($dueDate - $currentTime) / (60 * 60 * 24));
                                         $statusW = $record->status_id;
                                         $bgPriority = ($statusW != 'STL-4' && $remainingDays <= '0') ? '#F08080' : '';
+
+                                        $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                        $photo_url = $record->photo_url;
+                                        if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+                                            $photo_url = 'assets/dist/img/' . $avatar;
+                                        } else {
+                                            $photo_url = '../api-hris/upload/' . $record->photo_url;
+                                        }
                                     ?>
                                         <li class="overflow-auto text-nowrap" style="background-color: <?= $bgPriority ?>;">
                                             <div class="bg-<?= $badgePrior ?>" style="width: 5px; height: 10px; display: inline-block; margin-right: -20px;"></div>
@@ -235,21 +243,15 @@
                                             <?php endif; ?>
 
                                             <span class="text-muted float-right">||
-                                                <?php if ($record->photo_url) : ?>
-                                                    <img src="<?= base_url(); ?>../api-hris/upload/<?= $record->photo_url ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $record->member_name ?>" data-member-name="<?= $record->member_name ?>" data-member-company="<?= $record->company_name ?>" data-src="<?= base_url(); ?>../api-hris/upload/<?= $record->photo_url; ?>">
-                                                <?php else : ?>
-                                                    <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($record->gender_id == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $record->member_name ?>" data-member-name="<?= $record->member_name ?>" data-member-company="<?= $record->company_name ?>" data-src="<?= base_url(); ?>assets/dist/img/avatar<?= ($record->gender_id == 'GR-001') ? '5' : '3' ?>.png">
-                                                <?php endif; ?> ||</span>
+                                                <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $record->member_name ?>" data-member-name="<?= $record->member_name ?>" data-member-company="<?= $record->company_name ?>" data-src="<?= base_url() . $photo_url ?>">
+                                                ||</span>
                                             <span class="text priority" style="display: none;"><?= $prior ?></span>
                                             <span class="text lastchange" style="display: none;"><?= ($record->change_datetime) ? $record->change_datetime : $record->created_at ?></span>
                                             <!-- <span class="text-muted">|| <?= $record->member_name ?> ||</span> -->
                                         </li>
-
                                     <?php
                                     endforeach;
-                                    ?>
-
-                                <?php else : ?>
+                                else : ?>
                                     <div class="text-center">No Task</div>
                                 <?php endif; ?>
                             </ul>
@@ -277,11 +279,19 @@
                     <div class="card-footer">
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
-                            <div class="input-group">
-                                <input type="text" id="message-input" class="form-control" placeholder="Type your comments..." <?= (($batas_akses) || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'readonly' ?> autocomplete="off">
-                                <span class="input-group-append">
-                                    <button type="submit" class="btn btn-primary" <?= (($batas_akses) || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'disabled' ?>>Send</button>
-                                </span>
+                            <div class="row col-md-12 p-0">
+                                <textarea id="message-input" class="form-control" placeholder="Type your comment..." <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'readonly' ?> autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleKeyDown(event)" style="height: 40px; width: 92%;"></textarea>
+                                <button type="button" class="btn" <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
+                                <div class="emoji-picker" style="display: none;">
+                                    <div class="emoji-list">
+                                        <?php if ($Emojis) :
+                                            foreach ($Emojis as $key) : ?>
+                                                <span class="emoji" onclick="insertEmoji('<?= $key->emoji_text ?>')"><?= $key->emoji_text ?></span>
+                                        <?php endforeach;
+                                        endif; ?>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn" <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
                         </form>
                     </div>
@@ -295,7 +305,7 @@
                         <div class="row justify-content-between">
                             <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Card Attachment</div>
                             <div class="card-tools">
-                                <?php if ($batas_akses) : ?>
+                                <?php if ($batas_akses && $status_id != 'STL-4') : ?>
                                     <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
                                         <i class="fas fa-file"></i>
                                     </button>
@@ -354,7 +364,7 @@
                         <div class="row justify-content-between">
                             <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Members</div>
                             <div class="card-tools">
-                                <?php if ($batas_akses) : ?>
+                                <?php if ($batas_akses && $status_id != 'STL-4') : ?>
                                     <button type="button" class="btn btn-xs btn-tool" id="btnAddMember" data-toggle="modal" data-target="#modal-input-list-member">
                                         <i class="fa fa-user-plus"></i>
                                     </button>
@@ -373,13 +383,21 @@
                         <ul class="users-list clearfix">
                             <?php if (!empty($ListMemberRecords)) :
                                 foreach ($ListMemberRecords as $record) :
-                                    $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
                                     $typeM = $record->variable_id;
+                                    $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                    $photo_url = $record->photo_url;
+                                    if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+                                        $photo_url = 'assets/dist/img/' . $avatar;
+                                    } else {
+                                        $photo_url = '../api-hris/upload/' . $record->photo_url;
+                                    }
+
+                                    $warnaType = ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : 'danger');
                             ?>
                                     <li>
-                                        <img src="<?= base_url() ?>assets/dist/img/<?= $avatar ?>" alt="User Image" style="width:60px">
+                                        <img src="<?= base_url() . $photo_url ?>" alt="User Image" style="width: 60px; height: 60px;">
                                         <a class="users-list-name" href="javascript:void(0);"><?= $record->member_name ?></a>
-                                        <a class="btn btn-xs btn-<?= ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : 'danger') ?>" data-bs-toggle="dropdown" <?= ($batas_akses) ? '' : 'disabled' ?>>
+                                        <a class="btn btn-xs btn-<?= $warnaType ?>" <?= $typeM == 'MT-4' ? 'style="background-color:purple;border-color:purple;"' : '' ?> data-bs-toggle="dropdown" <?= ($batas_akses && $status_id != 'STL-4') ? '' : 'disabled' ?>>
                                             <?= $record->member_type ?>
                                         </a>
                                         <ul class="dropdown-menu">
@@ -450,23 +468,19 @@
             <form>
                 <div class="modal-body">
                     <div class="row">
-                        <div class="col-lg-12">
-                            <label>Member</label>
-                            <div class="input-group">
-                                <select class="form-control select2bs4" name="member_id" data-width="100%" id="member_id" style="width: 100%;">
-                                    <?php if ($member_type == 'MT-3') : ?>
-                                        <option value="<?= $member_id ?>">It's You</option>
-                                    <?php else :  ?>
-                                        <option value="" selected disabled>-- Select an option --</option>
-                                        <?php foreach ($ProjectMemberRecords as $row) : ?>
-                                            <option value="<?= $row->member_id; ?>">
-                                                <?= $row->member_name ?>
-                                            </option>
-                                    <?php endforeach;
-                                    endif; ?>
-                                </select>
+                        <div class="row col-lg-12 justify-content-between">
+                            <div style="margin-left: 10px;">
+                                <label for="MemberItem" class="mr-2">Assign Member</label>
                             </div>
-                            <br>
+                            <div>
+                                <input type="checkbox" name="pmemberc" id="pmemberc" onchange="toggleMember()">
+                                <label for="pmemberc" class="mr-2">All Member</label>
+                            </div>
+                        </div>
+                        <div class="form-group col-lg-12">
+                            <select class="form-control" id="member_id" name="member_id[]" multiple="multiple" style="width: 100%;"></select>
+                        </div>
+                        <div class="col-lg-12">
                             <label>Member Type</label>
                             <select class="form-control select2bs4" name="member_type_id" id="member_type_id" data-width="100%" style="width: 100%;">
                                 <option value="">-- Choose Type --</option>
@@ -475,7 +489,6 @@
                                     </option>
                                 <?php endforeach; ?>
                             </select>
-                            <br>
                         </div>
                     </div>
                 </div>
@@ -542,7 +555,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            <div class="card card-info card-outline" style="max-height: 300px;">
+                            <div class="card card-info card-outline">
                                 <div class="card-header">
                                     <h5 class="card-title" style="width: 90%;">
                                         <input type="text" id="list_name" class="form-control" placeholder="Project Name" value="<?= $list_name ?>">
@@ -638,6 +651,15 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="dateRange">Date Range</label>
+                        <div class="input-group">
+                            <input type="text" class="form-control" id="dateRange2">
+                            <div class="input-group-append">
+                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="MemberTask" class="mr-2">Assign Member</label>
                         <select class="form-control select2bs4" id="members_task" name="members_task" style="width: 100%;">
                             <option value="" selected disabled>-- Select an option --</option>
@@ -651,15 +673,6 @@
                             <?php endforeach;
                             endif; ?>
                         </select>
-                    </div>
-                    <div class="form-group">
-                        <label for="dateRange">Date Range</label>
-                        <div class="input-group">
-                            <input type="text" class="form-control" id="dateRange2">
-                            <div class="input-group-append">
-                                <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                            </div>
-                        </div>
                     </div>
                 </div>
                 <div class="card-footer text-right">
@@ -1014,6 +1027,7 @@
             })
         }
         date2In1();
+        handleSelectMember();
     })
 
     $(document).on('click', '#AddTask', function() {
@@ -1454,7 +1468,7 @@
 
         var AddingMember = {
             list_id: listId,
-            member_id: memberId,
+            member_id: JSON.stringify(memberId),
             member_type_id: memberType
         };
 
@@ -1623,6 +1637,52 @@
     }
 
     // #TOOOLS
+    function handleSelectMember() {
+        const checks = document.getElementById("pmemberc");
+        const membsArray = [];
+        <?php if ($ProjectMemberRecords) : if ($member_type == 'MT-3') { ?>
+                membsArray.push({
+                    id: "<?= $member_id ?>",
+                    text: "It's You"
+                });
+                <?php } else {
+                foreach ($ProjectMemberRecords as $key) { ?>
+                    membsArray.push({
+                        id: "<?= $key->member_id ?>",
+                        text: "<?= $key->company_initial ?>" + " - " + "<?= $key->company_brand_name ?>" + " - " + "<?= $key->member_name ?>"
+                    });
+        <?php }
+            }
+        endif; ?>
+
+        $('#member_id').select2({
+            placeholder: '-- Choose Members --',
+            allowClear: true,
+            minimumInputLength: 0,
+            data: membsArray,
+            templateSelection: colorSelect
+        });
+
+        if (checks.checked) {
+            $('#member_id').val(membsArray.map(item => item.id)).trigger('change');
+        } else {
+            $('#member_id').val([]).trigger('change');
+        }
+        warnaMultiple();
+    }
+
+
+    function toggleMember() {
+        const checks = document.getElementById("pmemberc");
+        const memberCollab = document.getElementById("pmember");
+
+        if (checks.checked) {
+            handleSelectMember();
+        } else {
+            handleSelectMember();
+        }
+    };
+
     function goBack() {
         history.go(-1);
     }
@@ -1706,6 +1766,9 @@
                             var senderName = (message.sender_name === '<?= $this->session->userdata("member_name") ?>') ? 'Anda' : message.sender_name;
 
                             var commentHtml = '<div class="direct-chat-msg ' + messageClass + '">' +
+                                '<style>' +
+                                (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #8FBC8F; }' : '') +
+                                '</style>' +
                                 '<div class="direct-chat-info clearfix">' +
                                 '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + senderName + '</span>' +
                                 '<span class="direct-chat-timestamp ' + (messageClass === 'right' ? 'float-left' : 'float-right') + '">' + message.created_at + '</span>' +
@@ -1721,6 +1784,7 @@
                                 '</div>';
 
                             commentContainer.append(commentHtml);
+                            var messageWithLinks = untukUrlLink(message.message);
                         }
                     });
 
@@ -1740,6 +1804,13 @@
         });
     }
 
+    function untukUrlLink(text) {
+        var urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.replace(urlRegex, function(url) {
+            return '<a href="' + url + '" target="_blank">' + url + '</a>';
+        });
+    }
+
     commentContainer.on('scroll', function() {
         scrolling = commentContainer.scrollTop() + commentContainer.innerHeight() < commentContainer[0].scrollHeight;
     });
@@ -1748,11 +1819,22 @@
         fetchMessages();
     }, 1000);
 
+    $("#message-input").keydown(function(event) {
+        if (event.keyCode === 13 && !event.shiftKey) {
+            event.preventDefault();
+            sendingMessage();
+        }
+    });
     $("#send-comment-form").submit(function(event) {
         event.preventDefault();
+        sendingMessage();
+    });
+
+    function sendingMessage() {
         var currentMemberId = $("#current-member-id").val();
         var message = $("#message-input").val();
-
+        message = message.replace(/\n/g, '<br>');
+        message = convertEmojiToHtmlDec(message);
         $.ajax({
             type: 'POST',
             url: '<?= base_url(); ?>insert_comment',
@@ -1777,11 +1859,14 @@
                         '</div>'
                     );
 
-                    $("#message-input").val('');
+                    $("#message-input").val(''); // Kosongkan textarea setelah pengiriman
 
                     var newScrollHeight = commentContainer[0].scrollHeight;
                     commentContainer.scrollTop(newScrollHeight);
-                    console.log('Berhasil');
+                    // console.log('Berhasil');
+                    const messageInput = document.getElementById('message-input');
+                    messageInput.style.height = 40 + 'px';
+                    messageInput.style.overflow = "hidden";
                 } else {
                     console.log("Error inserting message:", response.error);
                 }
@@ -1790,7 +1875,7 @@
                 console.log("Error inserting message:", error);
             }
         });
-    });
+    }
 
     fetchMessages();
     emptyMessage.hide();

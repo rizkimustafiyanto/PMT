@@ -19,6 +19,7 @@ class task_controller extends BaseController
         $this->load->model('master/management_member_model');
         $this->load->model('master/member_model');
         $this->load->model('master/variable_model');
+        $this->load->model('messages/Messages_model');
         $this->load->library('email');
         $this->load->library('email/Email');
         $this->load->helper('enkripbro');
@@ -49,6 +50,7 @@ class task_controller extends BaseController
         #Log
         #============================================================================
         $data['LogRecord'] = $this->Log_model->Get(['', $p_list_id, '', 2]);
+        $data['Emojis'] = $this->Messages_model->GetEmoji(['', 0]);
 
         #Attachment
         #============================================================================
@@ -127,9 +129,9 @@ class task_controller extends BaseController
             foreach ($manageAccess as $key) {
                 $manageAkses = $key->akses;
             }
-            $batas_akses = ($manageAkses != '0' && $status_id != 'STL-4');
+            $batas_akses = ($manageAkses != '0');
         } else {
-            $batas_akses = (($memberID == 'System' || $memberID == $creatorList || $member_type == 'MT-2' || $member_prj_type == 'MT-1') && $status_id != 'STL-4');
+            $batas_akses = ($memberID == 'System' || $memberID == $creatorList || $member_type == 'MT-2' || $member_prj_type == 'MT-1');
         }
 
         #AMBIL
@@ -159,7 +161,7 @@ class task_controller extends BaseController
 
         #TASK
         #============================================================================
-        $data['TaskRecords'] = $this->task_model->Get(['', $p_list_id, '', '', $memberID, ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-4') ? 3 : 2]);
+        $data['TaskRecords'] = $this->task_model->Get(['', $p_list_id, '', '', $memberID, ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-4' || $member_prj_type == 'MT-I') ? 3 : 2]);
         $data['StatusTaskRecords'] = $this->variable_model->GetVariable(['', 5]);
 
         #============================================================================
@@ -312,6 +314,16 @@ class task_controller extends BaseController
             }
             $object = $task_name;
             $text_log = 'Task status "' . $object . '" to be "' . $var_name . '" by "' . $memberName . '"';
+        } else if ($flag == '3') {
+            foreach ($var as $key) {
+                $var_name = $key->variable_name;
+            }
+            foreach ($TR as $key) {
+                $list_id = $key->list_id;
+                $task_name = $key->task_name;
+            }
+            $object = $task_name;
+            $text_log = 'Task status "' . $object . '" to be "' . $var_name . '" by "' . $memberName . '"';
         } else {
             $object = $task_name;
             $text_log = 'Task "' . $object . '" updated by "' . $memberName . '"';
@@ -346,15 +358,15 @@ class task_controller extends BaseController
             $projectName = $key->project_name;
             $cardName = $key->list_name;
         }
-        $subjectEmail = ($flag == '1') ? 'Update Task Status' : 'Update Task';
+        $subjectEmail = (($flag == '1') || ($flag == '3')) ? 'Update Task Status' : 'Update Task';
         // $urlmail = base_url() . 'home';
         $urlmail = 'http://apps.persada-group.com:8086/home/Dashboard';
         // $urlmail = base_url() . 'Project/List/Task' . $project_id . '/' . $list_id;
-        $flagging = ($flag == '1') ? '3' : '2';
-        $status = ($flag == '1') ? $var_name : '';
+        $flagging = (($flag == '1') || ($flag == '3')) ? '3' : '2';
+        $status = (($flag == '1') || ($flag == '3')) ? $var_name : '';
         $i = 0;
         $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
-        if ($flag == '1') {
+        if (($flag == '1') || ($flag == '3')) {
             for ($i = 0; $i < $countNamaMember; $i++) {
                 $this->sendingEmail($userMail[$i], $namaMember[$i], $projectName, $creator_name, $subjectEmail, $urlmail, $cardName, $task_name, $flagging, $status);
             }
@@ -471,7 +483,7 @@ class task_controller extends BaseController
             <h2 style="text-align: center;"><strong>Update&nbsp;Card</strong></h2>
             <p>&nbsp;</p>
             <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br />
-            Di informasikan untuk Task ' . $task_name . 'saat ini untuk statusnya adalah ' . $status . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            Di informasikan untuk Task ' . $task_name . ' saat ini untuk statusnya adalah ' . $status . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
             </p>
             <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
             <p>&nbsp;</p>

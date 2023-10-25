@@ -27,7 +27,7 @@ class Email
             $this->mailer->SMTPSecure = 'ssl';
             $this->mailer->Username = 'it.psdjkt@gmail.com';
             $this->mailer->Password = 'jvjeiuwnmjjernzx';
-            $this->mailer->setFrom('it.psdjkt@gmail.com', 'PMT');
+            $this->mailer->setFrom('it.psdjkt@gmail.com', 'Persada PMT');
             $this->mailer->addAddress($to);
             $this->mailer->Subject = $subject;
             $this->mailer->isHTML(true);

@@ -109,6 +109,45 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <script src="https://cdn.jsdelivr.net/npm/slick-carousel@1.8.1/slick/slick.min.js"></script>
 
 </head>
+<!-- UNTUK EMOJI -->
+<style>
+  .emoji-picker {
+    position: absolute;
+    bottom: 50px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 200px;
+    overflow-y: auto;
+    z-index: 1;
+  }
+
+  .emoji-list {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+  }
+
+  .emoji {
+    font-size: 14px;
+    margin: 5px;
+    cursor: pointer;
+  }
+
+  .emoji:hover {
+    background-color: #f0f0f0;
+  }
+
+  .btn-emoji-picker {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+  }
+</style>
+
+
+<!-- UNTUK PROFILE DAN LOADING -->
 <style>
   #profile-popup {
     display: none;
@@ -247,11 +286,16 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <!-- Sidebar user panel (optional) -->
         <div class="user-panel mt-3 pb-3 mb-3 d-flex">
           <div class="image">
-            <?php if ($this->session->userdata('photo_url') == null) : ?>
-              <img src="<?= base_url(); ?>assets/dist/img/avatar<?= (($this->session->userdata('gender_id')) == 'GR-001') ? '5.png' : '3.png' ?>" class="img-circle elevation-2" alt="User Image">
-            <?php else : ?>
-              <img src="<?= base_url(); ?>../api-hris/upload/<?= $this->session->userdata('photo_url'); ?>" class="img-circle elevation-2" alt="User Image" style="width: 35px; height: 35px;">
-            <?php endif; ?>
+            <?php
+            $avatar = $this->session->userdata('gender_id') == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+            $photo_url = $this->session->userdata('photo_url');
+            if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+              $photo_url = 'assets/dist/img/' . $avatar;
+            } else {
+              $photo_url = '../api-hris/upload/' . $this->session->userdata('photo_url');
+            }
+            ?>
+            <img src="<?= base_url() . $photo_url ?>" class="img-circle elevation-2" alt="User Image" style="width: 35px; height: 35px;">
           </div>
           <div class="info">
             <a href="<?= base_url(); ?>Profile" class="d-block"><?= $this->session->userdata('member_name'); ?></a>

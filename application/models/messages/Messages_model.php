@@ -36,4 +36,14 @@ class Messages_model extends CI_Model
         $sql_query = $this->db->query($procedure, $parameter);
         return true;
     }
+
+    function GetEmoji($parameter)
+    {
+        $procedure = 'call usp_emojis_select(?, ?);';
+        $sql_query = $this->db->query($procedure, $parameter);
+        mysqli_next_result($this->db->conn_id);
+        if ($sql_query->num_rows() > 0) {
+            return $sql_query->result();
+        }
+    }
 }

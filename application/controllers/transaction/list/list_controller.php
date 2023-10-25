@@ -18,6 +18,7 @@ class list_controller extends BaseController
         $this->load->model('master/member_model');
         $this->load->model('master/management_member_model');
         $this->load->model('master/variable_model');
+        $this->load->model('messages/Messages_model');
         $this->load->library('email');
         $this->load->library('email/Email');
         $this->load->helper('enkripbro');
@@ -51,9 +52,10 @@ class list_controller extends BaseController
         $data['AttachmentRecord'] = $this->Attachment_model->Get(['', '', $p_project_id, 2]);
         $data['AttachmentTypeRecord'] = $this->variable_model->GetVariable(['', 3]);
 
-        #Log
+        #Log & Tools
         #============================================================================
         $data['LogRecord'] = $this->Log_model->Get(['', $p_project_id, '', 2]);
+        $data['Emojis'] = $this->Messages_model->GetEmoji(['', 0]);
 
         #Find Kebutuhan
         #============================================================================
@@ -141,12 +143,12 @@ class list_controller extends BaseController
             foreach ($manageAccess as $key) {
                 $manageAkses = $key->akses;
             }
-            $batas_akses = ($manageAkses != '0' && $status_id != 'STW-2');
+            $batas_akses = ($manageAkses != '0');
         } else {
             if ($memberID == 'System') {
                 $batas_akses = ($memberID == 'System');
             } else {
-                $batas_akses = (($memberID == 'System' || $memberID == $creatorProject || $member_type == 'MT-2' || $member_type != 'MT-4') && $status_id != 'STW-2');
+                $batas_akses = ($memberID == 'System' || $memberID == $creatorProject || $member_type == 'MT-2' || $member_type != 'MT-4');
             }
         }
 
@@ -452,58 +454,41 @@ class list_controller extends BaseController
 
         $result = $this->list_member_model->Insert($item_param);
 
-        // LOGGING
-        $thismember = '';
-        $memberName = $this->session->userdata('member_name');
-        $dataMember = $this->member_model->Get([$member_id, 1]);
-        foreach ($dataMember as $key) {
-            $thismember = $key->member_name;
-        }
-        $object = $thismember;
-        $text_log = 'Member "' . $object . '" inserted by "' . $memberName . '"';
-        $group_id = $list_id;
-        $logging = [
-            $text_log,
-            $group_id,
-            $creation_user_id
-        ];
 
-        // #EMAILING CONFIG
-        // #=============================================================================================================
-        $project_name = '';
-        $card_name = '';
-        $project_id = '';
-        $cardFind = $this->list_model->Get([$list_id, '', '', '', '', '', 5]);
-        foreach ($cardFind as $key) {
-            $list_id = $key->list_id;
-            $project_id = $key->project_id;
-            $project_name = $key->project_name;
-        }
-        $memberRecords = $this->list_member_model->Get(['', $list_id, '', 0]);
-        $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
-        $subjectEmail = 'New Member';
-        // $urlmail = base_url() . 'Home';
-        $urlmail = 'http://apps.persada-group.com:8086/home/Dashboard';
-        // $urlmail = base_url() . 'Project/List/Task' . $project_id . '/' . $list_id;
-        $creator_name = $this->session->userdata('member_name');
-        $namaMember = [];
-        $userMail = [];
-        $creator_level = [];
-        $status = '';
-        foreach ($memberRecords as $member) {
-            if ($member_id == $member->member_id) {
+        if ($result === 'success') {
+            // #EMAILING CONFIG
+            // #=============================================================================================================
+            $project_name = '';
+            $card_name = '';
+            $project_id = '';
+            $cardFind = $this->list_model->Get([$list_id, '', '', '', '', '', 5]);
+            foreach ($cardFind as $key) {
+                $list_id = $key->list_id;
+                $project_id = $key->project_id;
+                $project_name = $key->project_name;
+                $card_name = $key->list_name;
+            }
+            $memberRecords = $this->list_member_model->Get(['', $list_id, '', 0]);
+            $penerima = 'rizkimurfer@gmail.com'; //Send Email Percobaan
+            $subjectEmail = 'New Member';
+            // $urlmail = base_url() . 'Home';
+            $urlmail = 'http://apps.persada-group.com:8086/home/Dashboard';
+            // $urlmail = base_url() . 'Project/List/Task' . $project_id . '/' . $list_id;
+            $creator_name = $this->session->userdata('member_name');
+            $namaMember = [];
+            $userMail = [];
+            $creator_level = [];
+            $status = '';
+            foreach ($memberRecords as $member) {
                 $userMail[] = $member->email;
                 $namaMember[] = $member->member_name;
                 $creator_level[] = $member->member_type;
             }
-        }
-        $flagging = '1';
-        $i = 0;
-        $countNamaMember = count($namaMember);
-        // #END CONFIG
-        // #==============================================================================================================
-
-        if ($result === 'success') {
+            $flagging = '1';
+            $i = 0;
+            $countNamaMember = count($namaMember);
+            // #END CONFIG
+            // #==============================================================================================================
             for ($i = 0; $i < $countNamaMember; $i++) {
                 $this->sendingEmail($userMail[$i], $namaMember[$i], $project_name, $creator_name, $creator_level[$i], $subjectEmail, $urlmail, $card_name, $flagging, $status);
             }
@@ -512,7 +497,6 @@ class list_controller extends BaseController
                 'title' => 'Success',
                 'message' => 'Card member insert successfully'
             );
-            $this->Log_model->Insert($logging);
         } else {
             $response = array(
                 'status' => 'error',

@@ -9,8 +9,14 @@ if (!empty($profiles)) {
         $company_name = $key->company_name;
     }
 }
-$potosnya = $this->session->userdata('photo_url');
 
+$avatar = $this->session->userdata('gender_id') == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+$photo_url = $this->session->userdata('photo_url');
+if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+    $photo_url = 'assets/dist/img/' . $avatar;
+} else {
+    $photo_url = '../api-hris/upload/' . $this->session->userdata('photo_url');
+}
 ?>
 
 <div class="content-wrapper" style="min-height: 1604.71px;">
@@ -23,7 +29,7 @@ $potosnya = $this->session->userdata('photo_url');
                 </div>
                 <div class="col-sm-6">
                     <ol class="breadcrumb float-sm-right">
-                        <li class="breadcrumb-item"><a href="javascript:void(0);">Home</a></li>
+                        <li class="breadcrumb-item"><a href="<?= base_url() ?>Dashboard">Home</a></li>
                         <li class="breadcrumb-item active">User Profile</li>
                     </ol>
                 </div>
@@ -50,11 +56,8 @@ $potosnya = $this->session->userdata('photo_url');
                                 </div>
                             </div>
                             <div class="text-center">
-                                <?php if ($potosnya) : ?>
-                                    <img src="<?= base_url(); ?>../api-hris/upload/<?= $potosnya ?>" alt="User Image" class="rounded-circle" style="width: 90px; height: 90px;" title="<?= $profile_name ?>">
-                                <?php else : ?>
-                                    <img src="<?= base_url(); ?>assets/dist/img/avatar<?= ($profile_foto == 'GR-001') ? '5' : '3' ?>.png" alt="User Image" class="rounded-circle" style="width: 90px; height: 90px;">
-                                <?php endif; ?>
+
+                                <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle" style="width: 90px; height: 90px;" title="<?= $profile_name ?>">
                             </div>
                             <h3 class="profile-username text-center"><?= $profile_name ?></h3>
                             <p class="text-muted text-center"><?= $profile_divisi ?></p>

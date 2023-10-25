@@ -67,7 +67,7 @@
                                 Description
                             </div>
                             <div class="card-tools">
-                                <?php if ($batas_akses) : ?>
+                                <?php if ($batas_akses && $status_id != 'STW-2') : ?>
                                     <button type="button" class="btn btn-xs btn-tool" style="font-size: 10px;" id="btnUpProject" data-toggle="modal" data-target="#modal-update-project">
                                         <i class="fa fa-lg fa-pen"></i>
                                     </button>
@@ -205,7 +205,7 @@
 
                                 ?>
                                         <tr>
-                                            <td>
+                                            <td class="clickable" data-url="<?= $url ?>" style="cursor: pointer;">
                                                 <div class="row">
                                                     <div class="col-md-6"><?= $record->list_name ?></div>
                                                     <div class="col-md-6 text-right">
@@ -285,11 +285,19 @@
                     <div class="card-footer">
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
-                            <div class="input-group">
-                                <input type="text" id="message-input" class="form-control" placeholder="Type your comment..." <?= ($status_id == 'STW-1') ? '' : 'disabled' ?> autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleKeyDown(event)">
-                                <span class="input-group-append">
-                                    <button type="submit" class="btn btn-primary" <?= ($batas_akses) ? '' : 'disabled' ?>>Send</button>
-                                </span>
+                            <div class="row col-md-12 p-0">
+                                <textarea id="message-input" class="form-control" placeholder="Type your comment..." <?= ($status_id != 'STW-2') ? '' : 'disabled' ?> autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleKeyDown(event)" style="height: 40px; width: 92%;"></textarea>
+                                <button type="button" class="btn" <?= ($batas_akses && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
+                                <div class="emoji-picker" style="display: none;">
+                                    <div class="emoji-list">
+                                        <?php if ($Emojis) :
+                                            foreach ($Emojis as $key) : ?>
+                                                <span class="emoji" onclick="insertEmoji('<?= $key->emoji_text ?>')"><?= $key->emoji_text ?></span>
+                                        <?php endforeach;
+                                        endif; ?>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn" <?= ($batas_akses && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
                         </form>
                     </div>
@@ -363,7 +371,7 @@
                         <div class="row justify-content-between">
                             <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Members</div>
                             <div class="card-tools">
-                                <?php if ($batas_akses) : ?>
+                                <?php if ($batas_akses && $status_id != 'STW-2') : ?>
                                     <button type="button" class="btn btn-xs btn-tool ml-auto" id="btnAddMember" data-toggle="modal" data-target="#modal-input-project-member">
                                         <i class="fa fa-user-plus"></i>
                                     </button>
@@ -382,15 +390,22 @@
                         <ul class="users-list clearfix">
                             <?php if (!empty($ProjectMemberRecords)) :
                                 foreach ($ProjectMemberRecords as $record) :
-                                    $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
                                     $typeM = $record->variable_id;
-                                    $cekIngUs = $batas_akses;
+                                    $cekIngUs = $batas_akses && $status_id != 'STW-2';
                                     $warnaMembs = ($typeM == 'MT-1') ? 'primary' : (($typeM == 'MT-2') ? 'success' : (($typeM == 'MT-I') ? 'secondary' : 'danger'));
+
+                                    $avatar = $record->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                    $photo_url = $record->photo_url;
+                                    if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+                                        $photo_url = 'assets/dist/img/' . $avatar;
+                                    } else {
+                                        $photo_url = '../api-hris/upload/' . $record->photo_url;
+                                    }
                             ?>
                                     <li>
-                                        <img src="<?= $record->photo_url ? base_url() . '../api-hris/upload/' . $record->photo_url : base_url() . 'assets/dist/img/' . $avatar ?>" alt="User Image" class="rounded-circle" style="width: 60px; height: 60px;" title="<?= $record->member_name ?>">
+                                        <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle" style="width: 60px; height: 60px;" title="<?= $record->member_name ?>">
                                         <a class="users-list-name" href="javascript:void(0);"><?= $record->member_name ?></a>
-                                        <a class="btn btn-xs btn-<?= $warnaMembs ?>" data-bs-toggle="dropdown" <?= ($typeM != 'MT-1') ? (($cekIngUs) ? '' : 'disabled') : 'disabled' ?>>
+                                        <a class="btn btn-xs btn-<?= $warnaMembs ?>" <?= $typeM == 'MT-4' ? 'style="background-color:purple;border-color:purple;"' : '' ?> data-bs-toggle="dropdown" <?= ($typeM != 'MT-1') ? (($cekIngUs && $member_type != 'MT-3') ? '' : 'disabled') : 'disabled' ?>>
                                             <span class="badge"><?= $record->member_type ?></span>
                                         </a>
                                         <ul class="dropdown-menu">
@@ -664,7 +679,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            <div class="card card-info card-outline" style="max-height: 300px;">
+                            <div class="card card-info card-outline">
                                 <div class="card-header">
                                     <h5 class="card-title" style="width: 90%;"><input type="text" id="list_name" class="form-control" placeholder="Card Name"></h5>
                                     <div class="card-tools">
@@ -692,6 +707,15 @@
                                     </div>
                                 </div>
                             </div>
+                            <div class="form-group">
+                                <label for="dateRange">Date Range</label>
+                                <div class="input-group">
+                                    <input type="text" class="form-control" id="dateRange2">
+                                    <div class="input-group-append">
+                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
+                                    </div>
+                                </div>
+                            </div>
                             <div class="row col-lg-12 justify-content-between">
                                 <div>
                                     <label for="MemberItem" class="mr-2">Assign Member</label>
@@ -703,15 +727,6 @@
                             </div>
                             <div class="form-group">
                                 <select class="form-control" id="members_list_item" name="members_list_item[]" multiple="multiple" style="width: 100%;"></select>
-                            </div>
-                            <div class="form-group">
-                                <label for="dateRange">Date Range</label>
-                                <div class="input-group">
-                                    <input type="text" class="form-control" id="dateRange2">
-                                    <div class="input-group-append">
-                                        <span class="input-group-text"><i class="fa fa-calendar"></i></span>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     </div>
@@ -738,7 +753,7 @@
                 <div class="modal-body">
                     <div class="row">
                         <div class="col-lg-6">
-                            <div class="card card-info card-outline" style="max-height: 300px;">
+                            <div class="card card-info card-outline">
                                 <div class="card-header">
                                     <input type="hidden" class="form-control" id="update_list_id" placeholder="List ID" name="update_list_id" required readonly>
                                     <input type="hidden" class="form-control" id="update_project_id" placeholder="List ID" name="update_project_id" required readonly>
@@ -801,21 +816,8 @@
     </div>
 </div>
 <!-- Modal Update Card -->
-
+<!-- Styling Table -->
 <script>
-    $("#tblProjectMember").DataTable({
-            responsive: true,
-            lengthChange: false,
-            autoWidth: false,
-            order: [
-                [0, "desc"]
-            ]
-
-        })
-        .buttons()
-        .container()
-        .appendTo("#tblProjectMember_wrapper .col-md-6:eq(0)");
-
     $("#tblAttachment").DataTable({
             responsive: true,
             lengthChange: false,
@@ -838,8 +840,16 @@
         .buttons()
         .container()
         .appendTo("#tblProject_wrapper .col-md-6:eq(0)");
-</script>
 
+    const clickableElements = document.querySelectorAll(".clickable");
+    clickableElements.forEach(function(element) {
+        element.addEventListener("click", function() {
+            const url = element.getAttribute("data-url");
+            window.location.href = url;
+        });
+    });
+</script>
+<!-- END Styling Table -->
 <script>
     $(document).on('click', '#btnUpProject', function() {
         var colb = '<?= $collab_member ?>';
@@ -1687,7 +1697,6 @@
         warnaMultiple();
     }
 
-
     function toggleMember() {
         const checks = document.getElementById("pmemberc");
         const memberCollab = document.getElementById("pmember");
@@ -1698,20 +1707,6 @@
             handleSelectMember();
         }
     };
-
-    function handleKeyDown(event) {
-        if (event.key === 'Enter' && event.shiftKey) {
-            event.preventDefault();
-            const messageInput = document.getElementById('message-input');
-            messageInput.value += '\n';
-            adjustInputHeight(messageInput);
-        }
-    }
-
-    function adjustInputHeight(input) {
-        input.style.height = 'auto';
-        input.style.height = input.scrollHeight + 'px';
-    }
 
     function actBot() {
         var logAct = document.getElementById("logact");
@@ -1774,10 +1769,14 @@
                             var senderName = (message.sender_name === '<?= $this->session->userdata("member_name") ?>') ? 'Anda' : message.sender_name;
 
                             var commentHtml = '<div class="direct-chat-msg ' + messageClass + '">' +
+                                '<style>' +
+                                (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #8FBC8F; }' : '') +
+                                '</style>' +
                                 '<div class="direct-chat-info clearfix">' +
                                 '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + senderName + '</span>' +
                                 '<span class="direct-chat-timestamp ' + (messageClass === 'right' ? 'float-left' : 'float-right') + '">' + message.created_at + '</span>' +
                                 '</div>';
+
 
                             if (potoLive) {
                                 commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>../api-hris/upload/' + potoLive + '" alt="User Image" class="rounded-circle" style="width: 40px; height: 40px;" title="' + senderName + '">';
@@ -1785,13 +1784,15 @@
                                 commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>assets/dist/img/avatar' + potoBox + '" alt="User Avatar" style="width: 40px; height: 40px;">';
                             }
 
-                            commentHtml += '<div class="direct-chat-text">' + message.message + '</div>' +
+                            // Mengganti URL dengan tautan yang dapat diklik
+                            var messageWithLinks = untukUrlLink(message.message);
+
+                            commentHtml += '<div class="direct-chat-text">' + messageWithLinks + '</div>' +
                                 '</div>';
 
                             commentContainer.append(commentHtml);
                         }
                     });
-
 
                     var newScrollHeight = commentContainer[0].scrollHeight;
 
@@ -1809,6 +1810,14 @@
         });
     }
 
+    function untukUrlLink(text) {
+        var urlRegex = /(https?:\/\/[^\s]+)/g;
+        return text.replace(urlRegex, function(url) {
+            return '<a href="' + url + '" target="_blank">' + url + '</a>';
+        });
+    }
+
+
     commentContainer.on('scroll', function() {
         scrolling = commentContainer.scrollTop() + commentContainer.innerHeight() < commentContainer[0].scrollHeight;
     });
@@ -1817,13 +1826,26 @@
         fetchMessages();
     }, 1000);
 
-    $("#send-comment-form").submit(function(event) {
+    $("#message-input").keydown(function(event) {
+        if (event.keyCode === 13 && !event.shiftKey) {
+            event.preventDefault();
+            sendingMessage();
+        }
+    });
+    sendMessage.submit(function(event) {
         event.preventDefault();
+        sendingMessage();
+    });
+
+    function sendingMessage() {
         var currentMemberId = $("#current-member-id").val();
         var message = $("#message-input").val();
+        message = message.replace(/\n/g, '<br>');
+        message = convertEmojiToHtmlDec(message);
         $.ajax({
             type: 'POST',
             url: '<?= base_url(); ?>insert_comment',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             data: {
                 senderId: '',
                 currentMemberId: currentMemberId,
@@ -1845,11 +1867,13 @@
                         '</div>'
                     );
 
-                    $("#message-input").val('');
+                    $("#message-input").val(''); // Kosongkan textarea setelah pengiriman
 
                     var newScrollHeight = commentContainer[0].scrollHeight;
                     commentContainer.scrollTop(newScrollHeight);
-                    console.log('Berhasil');
+                    const messageInput = document.getElementById('message-input');
+                    messageInput.style.height = 40 + 'px';
+                    messageInput.style.overflow = "hidden";
                 } else {
                     console.log("Error inserting message:", response.error);
                 }
@@ -1858,7 +1882,8 @@
                 console.log("Error inserting message:", error);
             }
         });
-    });
+    }
+
 
     fetchMessages();
     emptyMessage.hide();
