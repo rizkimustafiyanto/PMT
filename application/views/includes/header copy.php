@@ -182,6 +182,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
   }
 </style>
 
+
 <!-- UNTUK PROFILE DAN LOADING -->
 <style>
   #profile-popup {
@@ -220,14 +221,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   }
 </style>
 
-<!-- TAMBAHAN -->
-<style>
-  .col.clickable:hover {
-    background-color: #87CEEB;
-  }
-</style>
-<!-- END TAMBAHAN -->
-
 <body class="hold-transition sidebar-mini sidebar-collapse">
   <div class="wrapper">
 
@@ -259,9 +252,64 @@ scratch. This page gets rid of all links and provides the needed markup only.
         <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="javascript:void(0);" aria-expanded="false">
             <i class="far fa-comments"></i>
-            <span class="badge badge-danger navbar-badge"></span>
+            <?php
+            $memberID = $this->session->userdata('member_id');
+            $notification = $this->Notification_model->Get([$memberID, 0, 1]);
+            $totalNotif = 0;
+            if (!empty($notification)) :
+              foreach ($notification as $row) {
+                $totalNotif = $row->jumlah;
+                break;
+              }
+            endif;
+            if ($totalNotif != null && $totalNotif != 0) {
+              echo '<span class="badge badge-danger navbar-badge">' . $totalNotif . '</span>';
+            }
+            ?>
           </a>
-          <div id="dropdownMessage" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;"></div>
+          <?php
+          $notificationCol = $this->Notification_model->Get([$memberID, 0, 2]);
+          $kataDicari = 'Darurat';
+          if (!empty($notificationCol)) : ?>
+            <div id="dropdownMessage" class="dropdown-menu dropdown-menu-lg dropdown-menu-right" style="left: inherit; right: 0px;">
+              <?php
+              foreach ($notificationCol as $row) :
+                $potoB = $row->gender_id;
+                $isiNotif = $row->notif_value;
+                $photo_url = $row->photo_url;
+                $avatar = $potoB == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                if (empty($photo_url) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url)) {
+                  $photo_url = 'assets/dist/img/' . $avatar;
+                } else {
+                  $photo_url = '../api-hris/upload/' . $photo_url;
+                }
+
+                $toReadNotif = '';
+                $projectID = enkripbro($row->group_id);
+                if ($row->project_card) {
+                  $listCard = enkripbro($row->project_card);
+                  $toReadNotif = base_url() . 'Project/List/Task/' . $projectID . '/' . $listCard;
+                } else {
+                  $toReadNotif = base_url() . 'Project/List/' . $projectID;
+                }
+              ?>
+                <a href="<?= $toReadNotif ?>" class="dropdown-item">
+                  <div class="media">
+                    <img src="<?= base_url() . $photo_url ?>" alt="User Avatar" class="img-size-50 mr-3 img-circle" style="width: 60px; height: 60px;">
+                    <div class="media-body">
+                      <h3 class="dropdown-item-title">
+                        <?= $row->sender_name; ?>
+                        <span class="float-right text-sm text-<?= stripos($isiNotif, $kataDicari) !== false ? 'danger' : (empty($isiNotif) ? 'muted' : 'warning'); ?>"><i class="fas fa-star"></i></span>
+                      </h3>
+                      <p class="text-sm"><?= $isiNotif; ?></p>
+                      <p class="text-sm text-muted"><i class="far fa-clock mr-1"></i><?= $row->created_at; ?></p>
+                    </div>
+                  </div>
+                </a>
+                <div class="dropdown-divider"></div>
+              <?php endforeach; ?>
+            </div>
+          <?php endif; ?>
         </li>
         <!-- <li class="nav-item dropdown">
           <a class="nav-link" data-toggle="dropdown" href="javascript:void(0);" aria-expanded="false">

@@ -215,7 +215,7 @@
                     }
                 ?>
                     <div class="progress-group">
-                      <?= $key->project_name ?>
+                      <a href="<?= base_url() . 'Project/List/' . enkripbro($key->project_id) ?>" class="text-secondary"><?= $key->project_name ?></a>
                       <span class="float-right"><b><?= $percent ?></b>/100</span>
                       <div class="progress progress-sm">
                         <div class="progress-bar <?= ($percent < 100) ? 'bg-primary' : 'bg-success'; ?>" style="width: <?= $percent; ?>%"></div>

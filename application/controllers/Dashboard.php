@@ -23,6 +23,7 @@ class Dashboard extends BaseController
         $this->load->model('transaction/task/task_model');
         $this->load->model('user_model');
         $this->load->model('login_model');
+        $this->load->helper('enkripbro');
         $this->IsLoggedIn();
     }
 

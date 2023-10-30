@@ -167,6 +167,11 @@ $route['DeleteMessages'] = 'messages/Messages_controller/DeleteMessages';
 // TOOLS
 $route['MemberSelect'] = 'transaction/project/project_controller/SelectProjectMember';
 $route['Pining'] = 'transaction/project/project_controller/PinorUnpinProject';
+$route['ProcImage'] = 'transaction/tools/RUimage_controller/ProcImage';
+$route['ProcImageMessage'] = 'transaction/tools/RUimage_controller/ProcImageMessage';
+
+// NOTIFICATION
+$route['get_notif'] = 'transaction/tools/Notification_controller/get_notif';
 
 
 // WEBSITE

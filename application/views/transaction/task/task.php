@@ -280,8 +280,9 @@
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
                             <div class="row col-md-12 p-0">
-                                <textarea id="message-input" class="form-control" placeholder="Type your comment..." <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'readonly' ?> autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleKeyDown(event)" style="height: 40px; width: 92%;"></textarea>
+                                <textarea id="message-input" class="form-control" placeholder="Type your comment..." <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'readonly' ?> autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleKeyDown(event)" style="height: 40px; width: 88%;"></textarea>
                                 <button type="button" class="btn" <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
+                                <button type="button" class="btn" <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'disabled' ?> style="width: 4%;" id="upload-button"><i class="fas fa-paperclip"></i></button>
                                 <div class="emoji-picker" style="display: none;">
                                     <div class="emoji-list">
                                         <?php if ($Emojis) :
@@ -290,6 +291,13 @@
                                         <?php endforeach;
                                         endif; ?>
                                     </div>
+                                </div>
+                                <div id="image-upload-dialog" style="display: none;">
+                                    <h3>Unggah Gambar</h3>
+                                    <input type="file" id="file-input" accept="image/*">
+                                    <input type="text" id="image-description" placeholder="Deskripsi Gambar">
+                                    <button class="btn btn-primary" id="confirm-upload">Send</button>
+                                    <button class="btn btn-danger" id="cancel-upload">Cancel</button>
                                 </div>
                                 <button type="submit" class="btn" <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
@@ -516,7 +524,7 @@
                     <div class="row">
                         <div class="col-lg-12">
                             <label for="attachment_name">Attachment Name</label>
-                            <input class="form-control" id="attachment_name" placeholder="Attachment Name" name="attachment_name" maxlength="50" required>
+                            <input class="form-control" id="attachment_name" placeholder="Attachment Name" name="attachment_name" maxlength="50" autocomplete="off" required>
                             <br>
                             <div style="display:none;">
                                 <label>Attachment Type</label>
@@ -558,7 +566,7 @@
                             <div class="card card-info card-outline">
                                 <div class="card-header">
                                     <h5 class="card-title" style="width: 90%;">
-                                        <input type="text" id="list_name" class="form-control" placeholder="Project Name" value="<?= $list_name ?>">
+                                        <input type="text" id="list_name" class="form-control" placeholder="Project Name" value="<?= $list_name ?>" autocomplete="off">
                                     </h5>
                                     <div class="card-tools">
                                         <div style="margin-top: 5px; margin-right: 10px;"><i class="fa fa-pen" style="color: gray;"></i></div>
@@ -631,7 +639,7 @@
                 <div class="modal-body">
                     <div class="form-group">
                         <label for="task_name">Task Name</label>
-                        <input type="text" class="form-control" id="task_name" placeholder="Task Name">
+                        <input type="text" class="form-control" id="task_name" placeholder="Task Name" autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="CheckingPriority">Priority Task</label>
@@ -699,7 +707,7 @@
                         <input type="hidden" class="form-control" id="update_task_id" placeholder="Project ID" name="update_task_id" required readonly>
                         <input type="hidden" class="form-control" id="update_list_id_task" placeholder="Project ID" name="update_list_id_task" required readonly>
                         <label for="task_name">Task Name</label>
-                        <input type="text" class="form-control" id="update_task_name" placeholder="Task Name">
+                        <input type="text" class="form-control" id="update_task_name" placeholder="Task Name" autocomplete="off">
                     </div>
                     <div class="form-group">
                         <label for="CheckingPriority">Priority Task</label>
@@ -906,6 +914,13 @@
         .buttons()
         .container()
         .appendTo("#tblAttachment_wrapper .col-md-6:eq(0)");
+
+    document.addEventListener('click', function(event) {
+        var emojiPicker = document.querySelector('.emoji-picker');
+        if (emojiPicker.style.display === 'block' && !emojiPicker.contains(event.target)) {
+            emojiPicker.style.display = 'none';
+        }
+    });
 </script>
 
 <script>
@@ -1735,10 +1750,64 @@
 
 <!-- Comment -->
 <script>
+    // UPLOAD IMAGE COMMENT MAIN
+    const uploadButton = document.getElementById('upload-button');
+    const imageUploadDialog = document.getElementById('image-upload-dialog');
+    uploadButton.addEventListener('click', function() {
+        imageUploadDialog.style.display = 'block';
+    });
+    const fileInput = document.getElementById('file-input');
+    const imageDescriptionInput = document.getElementById('image-description');
+    const confirmUploadButton = document.getElementById('confirm-upload');
+    confirmUploadButton.addEventListener('click', function() {
+        const selectedFile = fileInput.files[0];
+        const description = imageDescriptionInput.value;
+
+        if (selectedFile) {
+            var isian = '';
+            var data = new FormData();
+            data.append('image', selectedFile);
+            $.ajax({
+                url: '<?= base_url() ?>ProcImageMessage',
+                method: 'POST',
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(url) {
+                    var imgElement = '<img src="' + url + '" alt="Gambar">';
+                    isian = imgElement + '\n' + description;
+                    sendingMessagePthoto(isian);
+                    // console.log(imgElement);
+                },
+                error: function(data) {
+                    console.log(data);
+                },
+                complete: function() {
+                    fileInput.value = '';
+                    imageDescriptionInput.value = '';
+                    imageUploadDialog.style.display = 'none';
+                }
+            });
+        }
+    });
+
+    const cancelUploadButton = document.getElementById('cancel-upload');
+    cancelUploadButton.addEventListener('click', function() {
+        fileInput.value = '';
+        imageDescriptionInput.value = '';
+        imageUploadDialog.style.display = 'none';
+    });
+    // END UPLOAD IMAGE COMMENT MAIN
+
+
+
+    // COMMENT MAIN
     var emptyMessage = $("#empty-comment");
     var commentContainer = $("#comment-container");
     var sendMessage = $("#send-comment-form");
     var scrolling = false;
+    var previousData = null;
 
     function fetchMessages() {
         $.ajax({
@@ -1755,43 +1824,44 @@
                     commentContainer.empty();
                     currentSenderId = null;
                 } else if (response.messages !== null && response.messages.length > 0) {
-                    var previousScrollHeight = commentContainer[0].scrollHeight;
-                    commentContainer.empty();
+                    var newData = JSON.stringify(response);
 
-                    $.each(response.messages, function(index, message) {
-                        var potoBox = (message.gender_id === 'GR-001') ? '5.png' : '3.png';
-                        var potoLive = message.photo_url;
-                        if (message.message.trim() !== '') {
-                            var messageClass = (message.sender_id == response.current_member_id) ? 'right' : '';
-                            var senderName = (message.sender_name === '<?= $this->session->userdata("member_name") ?>') ? 'Anda' : message.sender_name;
+                    if (newData !== previousData) {
+                        previousData = newData;
 
-                            var commentHtml = '<div class="direct-chat-msg ' + messageClass + '">' +
-                                '<style>' +
-                                (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #8FBC8F; }' : '') +
-                                '</style>' +
-                                '<div class="direct-chat-info clearfix">' +
-                                '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + senderName + '</span>' +
-                                '<span class="direct-chat-timestamp ' + (messageClass === 'right' ? 'float-left' : 'float-right') + '">' + message.created_at + '</span>' +
-                                '</div>';
+                        var previousScrollHeight = commentContainer[0].scrollHeight;
+                        commentContainer.empty();
 
-                            if (potoLive) {
-                                commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>../api-hris/upload/' + potoLive + '" alt="User Image" class="rounded-circle" style="width: 40px; height: 40px;" title="' + senderName + '">';
-                            } else {
-                                commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>assets/dist/img/avatar' + potoBox + '" alt="User Avatar" style="width: 40px; height: 40px;">';
+                        $.each(response.messages, function(index, message) {
+                            var potoBox = (message.gender_id === 'GR-001') ? '5.png' : '3.png';
+                            var potoLive = message.photo_url;
+                            if (message.message.trim() !== '') {
+                                var messageClass = (message.sender_id == response.current_member_id) ? 'right' : '';
+                                var senderName = (message.sender_name === '<?= $this->session->userdata("member_name") ?>') ? 'Anda' : message.sender_name;
+
+                                var commentHtml = '<div class="direct-chat-msg ' + messageClass + '">' +
+                                    '<style>' +
+                                    (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #8FBC8F; }' : '') +
+                                    '</style>' +
+                                    '<div class="direct-chat-info clearfix">' +
+                                    '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + senderName + '</span>' +
+                                    '<span class="direct-chat-timestamp ' + (messageClass === 'right' ? 'float-left' : 'float-right') + '">' + message.created_at + '</span>' +
+                                    '</div>';
+
+
+                                if (potoLive) {
+                                    commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>../api-hris/upload/' + potoLive + '" alt="User Image" class="rounded-circle" style="width: 40px; height: 40px;" title="' + senderName + '">';
+                                } else {
+                                    commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>assets/dist/img/avatar' + potoBox + '" alt="User Avatar" style="width: 40px; height: 40px;">';
+                                }
+
+                                var messageWithLinks = untukUrlLink(message.message);
+                                commentHtml += '<div class="direct-chat-text">' + messageWithLinks + '</div>' + '</div>';
+                                commentContainer.append(commentHtml);
                             }
+                        });
 
-                            commentHtml += '<div class="direct-chat-text">' + message.message + '</div>' +
-                                '</div>';
-
-                            commentContainer.append(commentHtml);
-                            var messageWithLinks = untukUrlLink(message.message);
-                        }
-                    });
-
-                    var newScrollHeight = commentContainer[0].scrollHeight;
-
-                    if (!scrolling || previousScrollHeight < newScrollHeight) {
-                        commentContainer.scrollTop(newScrollHeight);
+                        commentContainer.scrollTop(commentContainer[0].scrollHeight);
                     }
                 } else {
                     commentContainer.hide();
@@ -1805,11 +1875,17 @@
     }
 
     function untukUrlLink(text) {
-        var urlRegex = /(https?:\/\/[^\s]+)/g;
-        return text.replace(urlRegex, function(url) {
-            return '<a href="' + url + '" target="_blank">' + url + '</a>';
+        var urlRegex = /(<img[^>]+>|https?:\/\/[^\s]+)/g;
+        return text.replace(urlRegex, function(match) {
+            if (match.startsWith('<img')) {
+                return match;
+            } else if (match.match(/^https?:\/\/[^\s]+/)) {
+                return '<a href="' + match + '" target="_blank">' + match + '</a>';
+            }
         });
     }
+
+
 
     commentContainer.on('scroll', function() {
         scrolling = commentContainer.scrollTop() + commentContainer.innerHeight() < commentContainer[0].scrollHeight;
@@ -1825,7 +1901,7 @@
             sendingMessage();
         }
     });
-    $("#send-comment-form").submit(function(event) {
+    sendMessage.submit(function(event) {
         event.preventDefault();
         sendingMessage();
     });
@@ -1833,16 +1909,21 @@
     function sendingMessage() {
         var currentMemberId = $("#current-member-id").val();
         var message = $("#message-input").val();
+        if (message === null || message.trim() === '') {
+            return;
+        }
         message = message.replace(/\n/g, '<br>');
         message = convertEmojiToHtmlDec(message);
         $.ajax({
             type: 'POST',
             url: '<?= base_url(); ?>insert_comment',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
             data: {
                 senderId: '',
                 currentMemberId: currentMemberId,
                 message: message,
-                groupId: '<?= $list_id ?>'
+                groupId: '<?= $list_id ?>',
+                flag_notif: 1
             },
             dataType: 'json',
             success: function(response) {
@@ -1863,7 +1944,6 @@
 
                     var newScrollHeight = commentContainer[0].scrollHeight;
                     commentContainer.scrollTop(newScrollHeight);
-                    // console.log('Berhasil');
                     const messageInput = document.getElementById('message-input');
                     messageInput.style.height = 40 + 'px';
                     messageInput.style.overflow = "hidden";
@@ -1877,8 +1957,57 @@
         });
     }
 
+
     fetchMessages();
     emptyMessage.hide();
     commentContainer.show();
     sendMessage.show();
+
+    function sendingMessagePthoto(isian) {
+        var currentMemberId = $("#current-member-id").val();
+        var message = isian;
+        message = message.replace(/\n/g, '<br>');
+        message = convertEmojiToHtmlDec(message);
+        $.ajax({
+            type: 'POST',
+            url: '<?= base_url(); ?>insert_comment',
+            contentType: 'application/x-www-form-urlencoded; charset=UTF-8',
+            data: {
+                senderId: '',
+                currentMemberId: currentMemberId,
+                message: message,
+                groupId: '<?= $list_id ?>',
+                flag_notif: 1
+            },
+            dataType: 'json',
+            success: function(response) {
+                if (response.success) {
+                    var messageClass = (response.message.sender_id == response.current_member_id) ? 'right' : '';
+                    commentContainer.append(
+                        '<div class="direct-chat-msg ' + messageClass + '">' +
+                        '<div class="direct-chat-infos clearfix">' +
+                        '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + response.message.sender_name + '</span>' +
+                        '<span class="direct-chat-timestamp ' + (messageClass === 'right' ? 'float-left' : 'float-right') + '">' + response.message.created_at + '</span>' +
+                        '</div>' +
+                        '<img class="direct-chat-img" src="<?php echo base_url(); ?>assets/dist/img/user2-160x160.jpg" alt="message user image">' +
+                        '<div class="direct-chat-text">' + response.message.message + '</div>' +
+                        '</div>'
+                    );
+
+                    $("#message-input").val('');
+
+                    var newScrollHeight = commentContainer[0].scrollHeight;
+                    commentContainer.scrollTop(newScrollHeight);
+                    const messageInput = document.getElementById('message-input');
+                    messageInput.style.height = 40 + 'px';
+                    messageInput.style.overflow = "hidden";
+                } else {
+                    console.log("Error inserting message:", response.error);
+                }
+            },
+            error: function(error) {
+                console.log("Error inserting message:", error);
+            }
+        });
+    }
 </script>

@@ -10,6 +10,9 @@ class Comment_controller extends BaseController
     {
         parent::__construct();
         $this->load->model('messages/Messages_model');
+        $this->load->model('notification/Notification_model');
+        $this->load->model('transaction/list/list_member_model');
+        $this->load->model('transaction/project/project_member_model');
         $this->load->model('master/member_model');
 
         $this->IsLoggedIn();
@@ -33,6 +36,9 @@ class Comment_controller extends BaseController
         $data['current_member_id'] = $current_member_id;
         header("Cache-Control: no-cache, must-revalidate");
         echo json_encode($data);
+
+        $statusNotif = 1;
+        $notif = $this->Notification_model->Update([$current_member_id, $statusNotif, $groupId, 0]);
     }
 
 
@@ -47,6 +53,7 @@ class Comment_controller extends BaseController
         $receiverId = $this->input->post('currentMemberId');
         $message = $this->input->post('message');
         $groupId = $this->input->post('groupId');
+        $flag_notif = $this->input->post('flag_notif');
 
         $insertMessage = [
             $receiverId,
@@ -68,6 +75,33 @@ class Comment_controller extends BaseController
                 ),
                 'current_member_id' => $receiverId
             );
+
+            // searchmember
+
+            $memberID = [];
+            if ($flag_notif == 0) {
+                $typeNotif = 'Project';
+                $memberRecords = $this->project_member_model->Get(['', $groupId, '', '', 8]);
+                foreach ($memberRecords as $member) {
+                    $memberID[] = $member->member_id;
+                }
+
+                $countMember = count($memberID); // Hitung jumlah $Member
+                for ($i = 0; $i < $countMember; $i++) {
+                    $notif = $this->Notification_model->Insert([$memberID[$i], $typeNotif, $message, $groupId, $receiverId]);
+                }
+            } else if ($flag_notif == 1) {
+                $typeNotif = 'Card';
+                $memberRecords = $this->list_member_model->Get(['', $groupId, '', 0]);
+                foreach ($memberRecords as $member) {
+                    $memberID[] = $member->member_id;
+                }
+                $countMember = count($memberID); // Hitung jumlah $Member
+                for ($i = 0; $i < $countMember; $i++) {
+                    $notif = $this->Notification_model->Insert([$memberID[$i], $typeNotif, $message, $groupId, $receiverId]);
+                }
+            } else {
+            }
         } else {
             $response = array(
                 'error' => true,

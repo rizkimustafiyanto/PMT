@@ -298,7 +298,9 @@
                             <div class="card card-info card-outline">
                                 <div class="card-header">
                                     <input type="hidden" class="form-control" id="stl_status" placeholder="Project ID" name="stl_status" maxlength="20" required readonly>
-                                    <h5 class="card-title" style="width: 90%;"><input type="text" id="list_name" class="form-control" placeholder="Card Name"></h5>
+                                    <h5 class="card-title" style="width: 90%;">
+                                        <input type="text" id="list_name" class="form-control" placeholder="Card Name" autocomplete="off">
+                                    </h5>
                                     <div class="card-tools">
                                         <a class="btn btn-tool" href=""><i class="fa fa-pen"></i></a>
                                     </div>

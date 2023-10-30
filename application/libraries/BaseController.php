@@ -146,6 +146,8 @@ class BaseController extends CI_Controller
         // // Memanggil fungsi pada controller tersebut
         // $this->controller_name->method_name();
         $this->load->model('messages/Messages_model');
+        $this->load->model('notification/Notification_model');
+        $this->load->helper('enkripbro');
 
         $this->load->view('includes/header', $headerInfo);
         $this->load->view($viewName, $pageInfo);

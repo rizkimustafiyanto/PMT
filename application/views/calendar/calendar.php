@@ -187,6 +187,9 @@
                         <p class="text-muted" id="event-location-other" name="event-location-other"> </p>
                     </div>
                 </div>
+                <div style="display: none;">
+                    <button type="button" class="btn btn-primary" id="add-event-google">Add Google Calendar</button>
+                </div>
                 <div class="modal-footer" id="footerDetail">
                     <button type="button" class="btn btn-danger" id="delete-event">Delete</button>
                     <button type="button" class="btn btn-primary" id="edit-save-event">Save Changes</button>
@@ -660,6 +663,27 @@
     }
 </script>
 
+<!-- GOOGLE CALENDAR -->
+<script>
+    function createGoogleCalendarURL() {
+        const title = encodeURIComponent($('#eventDetailModal .modal-title').text());
+        let startDate = new Date($('#event-start-date').val()).toISOString();
+        let endDate = new Date($('#event-end-date').val()).toISOString();
+        const location = encodeURIComponent($('#event-location-date').val());
+        const notes = encodeURIComponent($('#event-note-date').val());
+
+        const calendarURL = "https://www.google.com/calendar/render?action=TEMPLATE" +
+            "&text=" + title +
+            "&dates=" + startDate + "/" + endDate +
+            "&details=" + notes +
+            "&location=" + location;
+
+        window.location.href = calendarURL;
+    }
+
+    document.getElementById('add-event-google').addEventListener('click', createGoogleCalendarURL);
+</script>
+<!-- END GOOGLE CALENDAR -->
 <?php if ($this->session->flashdata('success')) : ?>
     <script>
         Swal.fire({

@@ -29,6 +29,7 @@
 <!-- Select2 -->
 <script src="<?= base_url(); ?>assets/plugins/select2/js/select2.full.min.js"></script>
 
+
 <!-- EMOJI -->
 <script>
   function convertEmojiToHtmlDec(message) {
@@ -61,16 +62,97 @@
     textarea.selectionEnd = cursorPosition + emojiToAdd.length;
     textarea.focus();
   }
-
-  document.addEventListener('click', function(event) {
-    var emojiPicker = document.querySelector('.emoji-picker');
-    if (emojiPicker.style.display === 'block' && !emojiPicker.contains(event.target)) {
-      emojiPicker.style.display = 'none';
-    }
-  });
 </script>
 <!-- END EMOJI -->
 
+<!-- NOTIFICATION -->
+<script>
+  var lengthNotif = 0;
+  var dropdown = $('#dropdownMessage');
+
+  function updateNotifications() {
+    $.ajax({
+      url: '<?= base_url() ?>get_notif',
+      method: 'GET',
+      dataType: 'json',
+      success: function(response) {
+        var totalNotif = response.totalNotif;
+        var lengthIn = response.lengthIn;
+        var notifications = response.notifications;
+
+        if (lengthIn !== lengthNotif) {
+          lengthNotif = lengthIn;
+          dropdown.empty();
+          if (totalNotif !== null && totalNotif !== 0) {
+            $('.navbar-badge').text(totalNotif);
+          } else {
+            var potosin = ('<?= $this->session->userdata('gender_id') ?>' == 'GR-001') ? '<?= base_url(); ?>assets/dist/img/avatar5.png' : '<?= base_url(); ?>assets/dist/img/avatar3.png';
+            $('.navbar-badge').text('');
+            createNotificationItem(potosin, 'Empty Message', 'Empty', '-', '', 'javascript:void(0)');
+          }
+
+          notifications.forEach(function(notif) {
+            var photo_url = notif.photo_url;
+            var potoBox = (notif.gender_id === 'GR-001') ? '<?= base_url(); ?>assets/dist/img/avatar5.png' : '<?= base_url(); ?>assets/dist/img/avatar3.png';
+            var sender_name = notif.sender_name;
+            var isImportant = notif.isImportant;
+            var message = notif.message;
+            var originalDate = notif.created_at;
+            var date = new Date(originalDate);
+            var urlNotif = notif.url;
+            var formattedDate = date.toLocaleString('en-US', {
+              year: 'numeric',
+              month: 'numeric',
+              day: 'numeric',
+              hour: 'numeric',
+              minute: 'numeric'
+            });
+
+            createNotificationItem(photo_url, sender_name, message, formattedDate, isImportant, urlNotif);
+          });
+        }
+      },
+      error: function(error) {
+        console.error('Gagal memperbarui notifikasi: ', error);
+      }
+    });
+  }
+
+  setInterval(updateNotifications, 1000);
+
+  function createNotificationItem(image, sender, message, date, isImportant = false, notifurl) {
+    var iconColor = isImportant ? 'danger' : 'warning';
+
+    var notifItem = '<a href="' + notifurl + '" class="dropdown-item">' +
+      '<div class="media">' +
+      '<img src="' + image + '" alt="User Avatar" class="mr-3 img-circle" style="width: 60px; height: 60px;">' +
+      '<div class="media-body">' +
+      '<div class="row">' +
+      '<div class="col-9">' +
+      '<h3 class="dropdown-item-title overflow-hidden" style="max-width: 200px;">' +
+      '<span class="text-truncate">' + sender + '</span>' +
+      '</h3>' +
+      '</div>' +
+      '<div class="col-3 text-right">' +
+      '<span class="text-sm text-' + iconColor + '">' +
+      '<i class="fas fa-star"></i>' +
+      '</span>' +
+      '</div>' +
+      '</div>' +
+      '<p class="text-sm text-truncate" style="max-width: 95%;max-height:20px;">' + message + '</p>' +
+      '<p class="text-sm text-muted">' +
+      '<i class="far fa-clock mr-1"></i>' + date +
+      '</p>' +
+      '</div>' +
+      '</div>' +
+      '</a>' +
+      '<div class="dropdown-divider"></div>';
+
+    dropdown.append(notifItem);
+  }
+</script>
+
+<!-- END NOTIFICATION -->
 <script>
   $(function() {
     $("#example1")
@@ -218,11 +300,41 @@
               boxShadow: '',
               borderColor: ''
             });
+          },
+          onImageUpload: function(files) {
+            for (var i = 0; i < files.length; i++) {
+              var file = files[i];
+              var data = new FormData();
+              data.append('image', file);
+              var editor = $(this);
+              $.ajax({
+                url: '<?= base_url() ?>ProcImage',
+                method: 'POST',
+                data: data,
+                cache: false,
+                contentType: false,
+                processData: false,
+                success: function(url) {
+                  var textarea = editor;
+                  var html = textarea.val();
+                  var imgElement = "<img src='" + url + "' alt='Gambar' style='height:100%;width:100%;'>";
+                  var newHtml = html + ' ' + imgElement;
+                  textarea.summernote('code', newHtml);
+                  // console.log(imgElement);
+                },
+                error: function(data) {
+                  console.log(data);
+                }
+              });
+            }
           }
+
         }
       });
     });
   });
+
+
   // TOOLS DATERANGE
   function dateRangeLightTheme() {
     $(".calendar-table").css("background-color", "#fff");
@@ -344,6 +456,7 @@
   });
 </script>
 <!-- <script type="text/javascript" src="javascript/counter.js"></script> -->
+<script src="<?= base_url() ?>assets/plugins/summernote/summernote.min.js"></script>
 
 
 </body>

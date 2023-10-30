@@ -50,7 +50,7 @@
                                                 <td><?= $index + 1; ?></td>
                                                 <td>
                                                     <div class="row align-items-center">
-                                                        <div class="col">
+                                                        <div class="col clickable" data-url="<?= $url ?>" style="cursor: pointer;">
                                                             <?= $record->project_name; ?><br>
                                                             Created : <?= (new DateTime($record->creation_datetime))->format('d M y'); ?>
                                                         </div>
@@ -128,7 +128,9 @@
                             <div class="col-lg-6">
                                 <div class="card card-info card-outline">
                                     <div class="card-header">
-                                        <h5 class="card-title" style="width: 90%;"><input type="text" id="project_name" class="form-control" placeholder="Project Name" required></h5>
+                                        <h5 class="card-title" style="width: 90%;">
+                                            <input type="text" id="project_name" class="form-control" placeholder="Project Name" autocomplete="off" required>
+                                        </h5>
                                         <div class="card-tools">
                                             <div style="margin-top: 5px; margin-right: 10px;"><i class="fa fa-pen" style="color: gray;"></i></div>
                                         </div>
@@ -510,6 +512,13 @@
             .buttons()
             .container()
             .appendTo("#tblProject_wrapper .col-md-6:eq(0)");
+        const clickableElements = document.querySelectorAll(".clickable");
+        clickableElements.forEach(function(element) {
+            element.addEventListener("click", function() {
+                const url = element.getAttribute("data-url");
+                window.location.href = url;
+            });
+        });
     })
 </script>
 
