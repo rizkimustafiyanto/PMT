@@ -151,8 +151,8 @@
     dropdown.append(notifItem);
   }
 </script>
-
 <!-- END NOTIFICATION -->
+
 <script>
   $(function() {
     $("#example1")
@@ -243,6 +243,24 @@
     }
   }
 
+  function handleDown1(event) {
+    if (event.key === 'Enter' && event.shiftKey) {
+      event.preventDefault();
+      const descriptionImage = document.getElementById('image-description');
+      descriptionImage.value += '\n';
+      adjustInputHeight(descriptionImage);
+    }
+  }
+
+  function handleDown2(event) {
+    if (event.key === 'Enter' && event.shiftKey) {
+      event.preventDefault();
+      const descriptionImageFile = document.getElementById('file-description');
+      descriptionImageFile.value += '\n';
+      adjustInputHeight(descriptionImageFile);
+    }
+  }
+
   function adjustInputHeight(input) {
     input.style.height = 'auto';
     input.style.height = input.scrollHeight + 'px';
@@ -251,6 +269,7 @@
       input.style.height = 40 + 'px';
     }
   }
+
 
   // TOOLS SELECT MULTIPLE
   function warnaMultiple() {
@@ -362,6 +381,13 @@
       showConfirmButton: false,
       onBeforeOpen: () => {}
     });
+  }
+
+  // TOOLS OPEN IMAGE
+  function bukaGambarBaru(event) {
+    var gambar = event.target.src;
+    var jendelaBaru = window.open();
+    jendelaBaru.document.write('<img src="' + gambar + '" alt="Deskripsi Gambar">');
   }
 </script>
 <!-- For Profile -->

@@ -135,6 +135,7 @@
                 <!-- Batas Description -->
             </div>
             <div class="col-lg-8">
+
                 <!-- Card To Do List -->
                 <div class="card">
                     <div class="card-header">
@@ -205,22 +206,24 @@
 
                                 ?>
                                         <tr>
-                                            <td class="clickable" data-url="<?= $url ?>" style="cursor: pointer;">
-                                                <div class="row">
-                                                    <div class="col-md-6"><?= $record->list_name ?></div>
-                                                    <div class="col-md-6 text-right">
-                                                        <?php if ($completed == '100') : ?>
-                                                            <span class="badge <?= $statusClass ?>"><?= $record->list_status ?></span>
-                                                        <?php else : ?>
-                                                            <span class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Days</span>
-                                                        <?php endif; ?>
+                                            <td>
+                                                <div class="col clickable" data-url="<?= $url ?>" style="cursor: pointer;">
+                                                    <div class="row">
+                                                        <div class="col-md-6"><?= $record->list_name ?></div>
+                                                        <div class="col-md-6 text-right">
+                                                            <?php if ($completed == '100') : ?>
+                                                                <span class="badge <?= $statusClass ?>"><?= $record->list_status ?></span>
+                                                            <?php else : ?>
+                                                                <span class="badge <?= $badgeClass ?>"><i class="far fa-clock"></i> <?= $remainingDays ?> Days</span>
+                                                            <?php endif; ?>
+                                                        </div>
                                                     </div>
-                                                </div>
-                                                <div class="progress-group" style="margin-top: 5px;">
-                                                    <div class="progress progress-sm" style="height: 8px; border-radius: 20px;">
-                                                        <div class="progress-bar <?= ($completed < 100) ? 'bg-primary' : 'bg-success'; ?>" style="width: <?= $completed; ?>%"></div>
+                                                    <div class="progress-group" style="margin-top: 5px;">
+                                                        <div class="progress progress-sm" style="height: 8px; border-radius: 20px;">
+                                                            <div class="progress-bar <?= ($completed < 100) ? 'bg-primary' : 'bg-success'; ?>" style="width: <?= $completed; ?>%"></div>
+                                                        </div>
+                                                        <span class="float-center small"><b><?= $completed; ?> %</b></span>
                                                     </div>
-                                                    <span class="float-center small"><b><?= $completed; ?> %</b></span>
                                                 </div>
                                             </td>
                                             <td>
@@ -265,8 +268,9 @@
                     </div>
                 </div>
                 <!-- Batas Card To Do List -->
+
                 <!-- Message -->
-                <div class="card direct-chat direct-chat-msg">
+                <div class="card messanger">
                     <div class="card-header" data-card-widget="collapse" style="cursor: pointer;">
                         <h3 class="card-title">Comment</h3>
                         <div class="card-tools">
@@ -276,7 +280,7 @@
                         </div>
                     </div>
                     <div class="card-body">
-                        <div class="direct-chat-messages" id="comment-container">
+                        <div class="direct-chat-messages" id="comment-container" style="height: 400px;">
                         </div>
                         <div class="empty-comment-container d-flex align-items-center justify-content-center">
                             <p id="empty-comment" class="text-center" style="margin-top: 20px;">Empty Comment</p>
@@ -286,7 +290,7 @@
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
                             <div class="row col-md-12 p-0">
-                                <textarea id="message-input" class="form-control" placeholder="Ketik komentar Anda..." <?= ($status_id != 'STW-2') ? '' : 'disabled' ?> autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleKeyDown(event)" style="height: 40px;width: 88%;"></textarea>
+                                <textarea id="message-input" class="form-control" placeholder="Ketik komentar Anda..." <?= ($status_id != 'STW-2') ? '' : 'disabled' ?> autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleKeyDown(event)" style="height: 40px;width: 88%;" onpaste="handlePaste(event)"></textarea>
                                 <button type="button" class="btn" <?= ($batas_akses && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
                                 <button type="button" class="btn" <?= ($batas_akses && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" id="upload-button"><i class="fas fa-paperclip"></i></button>
                                 <div class="emoji-picker" style="display: none;">
@@ -298,20 +302,51 @@
                                         endif; ?>
                                     </div>
                                 </div>
-                                <div id="image-upload-dialog" style="display: none;">
+                                <div class="col-md-4" id="image-upload-dialog" style="display: none;">
                                     <h3>Unggah Gambar</h3>
-                                    <input type="file" id="file-input" accept="image/*">
-                                    <input type="text" id="image-description" placeholder="Deskripsi Gambar">
-                                    <button class="btn btn-primary" id="confirm-upload">Send</button>
-                                    <button class="btn btn-danger" id="cancel-upload">Cancel</button>
+                                    <input class="form-control" type="file" id="file-input" accept="image/*">
+                                    <div class="row">
+                                        <div style="width: 80%;padding-left: 10px;">
+                                            <textarea id="image-description" class="form-control" placeholder="Image Description" autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleDown1(event)" style="height: 40px;"></textarea>
+                                        </div>
+                                        <div style="width: 20%;padding-left: 5px;">
+                                            <button class="btn" id="confirm-upload"><i class="fa-solid fa-paper-plane"></i></button>
+                                            <button class="btn" id="cancel-upload"><i class="fa-solid fa-xmark"></i></button>
+                                        </div>
+                                    </div>
                                 </div>
                                 <button type="submit" class="btn" <?= ($batas_akses && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
                         </form>
                     </div>
                 </div>
+
+                <div class="card direct-chat direct-chat-msg file-attachment" style="display: none;">
+                    <div class="card-header">
+                        <h5>Sending File</h5>
+                    </div>
+
+                    <div class="card-body">
+                        <div class="text-center" id="viewImage"></div>
+                    </div>
+
+                    <div class="card-footer">
+                        <div id="file-inputing" class="row">
+                            <div style="width: 90%;">
+                                <input type="hidden" class="form-control" id="file-element" placeholder="Image Description">
+                                <textarea class="form-control" id="file-description" placeholder="Image Description" autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleDown2(event)" style="height: 40px;"></textarea>
+                            </div>
+                            <div style="width: 10%;">
+                                <button class="btn" id="confirm-upload-view"><i class="fa-solid fa-paper-plane"></i></button>
+                                <button class="btn" id="cancel-upload-view"><i class="fa-solid fa-xmark"></i></button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
                 <!-- Batas Message -->
             </div>
+
             <!-- Project Attachment -->
             <div class="col-lg-12">
                 <div class="card collapsed-card">
@@ -372,6 +407,7 @@
                 </div>
             </div>
             <!-- Batas Card Attachment -->
+
             <!-- Card Member -->
             <div class="col-lg-12">
                 <div class="card collapsed-card">
@@ -443,6 +479,7 @@
                 </div>
             </div>
             <!-- Batas Card Member -->
+
             <!-- Log Activity -->
             <div class="col-lg-12">
                 <div class="card collapsed-card">
@@ -474,9 +511,11 @@
                 </div>
             </div>
             <!-- Batas Log Activity -->
+
         </div>
     </section>
 </div>
+
 <!--#Project Modal Insert Member-->
 <div class="modal fade" id="modal-input-project-member" role="dialog" aria-labelledby="modal-input-project-member-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
@@ -568,19 +607,28 @@
                             <input class="form-control" id="attachment_name" placeholder="Attachment Name" name="attachment_name" maxlength="50" autocomplete="off" required>
                             <div style="display:none;">
                                 <label>Attachment Type</label>
-                                <select class="form-control select2bs4" name="attachment_type" id="attachment_type" data-width=100%>
+                                <select class="form-control select2bs4" name="attachment_type" id="attachment_type" data-width=100%">
                                     <?php foreach ($AttachmentTypeRecord as $row) : ?>
                                         <option value="<?= $row->variable_id; ?>"><?= $row->variable_name; ?></option>
                                     <?php endforeach; ?>
                                 </select>
                             </div>
                             <br>
-                            <label for="attachment_url">Attachment</label>
-                            <input class="form-control" type="file" name="attachment_file" id="attachment_file" required accept=".jpeg,.jpg,.png,.pdf">
-                            <small>
-                                <font color="red">Type file: jpeg/jpg/png/pdf</font>
-                            </small>
-                            <br>
+                            <div class="d-flex justify-content-between">
+                                <label for="attachment_url">Attachment</label>
+                                <small>
+                                    <font color="red">Type file: jpeg/jpg/png/pdf</font>
+                                </small>
+                            </div>
+                            <div class="text-center">
+                                <div class="input-file" id="drop-area">
+                                    <input type="file" name="attachment_file" id="attachment_file" required accept=".jpeg,.jpg,.png,.pdf" style="display: none;">
+                                    <label for="attachment_file" class="file-label">Drag & drop your files here or click to browse</label>
+                                </div>
+
+                                <br>
+                            </div>
+
                         </div>
                     </div>
                 </div>
@@ -826,6 +874,7 @@
     </div>
 </div>
 <!-- Modal Update Card -->
+
 <!-- Styling Table -->
 <script>
     $("#tblAttachment").DataTable({
@@ -866,6 +915,7 @@
     });
 </script>
 <!-- END Styling Table -->
+
 <script>
     $(document).on('click', '#btnUpProject', function() {
         var colb = '<?= $collab_member ?>';
@@ -1229,6 +1279,39 @@
     // End Function Delete List
 
     //#Insert Attachment
+    document.addEventListener('DOMContentLoaded', function() {
+        const input = document.getElementById('attachment_file');
+        const label = document.querySelector('.file-label');
+        const dropArea = document.getElementById('drop-area');
+
+        ['dragenter', 'dragover', 'dragleave', 'drop'].forEach(eventName => {
+            dropArea.addEventListener(eventName, preventDefaults, false);
+        });
+
+        function preventDefaults(e) {
+            e.preventDefault();
+            e.stopPropagation();
+        }
+
+        dropArea.addEventListener('drop', handleDrop, false);
+
+        function handleDrop(e) {
+            const dt = e.dataTransfer;
+            const files = dt.files;
+
+            if (files.length) {
+                input.files = files;
+                const fileName = files[0].name;
+                label.innerText = fileName;
+            }
+        }
+
+        input.addEventListener('change', function(e) {
+            const fileName = e.target.value.split('\\').pop();
+            label.innerText = fileName || 'Drag & drop your files here or click to browse';
+        });
+
+    });
     $(document).on('click', '#btnAttachment', function() {
         var groupID = '<?= $project_id ?>';
         var attachmentName = $('#attachment_name').val();
@@ -1752,18 +1835,102 @@
     // # END TOOLS
 </script>
 
+<!-- PASTE IMAGE IN COMMENT -->
+<script>
+    var messanger = $(".messanger");
+    var viewElement = $("#file-element");
+    var viewDescription = $("#file-description");
+    var viewAttachment = $(".file-attachment");
+    var viewUpload = $("#viewImage");
+    const confirmUploadView = document.getElementById('confirm-upload-view');
+    const cancelUploadView = document.getElementById('cancel-upload-view');
+
+    function handlePaste(event) {
+        var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        for (var index in items) {
+            var item = items[index];
+            if (item.kind === 'file') {
+                var blob = item.getAsFile();
+                uploadPastedFile(blob);
+                messanger.hide();
+                break;
+            }
+        }
+    }
+
+    function uploadPastedFile(file) {
+        var data = new FormData();
+        data.append('image', file);
+
+        $.ajax({
+            url: '<?= base_url() ?>ProcImageMessage',
+            method: 'POST',
+            data: data,
+            cache: false,
+            contentType: false,
+            processData: false,
+            success: function(url) {
+                displayUploadedFile(url);
+            },
+            error: function(data) {
+                console.log(data);
+            }
+        });
+    }
+
+    function displayUploadedFile(url) {
+        var imgElement = '<img src="' + url + '" alt="Gambar" style="max-height:40%; max-width:40%;" onclick="bukaGambarBaru(event)">';
+        viewElement.empty();
+        viewAttachment.show();
+        viewUpload.append(imgElement);
+        viewElement.val(imgElement);
+    }
+
+    function handleConfirmUploadView() {
+        viewDescription.val(viewElement.val() + '<br>' + viewDescription.val());
+        sendingMessagePhoto(viewDescription.val());
+        viewUpload.empty();
+        messanger.show();
+        viewElement.val('');
+        viewDescription.val('');
+        viewAttachment.hide();
+    }
+    $("#file-description").keydown(function(event) {
+        if (event.keyCode === 13 && !event.shiftKey) {
+            event.preventDefault();
+            viewDescription.val(viewElement.val() + '<br>' + viewDescription.val());
+            sendingMessagePhoto(viewDescription.val());
+            viewUpload.empty();
+            messanger.show();
+            viewElement.val('');
+            viewDescription.val('');
+            viewAttachment.hide();
+        }
+    });
+
+    function handleCancelUploadView() {
+        viewUpload.empty();
+        viewElement.val('');
+        messanger.show();
+        viewAttachment.hide();
+        viewDescription.val('');
+    }
+
+    confirmUploadView.addEventListener('click', handleConfirmUploadView);
+    cancelUploadView.addEventListener('click', handleCancelUploadView);
+</script>
+
+
 <!-- Comment -->
 <script>
-    // UPLOAD IMAGE COMMENT MAIN
     const uploadButton = document.getElementById('upload-button');
     const imageUploadDialog = document.getElementById('image-upload-dialog');
-    uploadButton.addEventListener('click', function() {
-        imageUploadDialog.style.display = 'block';
-    });
     const fileInput = document.getElementById('file-input');
     const imageDescriptionInput = document.getElementById('image-description');
     const confirmUploadButton = document.getElementById('confirm-upload');
-    confirmUploadButton.addEventListener('click', function() {
+    const cancelUploadButton = document.getElementById('cancel-upload');
+
+    function uploadImage() {
         const selectedFile = fileInput.files[0];
         const description = imageDescriptionInput.value;
 
@@ -1779,29 +1946,47 @@
                 contentType: false,
                 processData: false,
                 success: function(url) {
-                    var imgElement = '<img src="' + url + '" alt="Gambar">';
+                    var imgElement = '<img src="' + url + '" alt="Gambar" style="max-height:40%; max-width:40%;" onclick="bukaGambarBaru(event)">';
                     isian = imgElement + '\n' + description;
-                    sendingMessagePthoto(isian);
+                    sendingMessagePhoto(isian);
                     // console.log(imgElement);
                 },
                 error: function(data) {
                     console.log(data);
                 },
                 complete: function() {
+                    const descriptionImage = document.getElementById('image-description');
+                    descriptionImage.style.height = 40 + 'px';
+                    descriptionImage.style.overflow = "hidden";
                     fileInput.value = '';
                     imageDescriptionInput.value = '';
                     imageUploadDialog.style.display = 'none';
                 }
             });
         }
-    });
+    }
 
-    const cancelUploadButton = document.getElementById('cancel-upload');
-    cancelUploadButton.addEventListener('click', function() {
+    function cancelUpload() {
         fileInput.value = '';
         imageDescriptionInput.value = '';
         imageUploadDialog.style.display = 'none';
+    }
+
+    uploadButton.addEventListener('click', function() {
+        imageUploadDialog.style.display = 'block';
     });
+
+    confirmUploadButton.addEventListener('click', uploadImage);
+
+    cancelUploadButton.addEventListener('click', cancelUpload);
+
+    $("#image-description").keydown(function(event) {
+        if (event.keyCode === 13 && !event.shiftKey) {
+            event.preventDefault();
+            uploadImage();
+        }
+    });
+
     // END UPLOAD IMAGE COMMENT MAIN
 
 
@@ -1845,7 +2030,7 @@
 
                                 var commentHtml = '<div class="direct-chat-msg ' + messageClass + '">' +
                                     '<style>' +
-                                    (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #8FBC8F; }' : '') +
+                                    (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #90EE90; }' : '') +
                                     '</style>' +
                                     '<div class="direct-chat-info clearfix">' +
                                     '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + senderName + '</span>' +
@@ -1905,6 +2090,7 @@
             sendingMessage();
         }
     });
+
     sendMessage.submit(function(event) {
         event.preventDefault();
         sendingMessage();
@@ -1966,7 +2152,7 @@
     commentContainer.show();
     sendMessage.show();
 
-    function sendingMessagePthoto(isian) {
+    function sendingMessagePhoto(isian) {
         var currentMemberId = $("#current-member-id").val();
         var message = isian;
         message = message.replace(/\n/g, '<br>');
@@ -2001,9 +2187,6 @@
 
                     var newScrollHeight = commentContainer[0].scrollHeight;
                     commentContainer.scrollTop(newScrollHeight);
-                    const messageInput = document.getElementById('message-input');
-                    messageInput.style.height = 40 + 'px';
-                    messageInput.style.overflow = "hidden";
                 } else {
                     console.log("Error inserting message:", response.error);
                 }

@@ -117,11 +117,10 @@ scratch. This page gets rid of all links and provides the needed markup only.
     top: 50%;
     left: 50%;
     transform: translate(-50%, -50%);
-    background-color: #fff;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 10px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.4);
     z-index: 1000;
   }
 
@@ -145,6 +144,34 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- END UNTUK UPLOAD GAMBAR COMMENT -->
 
 
+<!-- UNTUK VIEW ATTACHMENT -->
+<!-- <style>
+  .file-attachment {
+    position: absolute;
+    bottom: 50px;
+    right: 0;
+    background-color: white;
+    border: 1px solid #ccc;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    max-height: 300px;
+    width: 850px;
+    overflow-y: auto;
+    overflow-x: hidden;
+    z-index: 1;
+  }
+
+  #file-inputing {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 5px;
+  }
+
+  #viewImage {
+    max-width: 100%;
+    max-height: calc(100% - 48px);
+    /* 48px is the height of h5 element */
+  }
+</style> -->
 <!-- UNTUK EMOJI -->
 <style>
   .emoji-picker {
@@ -217,6 +244,31 @@ scratch. This page gets rid of all links and provides the needed markup only.
     100% {
       transform: rotate(360deg);
     }
+  }
+</style>
+
+<!-- DRAG N DROP N CLICK ATTACHMENT -->
+<style>
+  .input-file {
+    position: relative;
+    overflow: hidden;
+    display: inline-block;
+  }
+
+  .file-label {
+    display: block;
+    padding: 20px;
+    cursor: pointer;
+    text-align: center;
+  }
+
+  #drop-area {
+    border: 2px dashed #ccc;
+    border-radius: 5px;
+    margin-top: 10px;
+    padding: 20px;
+    text-align: center;
+    position: relative;
   }
 </style>
 

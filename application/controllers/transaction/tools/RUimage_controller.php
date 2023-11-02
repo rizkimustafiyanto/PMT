@@ -55,18 +55,19 @@ class RUimage_controller extends BaseController
             $newFilename = time() . '.' . $extension;
             $newFilePath = $uploadDirectory . $newFilename;
             list($width, $height) = getimagesize($nameFile);
-            if ($width <= 90 && $height <= 90) {
-                move_uploaded_file($nameFile, $newFilePath);
-            } else {
-                $newWidth = 90;
-                $newHeight = 90;
-                $image = imagecreatefromstring(file_get_contents($nameFile));
-                $newImage = imagecreatetruecolor($newWidth, $newHeight);
-                imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
-                imagepng($newImage, $newFilePath);
-                imagedestroy($image);
-                imagedestroy($newImage);
-            }
+            move_uploaded_file($nameFile, $newFilePath);
+            // if ($width <= 90 && $height <= 90) {
+            //     move_uploaded_file($nameFile, $newFilePath);
+            // } else {
+            //     $newWidth = 90;
+            //     $newHeight = 90;
+            //     $image = imagecreatefromstring(file_get_contents($nameFile));
+            //     $newImage = imagecreatetruecolor($newWidth, $newHeight);
+            //     imagecopyresampled($newImage, $image, 0, 0, 0, 0, $newWidth, $newHeight, $width, $height);
+            //     imagepng($newImage, $newFilePath);
+            //     imagedestroy($image);
+            //     imagedestroy($newImage);
+            // }
             $urlpath = 'upload/rumessage/' . $newFilename;
             $urlink = base_url() . $urlpath;
             echo $urlink;
