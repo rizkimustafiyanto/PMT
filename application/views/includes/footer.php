@@ -99,7 +99,7 @@
             var message = notif.message;
             var originalDate = notif.created_at;
             var date = new Date(originalDate);
-            var urlNotif = notif.url;
+            var urlNotif = notif.url ? notif.url : 'javascript:void(0);';
             var formattedDate = date.toLocaleString('en-US', {
               year: 'numeric',
               month: 'numeric',
@@ -122,8 +122,7 @@
 
   function createNotificationItem(image, sender, message, date, isImportant = false, notifurl) {
     var iconColor = isImportant ? 'danger' : 'warning';
-
-    var notifItem = '<a href="' + notifurl + '" class="dropdown-item">' +
+    var notifNNull = '<a href="' + notifurl + '" class="dropdown-item">' +
       '<div class="media">' +
       '<img src="' + image + '" alt="User Avatar" class="mr-3 img-circle" style="width: 60px; height: 60px;">' +
       '<div class="media-body">' +
@@ -148,6 +147,21 @@
       '</a>' +
       '<div class="dropdown-divider"></div>';
 
+    var notifNull = '<a href="' + notifurl + '" class="dropdown-item">' +
+      '<div class="media">' +
+      '<div class="media-body">' +
+      '<div class="row">' +
+      '<div class="col-9">' +
+      '<h3 class="dropdown-item-title overflow-hidden" style="max-width: 200px;">' +
+      '</h3>' +
+      '</div>' +
+      '</div>' +
+      '<p class="text-sm text-center" style="max-width: 95%;max-height:20px;">' + message + '</p>' +
+      '</div>' +
+      '</div>' +
+      '</a>' +
+      '<div class="dropdown-divider"></div>';
+    var notifItem = message !== 'Empty' ? notifNNull : notifNull;
     dropdown.append(notifItem);
   }
 </script>

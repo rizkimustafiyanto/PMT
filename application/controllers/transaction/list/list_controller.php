@@ -19,6 +19,7 @@ class list_controller extends BaseController
         $this->load->model('master/management_member_model');
         $this->load->model('master/variable_model');
         $this->load->model('messages/Messages_model');
+        $this->load->model('calendar/Calendar_model');
         $this->load->library('email');
         $this->load->library('email/Email');
         $this->load->helper('enkripbro');
@@ -152,6 +153,18 @@ class list_controller extends BaseController
             }
         }
 
+        #CEK CALENDAR
+        #============================================================================
+        $cekCalendar = $this->Calendar_model->GetEvent([$p_project_id, $memberID, 2]);
+        $data['cekCalendar'] = $cekCalendar;
+        $idCalendar = '';
+
+        if (!empty($cekCalendar)) {
+            foreach ($cekCalendar as $kal) {
+                $idCalendar = $kal->id;
+        }
+        
+        $data['idCalendar'] = $idCalendar;
 
         #Cek Kebutuhan
         #============================================================================

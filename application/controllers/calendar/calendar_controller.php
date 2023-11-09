@@ -95,7 +95,7 @@ class calendar_controller extends BaseController
                 ];
             }
         } else {
-            $this->session->set_flashdata('error', 'End date is null or End date > Start Date');
+            // $this->session->set_flashdata('error', 'End date is null or End date > Start Date');
             $response = [
                 'success' => false,
                 'message' => 'Acara baru gagal dibuat'

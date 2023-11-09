@@ -180,7 +180,7 @@ class project_controller extends BaseController
                 $creator_name = $member->member_name;
             }
         }
-        $flagging = '1';
+        $flagging = '3';
         $i = 0;
         $countNamaMember = count($namaMember); // Hitung jumlah $namaMember
         for ($i = 0; $i < $countNamaMember; $i++) {
@@ -451,7 +451,7 @@ class project_controller extends BaseController
         <body>
             <h2 style="text-align: center;"><strong>New&nbsp;Project</strong></h2>
             <p>&nbsp;</p>
-            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi ' . $creator_level . ' pada Project ' . $namaProject . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi <strong>' . $creator_level . '</strong> pada Project <strong>' . $namaProject . '</strong>.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
             </p>
             <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
             <p>&nbsp;</p>
@@ -464,15 +464,29 @@ class project_controller extends BaseController
             <meta charset="utf-8">
         </head>
         <body>
-            <h2 style="text-align: center;"><strong>New&nbsp;Project</strong></h2>
+            <h2 style="text-align: center;"><strong>New&nbsp;Project Members</strong></h2>
             <p>&nbsp;</p>
-            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi ' . $creator_level . ' pada Project ' . $namaProject . '.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan anda telah ditambahkan menjadi <strong>' . $creator_level . '</strong> pada Project <strong>' . $namaProject . '</strong>.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
             </p>
             <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
             <p>&nbsp;</p>
         </body>
         </html>';
         } elseif ($flagging == '3') {
+            $isi_email = '
+        <html>
+        <head>
+            <meta charset="utf-8">
+        </head>
+        <body>
+            <h2 style="text-align: center;"><strong>Update&nbsp;Project</strong></h2>
+            <p>&nbsp;</p>
+            <p>Kepada Yth. Bapak/Ibu ' . $namaPenerima . '<br /> <br /> Di informasikan bahwa ada perubahan data pada Project <strong>' . $namaProject . '</strong>.<br /> Untuk lebih lanjut anda bisa membuka aplikasi dengan melakukan klik link berikut ini : <a type="button" href="' . $urlmail . '" style="color: #ff0000; text-decoration: none;">Tautan ke Halaman</a>
+            </p>
+            <p><em>Regards</em>,<br /> <strong>PMT || SYSTEM ADMINISTRATOR </strong></p>
+            <p>&nbsp;</p>
+        </body>
+        </html>';
         } elseif ($flagging == '4') {
         } elseif ($flagging == '5') {
         } else {

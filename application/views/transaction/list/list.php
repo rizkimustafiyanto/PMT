@@ -3,6 +3,35 @@
 
 <!-- Styling -->
 <style>
+    #viewImage {
+        margin: 20px 0;
+    }
+
+    .slick-slide {
+        text-align: center;
+        position: relative;
+    }
+
+    .slick-slide img {
+        display: inline-block;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 5px;
+    }
+
+    .delete-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 1;
+    }
+
     .dropdown-menu li {
         position: relative;
     }
@@ -97,6 +126,7 @@
                                 <strong><i class="far fa-calendar-alt mr-1"></i> Due Date</strong>
                                 <p class="text-muted" style="margin-left: 10px;"><?= date('d M Y', strtotime($due_date)) ?></p>
                             </div>
+                            <button class="btn btn-<?= $cekCalendar ? 'secondary' : 'success'; ?>" <?= $cekCalendar ? 'disabled' : ''; ?> id="addToCalendar" style="position: absolute; right: 0; top: 0;"><i class="far fa-calendar"></i></button>
                         </div>
                         <hr>
                         <div class="row col-md-12" style="margin-bottom: -15px;">
@@ -325,11 +355,9 @@
                     <div class="card-header">
                         <h5>Sending File</h5>
                     </div>
-
                     <div class="card-body">
                         <div class="text-center" id="viewImage"></div>
                     </div>
-
                     <div class="card-footer">
                         <div id="file-inputing" class="row">
                             <div style="width: 90%;">
@@ -1651,6 +1679,74 @@
             // }
         });
     }
+    // END MEMBER
+
+    // START CALENDAR
+    $(document).on('click', '#addToCalendar', function() {
+        var title = '<?= $project_name ?>';
+        var color = '#DB7093';
+        var allDay = 'true';
+        var startDate = '<?= $start_date ?>';
+        var endDate = '<?= $due_date ?>';
+        var eventNote = '<?= $description . '\n' . current_url() ?>';
+        var location = 'PMT Project';
+        var shareTo = '';
+        var groupId = '<?= $project_id ?>';
+
+        if (!title || !startDate || !endDate || !eventNote) {
+            validasiInfo('Please complete all fields before add events to calendar!');
+            return;
+        }
+
+        var eventData = {
+            title: title,
+            color: color,
+            allDay: Boolean(allDay === "true"),
+            start: startDate,
+            end: endDate,
+            eventNote: eventNote,
+            eventLoc: location,
+            shareTo: JSON.stringify(shareTo),
+            groupId: groupId
+        };
+
+        $('#addToCalendar').prop('disabled', true);
+        // console.log(eventData);
+        addEventCalendar(eventData);
+    });
+
+    function addEventCalendar(eventData) {
+        $.ajax({
+            url: '<?= base_url(); ?>AddEvent',
+            type: 'POST',
+            data: eventData,
+            success: function(response) {
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Success',
+                    text: response.message,
+                    toast: true,
+                    position: 'center',
+                    showConfirmButton: false,
+                    timer: 1000,
+                    timerProgressBar: true,
+                    didOpen: toast => {
+                        toast.addEventListener('mouseenter', Swal.stopTimer)
+                        toast.addEventListener('mouseleave', Swal.resumeTimer)
+                    }
+                }).then((result) => {
+                    if (result.dismiss === Swal.DismissReason.timer) {
+                        window.location.reload();
+                    }
+                });
+            },
+            error: function(xhr, status, error) {
+                console.log(error);
+            }
+        });
+    }
+    // END CALENDAR
+
     // #TOOOLS
     $(document).ready(function() {
         document.getElementById("member-btn").addEventListener("click", function() {
@@ -1844,70 +1940,131 @@
     var viewUpload = $("#viewImage");
     const confirmUploadView = document.getElementById('confirm-upload-view');
     const cancelUploadView = document.getElementById('cancel-upload-view');
+    var uploadedImages = [];
 
+    // Fungsi pengiriman gambar satu per satu secara berurutan
+    function sendImagesSequentially(index = 0) {
+        if (index < uploadedImages.length) {
+            var url = uploadedImages[index];
+            var isianDeskripsion = '<img src="' + url + '" alt="Gambar" style="max-height:40%; max-width:40%;" onclick="bukaGambarBaru(event)"><br>' + viewDescription.val();
+            sendingMessagePhoto(isianDeskripsion);
+
+            setTimeout(function() {
+                sendImagesSequentially(index + 1);
+            }, 1000);
+        } else {
+            setTimeout(function() {
+                viewDescription.val('');
+            }, 1000);
+        }
+    }
+
+    // Menangani event paste
     function handlePaste(event) {
         var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        var files = [];
         for (var index in items) {
             var item = items[index];
             if (item.kind === 'file') {
                 var blob = item.getAsFile();
-                uploadPastedFile(blob);
-                messanger.hide();
-                break;
+                files.push(blob);
             }
+        }
+        if (files.length > 0) {
+            uploadPastedFiles(files);
+            messanger.hide();
         }
     }
 
-    function uploadPastedFile(file) {
-        var data = new FormData();
-        data.append('image', file);
+    // Mengunggah file yang disalin or manipulate
+    function uploadPastedFiles(files) {
+        files.forEach(function(file, index) {
+            var data = new FormData();
+            data.append('image', file);
 
-        $.ajax({
-            url: '<?= base_url() ?>ProcImageMessage',
-            method: 'POST',
-            data: data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(url) {
-                displayUploadedFile(url);
-            },
-            error: function(data) {
-                console.log(data);
-            }
+            setTimeout(function() {
+                $.ajax({
+                    url: '<?= base_url() ?>ProcImageMessage',
+                    method: 'POST',
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(url) {
+                        displayUploadedFile(url);
+                    },
+                    error: function(data) {
+                        console.log(data);
+                    }
+                });
+            }, index * 1000); // Jeda untuk declare perfile supaya url kebaca
         });
     }
 
+
+    // Menampilkan file yang diunggah
     function displayUploadedFile(url) {
-        var imgElement = '<img src="' + url + '" alt="Gambar" style="max-height:40%; max-width:40%;" onclick="bukaGambarBaru(event)">';
-        viewElement.empty();
-        viewAttachment.show();
-        viewUpload.append(imgElement);
-        viewElement.val(imgElement);
+        uploadedImages.push(url);
+        updateImageSlider();
+        console.log(uploadedImages);
     }
 
+    // Memperbarui slider gambar
+    function updateImageSlider() {
+        if ($('#viewImage').hasClass('slick-initialized')) {
+            $('#viewImage').slick('unslick');
+        }
+
+        viewUpload.empty();
+        uploadedImages.forEach(function(url) {
+            var imgElement = '<div class="uploaded-image" data-url="' + url + '">';
+            imgElement += '<img src="' + url + '" alt="Gambar" style="max-height:40%; max-width:40%;" onclick="bukaGambarBaru(event)">';
+            imgElement += '<button class="delete-btn" onclick="deleteImage(this)">Delete</button></div>';
+            viewUpload.append(imgElement);
+        });
+
+        $('#viewImage').slick({
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            dots: true,
+            arrows: true
+        });
+        viewAttachment.show();
+    }
+
+    // Menghapus gambar
+    function deleteImage(btn) {
+        var imageUrl = $(btn).siblings('img').attr('src');
+        var index = uploadedImages.indexOf(imageUrl);
+        if (index > -1) {
+            uploadedImages.splice(index, 1);
+        }
+        $(btn).parent('.uploaded-image').remove();
+        updateImageSlider();
+    }
+
+    // Konfirmasi pengiriman gambar
     function handleConfirmUploadView() {
-        viewDescription.val(viewElement.val() + '<br>' + viewDescription.val());
-        sendingMessagePhoto(viewDescription.val());
+        sendImagesSequentially();
         viewUpload.empty();
         messanger.show();
         viewElement.val('');
-        viewDescription.val('');
         viewAttachment.hide();
     }
+
+    // Handle tombol 'Enter' pada file description
     $("#file-description").keydown(function(event) {
         if (event.keyCode === 13 && !event.shiftKey) {
             event.preventDefault();
-            viewDescription.val(viewElement.val() + '<br>' + viewDescription.val());
-            sendingMessagePhoto(viewDescription.val());
+            sendImagesSequentially();
             viewUpload.empty();
             messanger.show();
             viewElement.val('');
-            viewDescription.val('');
             viewAttachment.hide();
         }
     });
 
+    // Batal mengunggah
     function handleCancelUploadView() {
         viewUpload.empty();
         viewElement.val('');
@@ -1916,9 +2073,11 @@
         viewDescription.val('');
     }
 
+    // Event Listener untuk konfirmasi dan pembatalan upload
     confirmUploadView.addEventListener('click', handleConfirmUploadView);
     cancelUploadView.addEventListener('click', handleCancelUploadView);
 </script>
+
 
 
 <!-- Comment -->
