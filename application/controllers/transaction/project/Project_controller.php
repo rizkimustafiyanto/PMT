@@ -32,7 +32,11 @@ class project_controller extends BaseController
     function GetProject()
     {
         $memberID =  $this->session->userdata('member_id');
-        $data['ProjectRecords'] = $this->project_model->Get(['', '', 0, $memberID]);
+        $default = $this->project_model->Get(['', '', 0, $memberID]);
+        if (!$default) {
+            $default = $this->project_model->Get(['', '', 7, $memberID]);
+        }
+        $data['ProjectRecords'] = $default;
         $data['ProjectMemberRecords'] = $this->project_member_model->Get(['', '', '', '', 0]);
         $data['ProjectTypeRecords'] = $this->variable_model->GetVariable(['', 4]);
         $data['tempmember'] = $this->member_model->Get([0, 2]);

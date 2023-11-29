@@ -126,7 +126,7 @@
                                 <strong><i class="far fa-calendar-alt mr-1"></i> Due Date</strong>
                                 <p class="text-muted" style="margin-left: 10px;"><?= date('d M Y', strtotime($due_date)) ?></p>
                             </div>
-                            <button class="btn btn-<?= $cekCalendar ? 'secondary' : 'success'; ?>" <?= $cekCalendar ? 'disabled' : ''; ?> id="addToCalendar" style="position: absolute; right: 0; top: 0;"><i class="far fa-calendar"></i></button>
+                            <!-- <button class="btn btn-<?= $cekCalendar ? 'secondary' : 'success'; ?>" <?= $cekCalendar ? 'disabled' : ''; ?> id="addToCalendar" style="position: absolute; right: 0; top: 0;"><i class="far fa-calendar"></i></button> -->
                         </div>
                         <hr>
                         <div class="row col-md-12" style="margin-bottom: -15px;">
@@ -320,9 +320,9 @@
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
                             <div class="row col-md-12 p-0">
-                                <textarea id="message-input" class="form-control" placeholder="Ketik komentar Anda..." <?= ($status_id != 'STW-2') ? '' : 'disabled' ?> autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleKeyDown(event)" style="height: 40px;width: 88%;" onpaste="handlePaste(event)"></textarea>
-                                <button type="button" class="btn" <?= ($batas_akses && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
-                                <button type="button" class="btn" <?= ($batas_akses && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" id="upload-button"><i class="fas fa-paperclip"></i></button>
+                                <textarea id="message-input" class="form-control" placeholder="Ketik komentar Anda..." <?= ($member_type && $status_id != 'STW-2') ? '' : 'disabled' ?> autocomplete="off" oninput="adjustInputHeight(this)" style="height: 40px;width: 88%;" onpaste="handlePaste(event)"></textarea>
+                                <button type="button" class="btn" <?= ($member_type && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
+                                <button type="button" class="btn" <?= ($member_type && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" id="upload-button"><i class="fas fa-paperclip"></i></button>
                                 <div class="emoji-picker" style="display: none;">
                                     <div class="emoji-list">
                                         <?php if ($Emojis) :
@@ -337,7 +337,7 @@
                                     <input class="form-control" type="file" id="file-input" accept="image/*">
                                     <div class="row">
                                         <div style="width: 80%;padding-left: 10px;">
-                                            <textarea id="image-description" class="form-control" placeholder="Image Description" autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleDown1(event)" style="height: 40px;"></textarea>
+                                            <textarea id="image-description" class="form-control" placeholder="Image Description" autocomplete="off" oninput="adjustInputHeight(this)" style="height: 40px;"></textarea>
                                         </div>
                                         <div style="width: 20%;padding-left: 5px;">
                                             <button class="btn" id="confirm-upload"><i class="fa-solid fa-paper-plane"></i></button>
@@ -345,7 +345,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn" <?= ($batas_akses && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
+                                <button type="submit" class="btn" <?= ($member_type && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
                         </form>
                     </div>
@@ -362,7 +362,7 @@
                         <div id="file-inputing" class="row">
                             <div style="width: 90%;">
                                 <input type="hidden" class="form-control" id="file-element" placeholder="Image Description">
-                                <textarea class="form-control" id="file-description" placeholder="Image Description" autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleDown2(event)" style="height: 40px;"></textarea>
+                                <textarea class="form-control" id="file-description" placeholder="Image Description" autocomplete="off" oninput="adjustInputHeight(this)" style="height: 40px;"></textarea>
                             </div>
                             <div style="width: 10%;">
                                 <button class="btn" id="confirm-upload-view"><i class="fa-solid fa-paper-plane"></i></button>
@@ -382,7 +382,7 @@
                         <div class="row justify-content-between">
                             <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer; width: max-content;">Project Attachment</div>
                             <div class="card-tools">
-                                <?php if ($status_id != 'STW-2' && $member_type != 'MT-4') : ?>
+                                <?php if ($member_type && $status_id != 'STW-2') : ?>
                                     <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
                                         <i class="fas fa-file"></i>
                                     </button>
@@ -413,18 +413,21 @@
 
                                             <!-- <td><?= $record->attachment_type_name ?></td> -->
                                             <td><?= $record->member_upload ?></td>
+
                                             <td class="text-center">
-                                                <a id="btnDownload" class="btn btn-xs btn-success" href="<?= base_url('DownloadAttachment/' . $record->attachment_url) ?>">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                                <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <?php if (($member_id == 'System' || $member_id == $record->creation_user_id || $member_type == 'MT-2') && $status_id != 'STW-2') : ?>
-                                                    <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
-                                                        <i class="fa fa-trash"></i>
+                                                <?php if ($member_type && $status_id != 'STW-2') : ?>
+                                                    <a id="btnDownload" class="btn btn-xs btn-success" href="<?= base_url('DownloadAttachment/' . $record->attachment_url) ?>">
+                                                        <i class="fa fa-download"></i>
                                                     </a>
-                                                <?php endif; ?>
+                                                    <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <?php if ($member_id == $record->creation_user_id && $status_id != 'STW-2') : ?>
+                                                        <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                <?php endif;
+                                                endif; ?>
                                             </td>
                                         </tr>
                                 <?php endforeach;
@@ -883,10 +886,6 @@
                             <div class="form-group">
                                 <label for="update_list_status" class="mr-2">Card Status</label>
                                 <select class="form-control select2bs4" name="update_list_status" id="update_list_status" style="width: 100%;">
-                                    <?php foreach ($StatusItemRecords as $row) { ?>
-                                        <option value="<?= $row->variable_id ?>" class=""><?= $row->list_name ?></option>
-                                    <?php
-                                    } ?>
                                 </select>
                             </div>
                         </div>
@@ -1139,6 +1138,16 @@
         // $('#update_list_start').val($(this).data('start'));
         // $('#update_list_due').val($(this).data('due'));
         $('#update_list_status').val($(this).data('list_status'));
+
+        var statusData = <?php echo json_encode($StatusItemRecords); ?>;
+        var statusNow = $(this).data('list_status');
+        $('#update_list_status').empty();
+        $.each(statusData, function(index, row) {
+            var isSelected = (statusNow == row.variable_id) ? 'selected' : '';
+            $('#update_list_status').append('<option value="' + row.variable_id + '" ' + isSelected + '>' + row.list_name + '</option>');
+        });
+
+
 
         var startData = $(this).data('start');
         var dueData = $(this).data('due');
@@ -1682,38 +1691,38 @@
     // END MEMBER
 
     // START CALENDAR
-    $(document).on('click', '#addToCalendar', function() {
-        var title = '<?= $project_name ?>';
-        var color = '#DB7093';
-        var allDay = 'true';
-        var startDate = '<?= $start_date ?>';
-        var endDate = '<?= $due_date ?>';
-        var eventNote = '<?= $description . '\n' . current_url() ?>';
-        var location = 'PMT Project';
-        var shareTo = '';
-        var groupId = '<?= $project_id ?>';
+    // $(document).on('click', '#addToCalendar', function() {
+    //     var title = '<?= $project_name ?>';
+    //     var color = '#DB7093';
+    //     var allDay = 'true';
+    //     var startDate = '<?= $start_date ?>';
+    //     var endDate = '<?= $due_date ?>';
+    //     var eventNote = '<?= $description . '\n' . current_url() ?>';
+    //     var location = 'PMT Project';
+    //     var shareTo = '';
+    //     var groupId = '<?= $project_id ?>';
 
-        if (!title || !startDate || !endDate || !eventNote) {
-            validasiInfo('Please complete all fields before add events to calendar!');
-            return;
-        }
+    //     if (!title || !startDate || !endDate || !eventNote) {
+    //         validasiInfo('Please complete all fields before add events to calendar!');
+    //         return;
+    //     }
 
-        var eventData = {
-            title: title,
-            color: color,
-            allDay: Boolean(allDay === "true"),
-            start: startDate,
-            end: endDate,
-            eventNote: eventNote,
-            eventLoc: location,
-            shareTo: JSON.stringify(shareTo),
-            groupId: groupId
-        };
+    //     var eventData = {
+    //         title: title,
+    //         color: color,
+    //         allDay: Boolean(allDay === "true"),
+    //         start: startDate,
+    //         end: endDate,
+    //         eventNote: eventNote,
+    //         eventLoc: location,
+    //         shareTo: JSON.stringify(shareTo),
+    //         groupId: groupId
+    //     };
 
-        $('#addToCalendar').prop('disabled', true);
-        // console.log(eventData);
-        addEventCalendar(eventData);
-    });
+    //     $('#addToCalendar').prop('disabled', true);
+    //     // console.log(eventData);
+    //     addEventCalendar(eventData);
+    // });
 
     function addEventCalendar(eventData) {
         $.ajax({
@@ -2179,23 +2188,38 @@
 
                         var previousScrollHeight = commentContainer[0].scrollHeight;
                         commentContainer.empty();
+                        var previousDate = null;
 
                         $.each(response.messages, function(index, message) {
+                            var timestamp = message.created_at;
+                            var date = new Date(timestamp);
+                            var formattedDate = ('0' + date.getDate()).slice(-2) + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + date.getFullYear();
+                            var formattedTime = ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
                             var potoBox = (message.gender_id === 'GR-001') ? '5.png' : '3.png';
                             var potoLive = message.photo_url;
+                            var commentHtml = '';
+
                             if (message.message.trim() !== '') {
                                 var messageClass = (message.sender_id == response.current_member_id) ? 'right' : '';
                                 var senderName = (message.sender_name === '<?= $this->session->userdata("member_name") ?>') ? 'Anda' : message.sender_name;
 
-                                var commentHtml = '<div class="direct-chat-msg ' + messageClass + '">' +
+                                if (formattedDate !== previousDate) {
+                                    commentHtml += '<div class="direct-chat-msg text-center" style="margin-bottom:0px;margin-top:20px;">' +
+                                        '<div class="direct-chat-info clearfix">-----------------------   ' +
+                                        '<span class="badge badge-warning text-center">' + formattedDate + '</span>' +
+                                        '   -----------------------</div>' +
+                                        '</div>';
+                                    previousDate = formattedDate;
+                                }
+
+                                commentHtml += '<div class="direct-chat-msg ' + messageClass + '">' +
                                     '<style>' +
-                                    (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #90EE90; }' : '') +
+                                    // #87CEEB #FFF0F5 #FFFFF0 #d9fdd3 #009978
+                                    (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #CDFBCC; }' : '') +
                                     '</style>' +
                                     '<div class="direct-chat-info clearfix">' +
                                     '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + senderName + '</span>' +
-                                    '<span class="direct-chat-timestamp ' + (messageClass === 'right' ? 'float-left' : 'float-right') + '">' + message.created_at + '</span>' +
                                     '</div>';
-
 
                                 if (potoLive) {
                                     commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>../api-hris/upload/' + potoLive + '" alt="User Image" class="rounded-circle" style="width: 40px; height: 40px;" title="' + senderName + '">';
@@ -2204,10 +2228,15 @@
                                 }
 
                                 var messageWithLinks = untukUrlLink(message.message);
-                                commentHtml += '<div class="direct-chat-text">' + messageWithLinks + '</div>' + '</div>';
-                                commentContainer.append(commentHtml);
+                                commentHtml += '<div class="direct-chat-text">' + messageWithLinks + ' ' +
+                                    '<span class="direct-chat-timestamp float-right text-sm">' + formattedTime + '</span>' +
+                                    '</div>' +
+                                    '</div>';
                             }
+
+                            commentContainer.append(commentHtml);
                         });
+
 
                         commentContainer.scrollTop(commentContainer[0].scrollHeight);
                     }
@@ -2257,7 +2286,7 @@
 
     function sendingMessage() {
         var currentMemberId = $("#current-member-id").val();
-        var message = $("#message-input").val();
+        var message = $("#message-input").val().trim();
         if (message === null || message.trim() === '') {
             return;
         }

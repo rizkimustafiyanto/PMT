@@ -78,7 +78,7 @@ class list_controller extends BaseController
         $collabName = '';
         $collabMember = '';
         $manageAkses = '';
-        $batas_akses = '';
+        $batas_akses = false;
 
         if (!empty($projectData)) {
             foreach ($projectData as $record) {
@@ -148,8 +148,12 @@ class list_controller extends BaseController
         } else {
             if ($memberID == 'System') {
                 $batas_akses = ($memberID == 'System');
+            } else if ($memberID == $creatorProject || $member_type == 'MT-1') {
+                $batas_akses = ($memberID == $creatorProject || $member_type == 'MT-1');
+            } else if ($member_type) {
+                $batas_akses = ($member_type == 'MT-2' || ($member_type != 'MT-4' && $member_type != 'MT-3'));
             } else {
-                $batas_akses = ($memberID == 'System' || $memberID == $creatorProject || $member_type == 'MT-2' || $member_type != 'MT-4');
+                $batas_akses = ($memberID == 'System');
             }
         }
 
@@ -162,8 +166,9 @@ class list_controller extends BaseController
         if (!empty($cekCalendar)) {
             foreach ($cekCalendar as $kal) {
                 $idCalendar = $kal->id;
+            }
         }
-        
+
         $data['idCalendar'] = $idCalendar;
 
         #Cek Kebutuhan
@@ -193,7 +198,11 @@ class list_controller extends BaseController
         #List List
         #============================================================================
         $roling = ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_type == 'MT-4' || $member_type == 'MT-I');
-        $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, ($roling) ? 3 : 1]);
+        if (!empty($roling)) {
+            $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, ($roling) ? 3 : 1]);
+        } else {
+            $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, 6]);
+        }
         $data['StatusItemRecords'] = $this->variable_model->GetVariable(['', 5]);
 
 

@@ -249,31 +249,37 @@
   });
   // TOOLS BUTTON MESSAGE
   function handleKeyDown(event) {
-    if (event.key === 'Enter' && event.shiftKey) {
-      event.preventDefault();
-      const messageInput = document.getElementById('message-input');
-      messageInput.value += '\n';
+    if (event.ctrlKey && event.keyCode == 13) {
+      var position = this.selectionEnd;
+      this.value = this.value.substring(0, position) + '\n' + this.value.substring(position);
+      this.selectionEnd = position;
       adjustInputHeight(messageInput);
     }
+    // if (event.key === 'Enter' && event.shiftKey) {
+    //   event.preventDefault();
+    //   const messageInput = document.getElementById('message-input');
+    //   messageInput.value += '\n';
+    //   adjustInputHeight(messageInput);
+    // }
   }
 
-  function handleDown1(event) {
-    if (event.key === 'Enter' && event.shiftKey) {
-      event.preventDefault();
-      const descriptionImage = document.getElementById('image-description');
-      descriptionImage.value += '\n';
-      adjustInputHeight(descriptionImage);
-    }
-  }
+  // function handleDown1(event) {
+  //   if (event.key === 'Enter' && event.shiftKey) {
+  //     event.preventDefault();
+  //     const descriptionImage = document.getElementById('image-description');
+  //     descriptionImage.value += '\n';
+  //     adjustInputHeight(descriptionImage);
+  //   }
+  // }
 
-  function handleDown2(event) {
-    if (event.key === 'Enter' && event.shiftKey) {
-      event.preventDefault();
-      const descriptionImageFile = document.getElementById('file-description');
-      descriptionImageFile.value += '\n';
-      adjustInputHeight(descriptionImageFile);
-    }
-  }
+  // function handleDown2(event) {
+  //   if (event.key === 'Enter' && event.shiftKey) {
+  //     event.preventDefault();
+  //     const descriptionImageFile = document.getElementById('file-description');
+  //     descriptionImageFile.value += '\n';
+  //     adjustInputHeight(descriptionImageFile);
+  //   }
+  // }
 
   function adjustInputHeight(input) {
     input.style.height = 'auto';

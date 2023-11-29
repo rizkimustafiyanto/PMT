@@ -104,14 +104,16 @@ class kanban_list_controller extends BaseController
         }
 
         $aksessing = '';
-        $batas_akses = '';
+        $batas_akses = false;
         if (!empty($manageAccess)) {
             foreach ($manageAccess as $key) {
                 $manageAkses = $key->akses;
             }
             $batas_akses = ($manageAkses != '0');
+        } else if ($lvlUser) {
+            $batas_akses = ($lvlUser == 'MT-1' || $lvlUser == 'MT-2');
         } else {
-            $batas_akses = ($memberID == 'System' || $memberID == $creator || $lvlUser == 'MT-2' || $lvlUser != 'MT-4');
+            $batas_akses = ($memberID == 'System' || $memberID == $creator);
         }
         #===========================================================================================
 
@@ -132,7 +134,7 @@ class kanban_list_controller extends BaseController
 
         #AMBIL
         #============================================================================
-        $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, ($lvlUser == 'MT-1' || $lvlUser == 'MT-2' || $lvlUser == 'MT-4' || $lvlUser == 'MT-I') ? 3 : 1]);
+        $data['ListRecords'] = $this->list_model->Get(['', $p_project_id, '', '', '', $memberID, ($lvlUser == 'MT-1' || $lvlUser == 'MT-2' || $lvlUser == 'MT-4' || $lvlUser == 'MT-I' || $lvlUser == null) ? 3 : 1]);
         $data['StatusItemRecords'] = $this->variable_model->GetVariable(['', 5]);
 
         #===========================================================================================

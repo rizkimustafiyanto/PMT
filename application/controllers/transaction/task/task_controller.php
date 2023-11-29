@@ -79,7 +79,7 @@ class task_controller extends BaseController
         $member_type = '';
         $member_prj_type = '';
         $manageAkses = '';
-        $batas_akses = '';
+        $batas_akses = false;
 
         if (!empty($listData)) {
             foreach ($listData as $key) {
@@ -130,8 +130,14 @@ class task_controller extends BaseController
                 $manageAkses = $key->akses;
             }
             $batas_akses = ($manageAkses != '0');
+        } else if ($member_prj_type && $member_type) {
+            $batas_akses = ($member_type == 'MT-2' || $member_prj_type == 'MT-1');
+        } else if ($member_prj_type) {
+            $batas_akses = ($member_prj_type == 'MT-1');
+        } else if ($member_type) {
+            $batas_akses = ($member_type == 'MT-2');
         } else {
-            $batas_akses = ($memberID == 'System' || $memberID == $creatorList || $member_type == 'MT-2' || $member_prj_type == 'MT-1');
+            $batas_akses = ($memberID == 'System' || $memberID == $creatorList);
         }
 
         #AMBIL
@@ -161,7 +167,7 @@ class task_controller extends BaseController
 
         #TASK
         #============================================================================
-        $data['TaskRecords'] = $this->task_model->Get(['', $p_list_id, '', '', $memberID, ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-4' || $member_prj_type == 'MT-I') ? 3 : 2]);
+        $data['TaskRecords'] = $this->task_model->Get(['', $p_list_id, '', '', $memberID, ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-4' || $member_prj_type == 'MT-I' || $member_prj_type == NULL) ? 3 : 2]);
         $data['StatusTaskRecords'] = $this->variable_model->GetVariable(['', 5]);
 
         #============================================================================

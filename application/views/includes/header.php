@@ -98,7 +98,6 @@ scratch. This page gets rid of all links and provides the needed markup only.
   <!-- AdminLTE for demo purposes -->
 
   <!-- Tambahan -->
-  <link rel="stylesheet" href="<?= base_url(); ?>assets/plugins/select2/css/select2.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
   <link rel="stylesheet" href="<?= base_url() ?>assets/plugins/summernote/summernote.min.css">

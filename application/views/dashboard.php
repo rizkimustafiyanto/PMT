@@ -221,8 +221,10 @@
                         <div class="progress-bar <?= ($percent < 100) ? 'bg-primary' : 'bg-success'; ?>" style="width: <?= $percent; ?>%"></div>
                       </div>
                     </div>
-                <?php endforeach;
-                endif; ?>
+                  <?php endforeach;
+                else : ?>
+                  <div class="text-center">No Project</div>
+                <?php endif; ?>
               </div>
             </div>
           </div>

@@ -3,6 +3,35 @@
 
 <!-- Styling -->
 <style>
+    #viewImageTask {
+        margin: 20px 0;
+    }
+
+    .slick-slide {
+        text-align: center;
+        position: relative;
+    }
+
+    .slick-slide img {
+        display: inline-block;
+        max-width: 100%;
+        max-height: 100%;
+        border-radius: 5px;
+    }
+
+    .delete-btn {
+        position: absolute;
+        top: 5px;
+        right: 5px;
+        background: red;
+        color: white;
+        border: none;
+        padding: 5px;
+        border-radius: 50%;
+        cursor: pointer;
+        z-index: 1;
+    }
+
     .dropdown-menu li {
         position: relative;
     }
@@ -226,7 +255,7 @@
                                             <div class="bg-<?= $badgePrior ?>" style="width: 5px; height: 10px; display: inline-block; margin-right: -20px;"></div>
                                             <div class="icheck-primary d-inline">
                                                 <label for="todo1"></label>
-                                                <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?>>
+                                                <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?> <?= (($batas_akses) || ($member_id == $record->creation_user_id) || ($member_id == $record->member_id)) ? '' :  'disabled'; ?>>
                                             </div>
                                             <span class="text title"><?= $record->task_name ?></span>
                                             <div class="tools" style="margin-top:2px;">
@@ -280,9 +309,9 @@
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
                             <div class="row col-md-12 p-0">
-                                <textarea id="message-input" class="form-control" placeholder="Type your comment..." <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'readonly' ?> autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleKeyDown(event)" style="height: 40px; width: 88%;" onpaste="handlePaste(event)"></textarea>
-                                <button type="button" class="btn" <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
-                                <button type="button" class="btn" <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'disabled' ?> style="width: 4%;" id="upload-button"><i class="fas fa-paperclip"></i></button>
+                                <textarea id="message-input" class="form-control" placeholder="Type your comment..." <?= ($member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'readonly' ?> autocomplete="off" oninput="adjustInputHeight(this)" style="height: 40px; width: 88%;" onpaste="handlePaste(event)"></textarea>
+                                <button type="button" class="btn" <?= ($member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
+                                <button type="button" class="btn" <?= ($member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'disabled' ?> style="width: 4%;" id="upload-button"><i class="fas fa-paperclip"></i></button>
                                 <div class="emoji-picker" style="display: none;">
                                     <div class="emoji-list">
                                         <?php if ($Emojis) :
@@ -294,10 +323,10 @@
                                 </div>
                                 <div class="col-md-4" id="image-upload-dialog" style="display: none;">
                                     <h3>Unggah Gambar</h3>
-                                    <input type="file" id="file-input" accept="image/*">
+                                    <input class="form-control" type="file" id="file-input" accept="image/*">
                                     <div class="row">
                                         <div style="width: 80%;padding-left: 10px;">
-                                            <textarea id="image-description" class="form-control" placeholder="Image Description" autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleDown1(event)" style="height: 40px;"></textarea>
+                                            <textarea id="image-description" class="form-control" placeholder="Image Description" autocomplete="off" oninput="adjustInputHeight(this)" style="height: 40px;"></textarea>
                                         </div>
                                         <div style="width: 20%;padding-left: 5px;">
                                             <button class="btn" id="confirm-upload"><i class="fa-solid fa-paper-plane"></i></button>
@@ -305,34 +334,30 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn" <?= (($batas_akses && $status_id != 'STL-4') || ($member_type == 'MT-3' && $status_id != 'STL-4')) ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
+                                <button type="submit" class="btn" <?= ($member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
                         </form>
                     </div>
-
-                    <div class="card direct-chat direct-chat-msg file-attachment" style="display: none;">
-                        <div class="card-header">
-                            <h5>Sending File</h5>
-                        </div>
-
-                        <div class="card-body">
-                            <div class="text-center" id="viewImage"></div>
-                        </div>
-
-                        <div class="card-footer">
-                            <div id="file-inputing" class="row">
-                                <div style="width: 90%;">
-                                    <input type="hidden" class="form-control" id="file-element" placeholder="Image Description">
-                                    <textarea class="form-control" id="file-description" placeholder="Image Description" autocomplete="off" oninput="adjustInputHeight(this)" onkeydown="handleDown2(event)" style="height: 40px;"></textarea>
-                                </div>
-                                <div style="width: 10%;">
-                                    <button class="btn" id="confirm-upload-view"><i class="fa-solid fa-paper-plane"></i></button>
-                                    <button class="btn" id="cancel-upload-view"><i class="fa-solid fa-xmark"></i></button>
-                                </div>
+                </div>
+                <div class="card direct-chat direct-chat-msg file-attachment" style="display: none;">
+                    <div class="card-header">
+                        <h5>Sending File</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="text-center" id="viewImageTask"></div>
+                    </div>
+                    <div class="card-footer">
+                        <div id="file-inputing" class="row">
+                            <div style="width: 90%;">
+                                <input type="hidden" class="form-control" id="file-element" placeholder="Image Description">
+                                <textarea class="form-control" id="file-description" placeholder="Image Description" autocomplete="off" oninput="adjustInputHeight(this)" style="height: 40px;"></textarea>
+                            </div>
+                            <div style="width: 10%;">
+                                <button class="btn" id="confirm-upload-view"><i class="fa-solid fa-paper-plane"></i></button>
+                                <button class="btn" id="cancel-upload-view"><i class="fa-solid fa-xmark"></i></button>
                             </div>
                         </div>
                     </div>
-
                 </div>
                 <!-- Batas Message -->
             </div>
@@ -343,7 +368,7 @@
                         <div class="row justify-content-between">
                             <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Card Attachment</div>
                             <div class="card-tools">
-                                <?php if ($batas_akses && $status_id != 'STL-4') : ?>
+                                <?php if (($member_type || $member_prj_type) && $status_id != 'STL-4') : ?>
                                     <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
                                         <i class="fas fa-file"></i>
                                     </button>
@@ -768,16 +793,6 @@
                     <div class="form-group">
                         <label for="MemberTask" class="mr-2">Assign Member</label>
                         <select class="form-control select2bs4" id="update_members_task" name="update_members_task" style="width: 100%;">
-                            <option value="" selected disabled>-- Select an option --</option>
-                            <?php if ($member_type == 'MT-3') : ?>
-                                <option value="<?= $member_id ?>">It's You</option>
-                                <?php else :
-                                foreach ($MemberSelectRecord as $row) : ?>
-                                    <option value="<?= $row->member_id; ?>">
-                                        <?= $row->member_name ?>
-                                    </option>
-                            <?php endforeach;
-                            endif; ?>
                         </select>
                     </div>
                     <div class="form-group">
@@ -1176,7 +1191,19 @@
         $("input[name='update_priority_task'][value='" + $(this).data('priority') + "']").prop("checked", true);
         $('#update_task_start').val($(this).data('start'));
         $('#update_task_due').val($(this).data('due'));
-        $('#update_members_task').val($(this).data('task_member'));
+
+        var memberType = '<?= $member_type ?>';
+        var memberData = <?php echo json_encode($MemberSelectRecord); ?>;
+        var memberNow = $(this).data('task_member');
+        $('#update_members_task').empty();
+        if (memberType === 'MT-3') {
+            $('#update_members_task').append('<option value="<?= $member_id ?>">It\'s You</option>');
+        } else {
+            $.each(memberData, function(index, row) {
+                var isSelected = (memberNow == row.member_id) ? 'selected' : '';
+                $('#update_members_task').append('<option value="' + row.member_id + '" ' + isSelected + '>' + row.member_name + '</option>');
+            });
+        }
 
         var startData = $(this).data('start');
         var dueData = $(this).data('due');
@@ -1826,73 +1853,134 @@
     var viewElement = $("#file-element");
     var viewDescription = $("#file-description");
     var viewAttachment = $(".file-attachment");
-    var viewUpload = $("#viewImage");
+    var viewUpload = $("#viewImageTask");
     const confirmUploadView = document.getElementById('confirm-upload-view');
     const cancelUploadView = document.getElementById('cancel-upload-view');
+    var uploadedImages = [];
 
+    // Fungsi pengiriman gambar satu per satu secara berurutan
+    function sendImagesSequentially(index = 0) {
+        if (index < uploadedImages.length) {
+            var url = uploadedImages[index];
+            var isianDeskripsion = '<img src="' + url + '" alt="Gambar" style="max-height:40%; max-width:40%;" onclick="bukaGambarBaru(event)"><br>' + viewDescription.val();
+            sendingMessagePhoto(isianDeskripsion);
+
+            setTimeout(function() {
+                sendImagesSequentially(index + 1);
+            }, 1000);
+        } else {
+            setTimeout(function() {
+                viewDescription.val('');
+            }, 1000);
+        }
+    }
+
+    // Menangani event paste
     function handlePaste(event) {
         var items = (event.clipboardData || event.originalEvent.clipboardData).items;
+        var files = [];
         for (var index in items) {
             var item = items[index];
             if (item.kind === 'file') {
                 var blob = item.getAsFile();
-                uploadPastedFile(blob);
-                messanger.hide();
-                break;
+                files.push(blob);
             }
+        }
+        if (files.length > 0) {
+            uploadPastedFiles(files);
+            messanger.hide();
         }
     }
 
-    function uploadPastedFile(file) {
-        var data = new FormData();
-        data.append('image', file);
+    // Mengunggah file yang disalin or manipulate
+    function uploadPastedFiles(files) {
+        files.forEach(function(file, index) {
+            var data = new FormData();
+            data.append('image', file);
 
-        $.ajax({
-            url: '<?= base_url() ?>ProcImageMessage',
-            method: 'POST',
-            data: data,
-            cache: false,
-            contentType: false,
-            processData: false,
-            success: function(url) {
-                displayUploadedFile(url);
-            },
-            error: function(data) {
-                console.log(data);
-            }
+            setTimeout(function() {
+                $.ajax({
+                    url: '<?= base_url() ?>ProcImageMessage',
+                    method: 'POST',
+                    data: data,
+                    cache: false,
+                    contentType: false,
+                    processData: false,
+                    success: function(url) {
+                        displayUploadedFile(url);
+                    },
+                    error: function(data) {
+                        console.log(data);
+                    }
+                });
+            }, index * 1000); // Jeda untuk declare perfile supaya url kebaca
         });
     }
 
+
+    // Menampilkan file yang diunggah
     function displayUploadedFile(url) {
-        var imgElement = '<img src="' + url + '" alt="Gambar" style="max-height:40%; max-width:40%;" onclick="bukaGambarBaru(event)">';
-        viewElement.empty();
-        viewAttachment.show();
-        viewUpload.append(imgElement);
-        viewElement.val(imgElement);
+        uploadedImages.push(url);
+        updateImageSlider();
+        console.log(uploadedImages);
     }
 
+    // Memperbarui slider gambar
+    function updateImageSlider() {
+        if ($('#viewImageTask').hasClass('slick-initialized')) {
+            $('#viewImageTask').slick('unslick');
+        }
+
+        viewUpload.empty();
+        uploadedImages.forEach(function(url) {
+            var imgElement = '<div class="uploaded-image" data-url="' + url + '">';
+            imgElement += '<img src="' + url + '" alt="Gambar" style="max-height:40%; max-width:40%;" onclick="bukaGambarBaru(event)">';
+            imgElement += '<button class="delete-btn" onclick="deleteImage(this)">Delete</button></div>';
+            viewUpload.append(imgElement);
+        });
+
+        $('#viewImageTask').slick({
+            slidesToShow: 1,
+            slidesToScroll: 1,
+            dots: true,
+            arrows: true
+        });
+        viewAttachment.show();
+    }
+
+    // Menghapus gambar
+    function deleteImage(btn) {
+        var imageUrl = $(btn).siblings('img').attr('src');
+        var index = uploadedImages.indexOf(imageUrl);
+        if (index > -1) {
+            uploadedImages.splice(index, 1);
+        }
+        $(btn).parent('.uploaded-image').remove();
+        updateImageSlider();
+    }
+
+    // Konfirmasi pengiriman gambar
     function handleConfirmUploadView() {
-        viewDescription.val(viewElement.val() + '<br>' + viewDescription.val());
-        sendingMessagePhoto(viewDescription.val());
+        sendImagesSequentially();
         viewUpload.empty();
         messanger.show();
         viewElement.val('');
-        viewDescription.val('');
         viewAttachment.hide();
     }
+
+    // Handle tombol 'Enter' pada file description
     $("#file-description").keydown(function(event) {
         if (event.keyCode === 13 && !event.shiftKey) {
             event.preventDefault();
-            viewDescription.val(viewElement.val() + '<br>' + viewDescription.val());
-            sendingMessagePhoto(viewDescription.val());
+            sendImagesSequentially();
             viewUpload.empty();
             messanger.show();
             viewElement.val('');
-            viewDescription.val('');
             viewAttachment.hide();
         }
     });
 
+    // Batal mengunggah
     function handleCancelUploadView() {
         viewUpload.empty();
         viewElement.val('');
@@ -1901,6 +1989,7 @@
         viewDescription.val('');
     }
 
+    // Event Listener untuk konfirmasi dan pembatalan upload
     confirmUploadView.addEventListener('click', handleConfirmUploadView);
     cancelUploadView.addEventListener('click', handleCancelUploadView);
 </script>
@@ -2006,22 +2095,38 @@
                         var previousScrollHeight = commentContainer[0].scrollHeight;
                         commentContainer.empty();
 
+                        var previousDate = null;
+
                         $.each(response.messages, function(index, message) {
+                            var timestamp = message.created_at;
+                            var date = new Date(timestamp);
+                            var formattedDate = ('0' + date.getDate()).slice(-2) + '-' + ('0' + (date.getMonth() + 1)).slice(-2) + '-' + date.getFullYear();
+                            var formattedTime = ('0' + date.getHours()).slice(-2) + ':' + ('0' + date.getMinutes()).slice(-2);
                             var potoBox = (message.gender_id === 'GR-001') ? '5.png' : '3.png';
                             var potoLive = message.photo_url;
+                            var commentHtml = '';
+
                             if (message.message.trim() !== '') {
                                 var messageClass = (message.sender_id == response.current_member_id) ? 'right' : '';
                                 var senderName = (message.sender_name === '<?= $this->session->userdata("member_name") ?>') ? 'Anda' : message.sender_name;
 
-                                var commentHtml = '<div class="direct-chat-msg ' + messageClass + '">' +
+                                if (formattedDate !== previousDate) {
+                                    commentHtml += '<div class="direct-chat-msg text-center" style="margin-bottom:0px;margin-top:20px;">' +
+                                        '<div class="direct-chat-info clearfix">-----------------------   ' +
+                                        '<span class="badge badge-warning text-center">' + formattedDate + '</span>' +
+                                        '   -----------------------</div>' +
+                                        '</div>';
+                                    previousDate = formattedDate;
+                                }
+
+                                commentHtml += '<div class="direct-chat-msg ' + messageClass + '">' +
                                     '<style>' +
-                                    (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #90EE90; }' : '') +
+                                    // #87CEEB #FFF0F5 #FFFFF0
+                                    (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #009978; }' : '') +
                                     '</style>' +
                                     '<div class="direct-chat-info clearfix">' +
                                     '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + senderName + '</span>' +
-                                    '<span class="direct-chat-timestamp ' + (messageClass === 'right' ? 'float-left' : 'float-right') + '">' + message.created_at + '</span>' +
                                     '</div>';
-
 
                                 if (potoLive) {
                                     commentHtml += '<img class="direct-chat-img" src="<?= base_url(); ?>../api-hris/upload/' + potoLive + '" alt="User Image" class="rounded-circle" style="width: 40px; height: 40px;" title="' + senderName + '">';
@@ -2030,9 +2135,13 @@
                                 }
 
                                 var messageWithLinks = untukUrlLink(message.message);
-                                commentHtml += '<div class="direct-chat-text">' + messageWithLinks + '</div>' + '</div>';
-                                commentContainer.append(commentHtml);
+                                commentHtml += '<div class="direct-chat-text">' + messageWithLinks + ' ' +
+                                    '<span class="direct-chat-timestamp float-right text-sm">' + formattedTime + '</span>' +
+                                    '</div>' +
+                                    '</div>';
                             }
+
+                            commentContainer.append(commentHtml);
                         });
 
                         commentContainer.scrollTop(commentContainer[0].scrollHeight);
@@ -2082,11 +2191,12 @@
 
     function sendingMessage() {
         var currentMemberId = $("#current-member-id").val();
-        var message = $("#message-input").val();
+        var message = $("#message-input").val().trim();
         if (message === null || message.trim() === '') {
             return;
         }
         message = message.replace(/\n/g, '<br>');
+
         message = convertEmojiToHtmlDec(message);
         $.ajax({
             type: 'POST',
