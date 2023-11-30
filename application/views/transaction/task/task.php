@@ -250,17 +250,30 @@
                                         } else {
                                             $photo_url = '../api-hris/upload/' . $record->photo_url;
                                         }
+
+                                        $groupingMem = false;
+                                        $isiGroup = [];
+                                        if ($TaskMemberRecords) :
+                                            foreach ($TaskMemberRecords as $col) :
+                                                $isiGroup[] = $col->member_id;
+                                                if ($member_id == $col->member_id) {
+                                                    $groupingMem = true;
+                                                }
+                                            endforeach;
+                                        endif;
+
+
                                     ?>
                                         <li class="overflow-auto text-nowrap" style="background-color: <?= $bgPriority ?>;">
                                             <div class="bg-<?= $badgePrior ?>" style="width: 5px; height: 10px; display: inline-block; margin-right: -20px;"></div>
                                             <div class="icheck-primary d-inline">
                                                 <label for="todo1"></label>
-                                                <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?> <?= (($batas_akses) || ($member_id == $record->creation_user_id) || ($member_id == $record->member_id)) ? '' :  'disabled'; ?>>
+                                                <input type="checkbox" value="" data-task_id_check="<?= $record->task_id ?>" name="todo1" id="todo1" <?= ($statusW == 'STL-4') ? 'checked' : '' ?> <?= (($batas_akses) || ($member_id == $record->creation_user_id) || ($member_id == $record->member_id) || $groupingMem) ? '' :  'disabled'; ?>>
                                             </div>
                                             <span class="text title"><?= $record->task_name ?></span>
                                             <div class="tools" style="margin-top:2px;">
                                                 <?php if ($showCheckbox) : ?>
-                                                    <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= $record->member_id ?>"></i>
+                                                    <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= ($record->member_id) ? $record->member_id : implode(', ', $isiGroup) ?>"></i>
                                                     <i class="fas fa-trash" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>"></i>
                                                 <?php endif; ?>
                                             </div>
@@ -271,9 +284,27 @@
                                                 <small class="badge badge-success float-right" style="margin-top: 5px; margin-right: 8px;">DONE</small>
                                             <?php endif; ?>
 
-                                            <span class="text-muted float-right">||
-                                                <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $record->member_name ?>" data-member-name="<?= $record->member_name ?>" data-member-company="<?= $record->company_name ?>" data-src="<?= base_url() . $photo_url ?>">
-                                                ||</span>
+                                            <span class="text-muted float-right">
+                                                ||
+                                                <?php if ($record->member_id) : ?>
+                                                    <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $record->member_name ?>" data-member-name="<?= $record->member_name ?>" data-member-company="<?= $record->company_name ?>" data-src="<?= base_url() . $photo_url ?>">
+                                                <?php else : ?>
+                                                    <?php if ($TaskMemberRecords) :
+                                                        foreach ($TaskMemberRecords as $key) :
+                                                            $avatar1 = $key->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                                            $photo_url1 = $key->photo_url;
+                                                            if (empty($photo_url1) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url1)) {
+                                                                $photo_url1 = 'assets/dist/img/' . $avatar1;
+                                                            } else {
+                                                                $photo_url1 = '../api-hris/upload/' . $key->photo_url;
+                                                            }
+                                                    ?>
+                                                            <img src="<?= base_url() . $photo_url1 ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>" data-member-name="<?= $key->member_name ?>" data-member-company="<?= $key->company_name ?>" data-src="<?= base_url() . $photo_url1 ?>">
+                                                <?php endforeach;
+                                                    endif;
+                                                endif; ?>
+                                                ||
+                                            </span>
                                             <span class="text priority" style="display: none;"><?= $prior ?></span>
                                             <span class="text lastchange" style="display: none;"><?= ($record->change_datetime) ? $record->change_datetime : $record->created_at ?></span>
                                             <!-- <span class="text-muted">|| <?= $record->member_name ?> ||</span> -->
@@ -309,9 +340,9 @@
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
                             <div class="row col-md-12 p-0">
-                                <textarea id="message-input" class="form-control" placeholder="Type your comment..." <?= ($member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'readonly' ?> autocomplete="off" oninput="adjustInputHeight(this)" style="height: 40px; width: 88%;" onpaste="handlePaste(event)"></textarea>
-                                <button type="button" class="btn" <?= ($member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
-                                <button type="button" class="btn" <?= ($member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'disabled' ?> style="width: 4%;" id="upload-button"><i class="fas fa-paperclip"></i></button>
+                                <textarea id="message-input" class="form-control" placeholder="Type your comment..." <?= ($member_id == 'System' || $member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'readonly' ?> autocomplete="off" oninput="adjustInputHeight(this)" style="height: 40px; width: 88%;" onpaste="handlePaste(event)"></textarea>
+                                <button type="button" class="btn" <?= ($member_id == 'System' || $member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
+                                <button type="button" class="btn" <?= ($member_id == 'System' || $member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'disabled' ?> style="width: 4%;" id="upload-button"><i class="fas fa-paperclip"></i></button>
                                 <div class="emoji-picker" style="display: none;">
                                     <div class="emoji-list">
                                         <?php if ($Emojis) :
@@ -334,7 +365,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn" <?= ($member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
+                                <button type="submit" class="btn" <?= ($member_id == 'System' || $member_type || $member_prj_type) && $status_id != 'STL-4' ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
                         </form>
                     </div>
@@ -368,7 +399,7 @@
                         <div class="row justify-content-between">
                             <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer;">Card Attachment</div>
                             <div class="card-tools">
-                                <?php if (($member_type || $member_prj_type) && $status_id != 'STL-4') : ?>
+                                <?php if (($member_id == 'System' || $member_type || $member_prj_type) && $status_id != 'STL-4') : ?>
                                     <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
                                         <i class="fas fa-file"></i>
                                     </button>
@@ -565,7 +596,6 @@
 <!--#EndProject Modal Insert Member-->
 
 <!--#Project Modal Insert Attachment-->
-
 <div class="modal fade" id="modal-input-attachment" role="dialog" aria-labelledby="modal-input-attachment-label" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
@@ -601,7 +631,6 @@
                                     <input type="file" name="attachment_file" id="attachment_file" required accept=".jpeg,.jpg,.png,.pdf" style="display: none;">
                                     <label for="attachment_file" class="file-label">Drag & drop your files here or click to browse</label>
                                 </div>
-
                                 <br>
                             </div>
                         </div>
@@ -731,20 +760,18 @@
                             </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="MemberTask" class="mr-2">Assign Member</label>
-                        <select class="form-control select2bs4" id="members_task" name="members_task" style="width: 100%;">
-                            <option value="" selected disabled>-- Select an option --</option>
-                            <?php if ($member_type == 'MT-3') : ?>
-                                <option value="<?= $member_id ?>">It's You</option>
-                                <?php else :
-                                foreach ($MemberSelectRecord as $row) : ?>
-                                    <option value="<?= $row->member_id; ?>">
-                                        <?= $row->member_name ?>
-                                    </option>
-                            <?php endforeach;
-                            endif; ?>
-                        </select>
+
+                    <div class="row col-lg-12 justify-content-between">
+                        <div>
+                            <label for="AssignMember" class="mr-2">Assign Member</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" name="ppersonalc" id="ppersonalc" onchange="togglePersonal()">
+                            <label for="project_manage" class="mr-2">Personal</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="ppersonal">
+                        <select class="form-control" id="members_task" name="members_task[]" multiple="multiple"></select>
                     </div>
                 </div>
                 <div class="card-footer text-right">
@@ -791,11 +818,6 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="MemberTask" class="mr-2">Assign Member</label>
-                        <select class="form-control select2bs4" id="update_members_task" name="update_members_task" style="width: 100%;">
-                        </select>
-                    </div>
-                    <div class="form-group">
                         <label for="dateRange">Date Range</label>
                         <div class="input-group">
                             <input type="text" class="form-control" id="dateRange2up">
@@ -803,6 +825,18 @@
                                 <span class="input-group-text"><i class="fa fa-calendar"></i></span>
                             </div>
                         </div>
+                    </div>
+                    <div class="row col-lg-12 justify-content-between">
+                        <div>
+                            <label for="AssignMember" class="mr-2">Assign Member</label>
+                        </div>
+                        <div>
+                            <input type="checkbox" name="ppersonalcu" id="ppersonalcu" onchange="togglePersonalU()">
+                            <label for="project_manage" class="mr-2">Personal</label>
+                        </div>
+                    </div>
+                    <div class="form-group" id="ppersonalu">
+                        <select class="form-control" id="update_members_task" name="update_members_task[]" multiple="multiple"></select>
                     </div>
                 </div>
                 <div class="card-footer text-right">
@@ -1097,6 +1131,7 @@
         }
         date2In1();
         handleSelectMember();
+        togglePersonal();
     })
 
     $(document).on('click', '#AddTask', function() {
@@ -1110,11 +1145,23 @@
         // var taskDue = $('#task_due').val();
         var membersTask = $('#members_task').val();
         var priority = $("input[name='priority_task']:checked").val();
+        var personal = 0;
+
+        const checks = document.getElementById("ppersonalc");
+        if (checks.checked) {
+            personal = 1;
+        } else {
+            console.log('ok');
+            if (membersTask == "") {
+                validasiInfo('Please complete assign member before adding project task!');
+                return;
+            }
+        }
 
         var temp_start_date = "<?= $start_date; ?>";
         var temp_due_date = "<?= $due_date; ?>";
 
-        if (!listId || !title || !taskStart || !taskDue || !membersTask || !priority) {
+        if (!listId || !title || !taskStart || !taskDue || !priority) {
             validasiInfo('Please complete all fields before adding project task!');
             return;
         }
@@ -1131,7 +1178,8 @@
             due: taskDue,
             priority: priority,
             status: 'STL-1',
-            membersTask: membersTask
+            membersTask: JSON.stringify(membersTask),
+            personal: personal
         };
 
         // TOOLS
@@ -1174,6 +1222,8 @@
 
             },
             error: function(xhr, status, error) {
+                console.log(xhr);
+                console.log(status);
                 console.log(error);
             },
             // complete: function() {
@@ -1193,16 +1243,34 @@
         $('#update_task_due').val($(this).data('due'));
 
         var memberType = '<?= $member_type ?>';
-        var memberData = <?php echo json_encode($MemberSelectRecord); ?>;
         var memberNow = $(this).data('task_member');
-        $('#update_members_task').empty();
-        if (memberType === 'MT-3') {
-            $('#update_members_task').append('<option value="<?= $member_id ?>">It\'s You</option>');
-        } else {
-            $.each(memberData, function(index, row) {
-                var isSelected = (memberNow == row.member_id) ? 'selected' : '';
-                $('#update_members_task').append('<option value="' + row.member_id + '" ' + isSelected + '>' + row.member_name + '</option>');
-            });
+        const checks = document.getElementById("ppersonalcu");
+        var memberArray = JSON.stringify(memberNow).includes(',') ? memberNow.split(',').map(item => item.trim()) : 1;
+        checks.checked = !Array.isArray(memberArray);
+        togglePersonalU();
+
+        var membersData = [];
+
+        <?php if ($MemberSelectRecord) :
+            foreach ($MemberSelectRecord as $key) { ?>
+                membersData.push({
+                    id: "<?= $key->member_id ?>",
+                    text: "<?= $key->member_name ?>"
+                });
+        <?php }
+        endif; ?>
+
+        $('#update_members_task').empty().select2({
+            placeholder: '-- Choose Members --',
+            allowClear: true,
+            minimumInputLength: 0,
+            data: membersData,
+            templateSelection: colorSelect
+        });
+        warnaMultiple();
+
+        if (!checks.checked) {
+            $('#update_members_task').val(memberArray).trigger('change');
         }
 
         var startData = $(this).data('start');
@@ -1237,6 +1305,14 @@
         // var projectDue = $('#update_task_due').val();
         var priority = $("input[name='update_priority_task']:checked").val();
         var member_task = $('#update_members_task').val();
+        var frog = 2;
+        const checks = document.getElementById("ppersonalcu");
+        if (checks.checked) {
+            member_task = '<?= $member_id ?>';
+        } else {
+            frog = 21;
+        }
+
 
         var temp_start_date = "<?= $start_date; ?>";
         var temp_due_date = "<?= $due_date; ?>";
@@ -1259,8 +1335,8 @@
             due: projectDue,
             priority: priority,
             status: '',
-            memberId: member_task,
-            flag: 2
+            memberId: JSON.stringify(member_task),
+            flag: frog
         };
 
 
@@ -1751,6 +1827,68 @@
     }
 
     // #TOOOLS
+    function togglePersonal() {
+        const checks = document.getElementById("ppersonalc");
+        const membersGroup = document.getElementById("ppersonal");
+
+        if (checks.checked) {
+            membersGroup.style.display = "none";
+            $('#members_task').empty()
+        } else {
+            membersGroup.style.display = "block";
+            var membersData = [];
+
+            <?php if ($MemberSelectRecord) :
+                foreach ($MemberSelectRecord as $key) { ?>
+                    membersData.push({
+                        id: "<?= $key->member_id ?>",
+                        text: "<?= $key->member_name ?>"
+                    });
+            <?php }
+            endif; ?>
+
+            $('#members_task').empty().select2({
+                placeholder: '-- Choose Members --',
+                allowClear: true,
+                minimumInputLength: 0,
+                data: membersData,
+                templateSelection: colorSelect
+            });
+            warnaMultiple();
+        };
+    };
+
+    function togglePersonalU() {
+        const checks = document.getElementById("ppersonalcu");
+        const membersGroup = document.getElementById("ppersonalu");
+
+        if (checks.checked) {
+            membersGroup.style.display = "none";
+            $('#update_members_task').empty()
+        } else {
+            membersGroup.style.display = "block";
+            var membersData = [];
+
+            <?php if ($MemberSelectRecord) :
+                foreach ($MemberSelectRecord as $key) { ?>
+                    membersData.push({
+                        id: "<?= $key->member_id ?>",
+                        text: "<?= $key->member_name ?>"
+                    });
+            <?php }
+            endif; ?>
+
+            $('#update_members_task').empty().select2({
+                placeholder: '-- Choose Members --',
+                allowClear: true,
+                minimumInputLength: 0,
+                data: membersData,
+                templateSelection: colorSelect
+            });
+            warnaMultiple();
+        };
+    };
+
     function handleSelectMember() {
         const checks = document.getElementById("pmemberc");
         const membsArray = [];
@@ -1846,6 +1984,13 @@
     };
     // # END TOOLS
 </script>
+
+
+
+
+
+
+
 
 <!-- PASTE IMAGE IN COMMENT -->
 <script>
@@ -1994,7 +2139,6 @@
     cancelUploadView.addEventListener('click', handleCancelUploadView);
 </script>
 
-
 <!-- Comment -->
 <script>
     // UPLOAD IMAGE COMMENT MAIN
@@ -2071,6 +2215,8 @@
     var sendMessage = $("#send-comment-form");
     var scrolling = false;
     var previousData = null;
+    var angkaTheme = 0;
+    var changeTh = 0;
 
     function fetchMessages() {
         $.ajax({
@@ -2088,8 +2234,12 @@
                     currentSenderId = null;
                 } else if (response.messages !== null && response.messages.length > 0) {
                     var newData = JSON.stringify(response);
+                    var savedTheme = localStorage.getItem('theme');
+                    var warnaChat = (savedTheme === 'dark') ? '#009978' : '#CDFBCC';
+                    angkaTheme = (savedTheme === 'dark') ? 1 : 2;
 
-                    if (newData !== previousData) {
+                    if (newData !== previousData || angkaTheme !== changeTh) {
+                        changeTh = angkaTheme;
                         previousData = newData;
 
                         var previousScrollHeight = commentContainer[0].scrollHeight;

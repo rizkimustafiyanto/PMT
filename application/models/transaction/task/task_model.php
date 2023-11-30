@@ -16,7 +16,7 @@ class task_model extends CI_Model
 
     function Insert($parameter)
     {
-        $procedure = 'call usp_xt_task_insert(?,?,?,?,?,?,?,?,?)';
+        $procedure = 'call usp_xt_task_insert(?,?,?,?,?,?,?,?,?,?)';
         $result = $this->db->query($procedure, $parameter);
 
         return true;

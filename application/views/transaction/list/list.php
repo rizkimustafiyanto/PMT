@@ -320,9 +320,9 @@
                         <form id="send-comment-form">
                             <input type="hidden" id="current-member-id" value="<?= $this->session->userdata('member_id') ?>">
                             <div class="row col-md-12 p-0">
-                                <textarea id="message-input" class="form-control" placeholder="Ketik komentar Anda..." <?= ($member_type && $status_id != 'STW-2') ? '' : 'disabled' ?> autocomplete="off" oninput="adjustInputHeight(this)" style="height: 40px;width: 88%;" onpaste="handlePaste(event)"></textarea>
-                                <button type="button" class="btn" <?= ($member_type && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
-                                <button type="button" class="btn" <?= ($member_type && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" id="upload-button"><i class="fas fa-paperclip"></i></button>
+                                <textarea id="message-input" class="form-control" placeholder="Ketik komentar Anda..." <?= (($member_type || $member_id = 'System') && $status_id != 'STW-2') ? '' : 'disabled' ?> autocomplete="off" oninput="adjustInputHeight(this)" style="height: 40px;width: 88%;" onpaste="handlePaste(event)"></textarea>
+                                <button type="button" class="btn" <?= (($member_type || $member_id = 'System') && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" onclick="toggleEmojiPicker()"><i class="fa-solid fa-laugh-beam"></i></button>
+                                <button type="button" class="btn" <?= (($member_type || $member_id = 'System') && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;" id="upload-button"><i class="fas fa-paperclip"></i></button>
                                 <div class="emoji-picker" style="display: none;">
                                     <div class="emoji-list">
                                         <?php if ($Emojis) :
@@ -345,7 +345,7 @@
                                         </div>
                                     </div>
                                 </div>
-                                <button type="submit" class="btn" <?= ($member_type && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
+                                <button type="submit" class="btn" <?= (($member_type || $member_id = 'System') && $status_id != 'STW-2') ? '' : 'disabled' ?> style="width: 4%;"><i class="fa-solid fa-paper-plane"></i></button>
                             </div>
                         </form>
                     </div>
@@ -382,7 +382,7 @@
                         <div class="row justify-content-between">
                             <div class="col-md-11" data-card-widget="collapse" style="cursor: pointer; width: max-content;">Project Attachment</div>
                             <div class="card-tools">
-                                <?php if ($member_type && $status_id != 'STW-2') : ?>
+                                <?php if (($member_type || $member_id = 'System') && $status_id != 'STW-2') : ?>
                                     <button type="button" class="btn btn-xs btn-tool" data-toggle="modal" data-target="#modal-input-attachment">
                                         <i class="fas fa-file"></i>
                                     </button>
@@ -415,7 +415,7 @@
                                             <td><?= $record->member_upload ?></td>
 
                                             <td class="text-center">
-                                                <?php if ($member_type && $status_id != 'STW-2') : ?>
+                                                <?php if (($member_type || $member_id = 'System') && $status_id != 'STW-2') : ?>
                                                     <a id="btnDownload" class="btn btn-xs btn-success" href="<?= base_url('DownloadAttachment/' . $record->attachment_url) ?>">
                                                         <i class="fa fa-download"></i>
                                                     </a>
@@ -2165,6 +2165,8 @@
     var sendMessage = $("#send-comment-form");
     var scrolling = false;
     var previousData = null;
+    var angkaTheme = 0;
+    var changeTh = 0;
 
     function fetchMessages() {
         $.ajax({
@@ -2182,10 +2184,14 @@
                     currentSenderId = null;
                 } else if (response.messages !== null && response.messages.length > 0) {
                     var newData = JSON.stringify(response);
+                    var savedTheme = localStorage.getItem('theme');
+                    var warnaChat = (savedTheme === 'dark') ? '#009978' : '#CDFBCC';
+                    angkaTheme = (savedTheme === 'dark') ? 1 : 2;
 
-                    if (newData !== previousData) {
+                    if (newData !== previousData || angkaTheme !== changeTh) {
+                        changeTh = angkaTheme;
                         previousData = newData;
-
+                        console.log('ko');
                         var previousScrollHeight = commentContainer[0].scrollHeight;
                         commentContainer.empty();
                         var previousDate = null;
@@ -2215,7 +2221,7 @@
                                 commentHtml += '<div class="direct-chat-msg ' + messageClass + '">' +
                                     '<style>' +
                                     // #87CEEB #FFF0F5 #FFFFF0 #d9fdd3 #009978
-                                    (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: #CDFBCC; }' : '') +
+                                    (messageClass === 'right' ? '.direct-chat-msg.right .direct-chat-text { background-color: ' + warnaChat + '; }' : '') +
                                     '</style>' +
                                     '<div class="direct-chat-info clearfix">' +
                                     '<span class="direct-chat-name ' + (messageClass === 'right' ? 'float-right' : 'float-left') + '">' + senderName + '</span>' +

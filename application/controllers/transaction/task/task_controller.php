@@ -135,7 +135,7 @@ class task_controller extends BaseController
         } else if ($member_prj_type) {
             $batas_akses = ($member_prj_type == 'MT-1');
         } else if ($member_type) {
-            $batas_akses = ($member_type == 'MT-2');
+            $batas_akses = ($member_type == 'MT-2' || $member_type == 'MT-3');
         } else {
             $batas_akses = ($memberID == 'System' || $memberID == $creatorList);
         }
@@ -168,6 +168,7 @@ class task_controller extends BaseController
         #TASK
         #============================================================================
         $data['TaskRecords'] = $this->task_model->Get(['', $p_list_id, '', '', $memberID, ($member_type == 'MT-1' || $member_type == 'MT-2' || $member_prj_type == 'MT-1' || $member_prj_type == 'MT-4' || $member_prj_type == 'MT-I' || $member_prj_type == NULL) ? 3 : 2]);
+        $data['TaskMemberRecords'] = $this->task_model->Get(['', $p_list_id, '', '', $memberID, 11]);
         $data['StatusTaskRecords'] = $this->variable_model->GetVariable(['', 5]);
 
         #============================================================================
@@ -179,13 +180,20 @@ class task_controller extends BaseController
     // INSERT PROJECT
     function InsertTask()
     {
+        $flag = $this->input->post('personal');
+        $member_id = '';
+
         $task_id = '';
         $list_id = $this->input->post('list_id');
         $task_name = $this->input->post('title');
         $start_date = $this->input->post('start');
         $due_date = $this->input->post('due');
         $p_priority = $this->input->post('priority');
-        $member_id = $this->input->post('membersTask');
+        if ($flag == 0) {
+            $member_id = $this->input->post('membersTask');
+        } else {
+            $member_id = $this->session->userdata('member_id');
+        }
         $p_task_status = $this->input->post('status');
         $creation_user_id = $this->session->userdata('member_id');
 
@@ -198,7 +206,8 @@ class task_controller extends BaseController
             $p_priority,
             $member_id,
             $p_task_status,
-            $creation_user_id
+            $creation_user_id,
+            $flag
         ];
 
         $result = $this->task_model->Insert($task_param);
@@ -214,13 +223,31 @@ class task_controller extends BaseController
         $creator_name = '';
         $namaMember = [];
         $userMail = [];
-        foreach ($memberRecords as $member) {
-            if ($member_id == $member->member_id) {
-                $namaMember[] = $member->member_name;
-                $userMail[] = $member->email;
+        if ($flag == 0) {
+            if (is_string($member_id) && is_array(json_decode($member_id, true))) {
+                $membersArray = json_decode($member_id, true);
+                // echo "Format Good";
+                foreach ($membersArray as $memberId) {
+                    foreach ($memberRecords as $member) {
+                        if ($memberId == $member->member_id) {
+                            $namaMember[] = $member->member_name;
+                            $userMail[] = $member->email;
+                        }
+                        if ($creation_user_id == $member->member_id) {
+                            $creator_name = $member->member_name;
+                        }
+                    }
+                }
             }
-            if ($creation_user_id == $member->member_id) {
-                $creator_name = $member->member_name;
+        } else {
+            foreach ($memberRecords as $member) {
+                if ($member_id == $member->member_id) {
+                    $namaMember[] = $member->member_name;
+                    $userMail[] = $member->email;
+                }
+                if ($creation_user_id == $member->member_id) {
+                    $creator_name = $member->member_name;
+                }
             }
         }
         foreach ($taskFinding as $key) {
