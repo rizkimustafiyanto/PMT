@@ -10,6 +10,7 @@ class project_controller extends BaseController
     {
         parent::__construct();
         $this->load->model('transaction/project/project_model');
+        $this->load->model('transaction/project/project_group_model');
         $this->load->model('transaction/project/project_member_model');
         $this->load->model('transaction/tools/Attachment_model');
         $this->load->model('transaction/tools/Log_model');
@@ -42,6 +43,8 @@ class project_controller extends BaseController
         $data['tempmember'] = $this->member_model->Get([0, 2]);
         $data['CollabGroup'] = $this->project_member_model->Get(['', '', '', '', 11]);
         $data['ManageRecord'] = $this->management_member_model->Get(['', 0]);
+        $data['GroupProjectRecords'] = $this->project_group_model->Get(['', '', $memberID, 1]);
+        $data['AllProjectRecords'] = $this->project_group_model->Get(['', '', $memberID, 0]);
 
         #============================================================================
 
@@ -405,6 +408,118 @@ class project_controller extends BaseController
     }
     // END EORKSPACE MEMBER
     #===========================================================================
+    function getProjectGrouping()
+    {
+        $memberID = $this->session->userdata('member_id');
+        $group_project = $this->input->post('grouping_project');
+
+        $datas = array();
+        $isianArray = null;
+        if ($group_project) {
+            $isianArray = $this->project_group_model->Get([$group_project, '', $memberID, 2]);
+        } else {
+            $isianArray = $this->project_model->Get(['', '', 0, $memberID]);
+            if (!$isianArray) {
+                $isianArray = $this->project_model->Get(['', '', 7, $memberID]);
+            }
+        }
+
+        if ($isianArray) {
+            foreach ($isianArray as $record) {
+                $encry_pro_id = enkripbro($record->project_id);
+                $percent = $record->percentage;
+                $percent = (empty($percent)) ? 0 : $percent;
+                if (strlen($percent) > 4) {
+                    $percent = number_format($percent, 2);
+                }
+                $isianKecil = array(
+                    'url' => base_url() . 'Project/List/' . $encry_pro_id,
+                    'urlkanban' => base_url() . 'Project/KanbanList/' . $encry_pro_id,
+                    'percent' => $percent,
+                    'project_name' => $record->project_name,
+                    'creation_date' => (new DateTime($record->creation_datetime))->format('d M y'),
+                    'project_id' => $record->project_id,
+                    'pin_pro' => $record->pin_pro,
+                    'start_date' => (new DateTime($record->start_date))->format('d M y'),
+                    'due_date' => (new DateTime($record->due_date))->format('d M y'),
+                    'status_id' => $record->status_id,
+                    'name_project_status' => $record->name_project_status,
+                    'member_type_id' => $record->member_type_id
+                );
+                array_push($datas, $isianKecil);
+            }
+            $data['ProjectView'] = $datas;
+        } else {
+            $data['error'] = 'No data found';
+        }
+
+
+        echo json_encode($data);
+    }
+
+    function InsertProjectGroup()
+    {
+        $group_id = $this->input->post('group_id');
+        $group_name = $this->input->post('group_name');
+        $project_id = $this->input->post('project_id');
+        $creation_user_id = $this->session->userdata('member_id');
+
+        $project_param = [
+            $group_id,
+            $group_name,
+            $project_id,
+            $creation_user_id
+        ];
+
+        $result = $this->project_group_model->Insert($project_param);
+
+        if ($result === 'success') {
+            $response = array(
+                'status' => 'success',
+                'title' => 'Success',
+                'message' => 'Project grouping successfully'
+            );
+        } else {
+            $response = array(
+                'status' => 'error',
+                'title' => 'Error',
+                'message' => $result
+            );
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    }
+    function DeleteProjectGroup()
+    {
+        $group_id = $this->input->post('group_id');
+
+        $result = $this->project_group_model->Delete([$group_id]);
+
+        if ($result === 'success') {
+            $response = array(
+                'status' => 'success',
+                'title' => 'Success',
+                'message' => 'Project group delete successfully'
+            );
+        } else {
+            $response = array(
+                'status' => 'error',
+                'title' => 'Error',
+                'message' => $result
+            );
+        }
+
+        header('Content-Type: application/json');
+        echo json_encode($response);
+    }
+
+    // GROPUING PROJECT
+    #===========================================================================
+
+
+    // END GROPUING PROJECT
+    #===========================================================================
 
     // PINNED PROJECT
     #===========================================================================
@@ -436,7 +551,11 @@ class project_controller extends BaseController
         header('Content-Type: application/json');
         echo json_encode($response);
     }
+    // END PINNED PROJECT
+    #===========================================================================
 
+    // EMAILING PROJECT
+    #===========================================================================
     function sendingEmail($penerima, $namaPenerima, $namaProject, $creatorName, $creator_level, $subjectEmail, $urlmail, $flagging)
     {
         $subject_email = $subjectEmail;
@@ -499,4 +618,6 @@ class project_controller extends BaseController
         $email = new Email();
         $email->sendEmail($emailPenerima, $subject_email, $isi_email);
     }
+    // END EMAILING PROJECT
+    #===========================================================================
 }

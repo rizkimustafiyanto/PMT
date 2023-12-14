@@ -401,7 +401,9 @@
                                     <th data-width="15%">Uploaded Date</th>
                                     <!-- <th>Type</th> -->
                                     <th data-width="15%">Uploaded By</th>
-                                    <th data-width="10%" class="text-center">Action</th>
+                                    <?php if ($member_type || $member_id = 'System') : ?>
+                                        <th data-width="10%" class="text-center">Action</th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -413,9 +415,8 @@
 
                                             <!-- <td><?= $record->attachment_type_name ?></td> -->
                                             <td><?= $record->member_upload ?></td>
-
-                                            <td class="text-center">
-                                                <?php if (($member_type || $member_id = 'System') && $status_id != 'STW-2') : ?>
+                                            <?php if ($member_type || $member_id = 'System') : ?>
+                                                <td class="text-center">
                                                     <a id="btnDownload" class="btn btn-xs btn-success" href="<?= base_url('DownloadAttachment/' . $record->attachment_url) ?>">
                                                         <i class="fa fa-download"></i>
                                                     </a>
@@ -426,9 +427,9 @@
                                                         <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
                                                             <i class="fa fa-trash"></i>
                                                         </a>
-                                                <?php endif;
-                                                endif; ?>
-                                            </td>
+                                                    <?php endif; ?>
+                                                </td>
+                                            <?php endif; ?>
                                         </tr>
                                 <?php endforeach;
                                 endif; ?>

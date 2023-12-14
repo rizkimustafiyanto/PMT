@@ -107,8 +107,11 @@ $route['DeleteManage/(:any)'] = 'master/management_member_controller/Delete/$1';
 
 // PROJEK
 $route['Project'] = 'transaction/project/project_controller/GetProject';
+$route['GetGroupProject'] = 'transaction/project/project_controller/getProjectGrouping';
+$route['InsertProjectGroup'] = 'transaction/project/project_controller/InsertProjectGroup';
 $route['InsertProject'] = 'transaction/project/project_controller/InsertProject';
 $route['DeleteProject'] = 'transaction/project/project_controller/DeleteProject';
+$route['DeleteProjectGroup'] = 'transaction/project/project_controller/DeleteProjectGroup';
 $route['UpdateProject'] = 'transaction/project/project_controller/UpdateProject';
 $route['InsertProjectMember'] = 'transaction/project/project_controller/InsertProjectMember';
 $route['UpdateProjectMember'] = 'transaction/project/project_controller/UpdateProjectMember';

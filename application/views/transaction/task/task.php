@@ -285,6 +285,7 @@
                                             <?php endif; ?>
 
                                             <span class="text-muted float-right">
+                                                <i class="far fa-comment-alt text-xs notetask" data-task-note="<?= $record->task_note ?>" data-task-id="<?= $record->task_id ?>" data-changer-id="<?= $record->change_user_name ?>"></i>
                                                 ||
                                                 <?php if ($record->member_id) : ?>
                                                     <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $record->member_name ?>" data-member-name="<?= $record->member_name ?>" data-member-company="<?= $record->company_name ?>" data-src="<?= base_url() . $photo_url ?>">
@@ -419,7 +420,9 @@
 
                                     <!-- <th>Type</th> -->
                                     <th data-width="15%">Uploaded By</th>
-                                    <th data-width="10%" class="text-center">Action</th>
+                                    <?php if ($member_type || $member_id = 'System') : ?>
+                                        <th data-width="10%" class="text-center">Action</th>
+                                    <?php endif; ?>
                                 </tr>
                             </thead>
                             <tbody>
@@ -429,19 +432,22 @@
                                             <td><?= $record->attachment_name . '.' . $record->attachment_type ?></td>
                                             <td><?= $record->creation_datetime ?></td>
                                             <td><?= $record->member_upload ?></td>
-                                            <td class="text-center">
-                                                <a id="btnDownload" class="btn btn-xs btn-success" href="<?= base_url('DownloadAttachment/' . $record->attachment_url) ?>">
-                                                    <i class="fa fa-download"></i>
-                                                </a>
-                                                <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
-                                                    <i class="fas fa-eye"></i>
-                                                </a>
-                                                <?php if (($member_type == 'MT-2' || $member_id == 'System' || $member_id == $creator || $member_id == $record->creation_user_id) && $status_id != 'STL-4') : ?>
-                                                    <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
-                                                        <i class="fa fa-trash"></i>
+                                            <?php if ($member_type || $member_id = 'System') : ?>
+                                                <td class="text-center">
+
+                                                    <a id="btnDownload" class="btn btn-xs btn-success" href="<?= base_url('DownloadAttachment/' . $record->attachment_url) ?>">
+                                                        <i class="fa fa-download"></i>
                                                     </a>
-                                                <?php endif; ?>
-                                            </td>
+                                                    <a href="<?= base_url('ViewAttachment/' . $record->attachment_url) ?>" target="_blank" class="btn btn-xs btn-primary">
+                                                        <i class="fas fa-eye"></i>
+                                                    </a>
+                                                    <?php if (($member_type == 'MT-2' || $member_id == 'System' || $member_id == $creator || $member_id == $record->creation_user_id) && $status_id != 'STL-4') : ?>
+                                                        <a id="btnDelAttachment" data-attachment_id='<?= $record->attachment_id ?>' data-attachment_url='<?= $record->attachment_url ?>' class="btn btn-xs btn-danger">
+                                                            <i class="fa fa-trash"></i>
+                                                        </a>
+                                                    <?php endif; ?>
+                                                </td>
+                                            <?php endif; ?>
                                         </tr>
                                 <?php endforeach;
                                 endif; ?>
@@ -849,6 +855,38 @@
     </div>
 </div>
 <!-- Modal Update Project -->
+
+<!-- Modal CATATAN -->
+<div class="modal fade" id="myNotes" tabindex="-1" role="dialog" aria-labelledby="myNotes" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">The Note</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <input type="hidden" class="form-control" id="teks_note_id" placeholder="Project ID" name="teks_note_id" required readonly>
+                <textarea class="form-control" id="teks_note_update"></textarea>
+                <div class="row col-sm-12" style="margin-top: 10px;">
+                    <div class="col-sm-2 text-sm">
+                        Changer :
+                    </div>
+                    <div class="col-sm-10 text-sm text-muted" id="changer_name">
+                        -
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer text-right">
+                <div class="btn-group">
+                    <button type="button" class="btn btn-primary" id="btnInNote">Save</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- END Modal CATATAN -->
 <script>
     document.addEventListener("DOMContentLoaded", function() {
         const taskList = document.querySelector(".todo-list");
@@ -968,7 +1006,7 @@
         updateSortButtonIcon(isDescending);
 
         const referrer = document.referrer;
-        console.log(referrer);
+        // console.log(referrer);
         const previousDetail = "<?= base_url() ?>Project/List/<?= $project_id ?>";
         if (referrer === previousDetail) {
             $('#btnBoard').toggle(false);
@@ -1151,7 +1189,7 @@
         if (checks.checked) {
             personal = 1;
         } else {
-            console.log('ok');
+            // console.log('ok');
             if (membersTask == "") {
                 validasiInfo('Please complete assign member before adding project task!');
                 return;
@@ -1385,6 +1423,47 @@
             updateTask(UpdateTask);
         }
     });
+
+    $(document).on('click', '.notetask', function() {
+        var noteview = $(this).data('task-note');
+        var idTask = $(this).data('task-id');
+        var changer = $(this).data('changer-id');
+
+        $('#teks_note_id').val(idTask);
+        $('#teks_note_update').val(noteview);
+        $('#changer_name').html(changer);
+
+        $("#myNotes").modal('show');
+        console.log('bis');
+    })
+
+    $(document).on('click', '#btnInNote', function() {
+        var taskId = $('#teks_note_id').val();
+        var taskNote = $('#teks_note_update').val();
+
+        var UpdateTask = {
+            id: taskId,
+            list_id: '<?= $list_id ?>',
+            title: taskNote,
+            start: '',
+            due: '',
+            priority: '',
+            status: '',
+            memberId: '',
+            flag: 4
+        };
+
+        // TOOLS
+        var updateButton = document.getElementById("btnInNote");
+        updateButton.disabled = true;
+        updateButton.textContent = "Saving...";
+        updateButton.classList.add("disabled");
+
+        loadIng();
+        updateTask(UpdateTask);
+        $("#myNotes").modal('hide');
+        // console.log(UpdateTask);
+    })
 
     function updateTask(UpdateTask) {
         $.ajax({
@@ -1985,13 +2064,6 @@
     // # END TOOLS
 </script>
 
-
-
-
-
-
-
-
 <!-- PASTE IMAGE IN COMMENT -->
 <script>
     var messanger = $(".messanger");
@@ -2067,7 +2139,7 @@
     function displayUploadedFile(url) {
         uploadedImages.push(url);
         updateImageSlider();
-        console.log(uploadedImages);
+        // console.log(uploadedImages);
     }
 
     // Memperbarui slider gambar

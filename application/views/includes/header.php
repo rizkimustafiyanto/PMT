@@ -143,34 +143,15 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- END UNTUK UPLOAD GAMBAR COMMENT -->
 
 
-<!-- UNTUK VIEW ATTACHMENT -->
-<!-- <style>
-  .file-attachment {
-    position: absolute;
-    bottom: 50px;
-    right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    max-height: 300px;
-    width: 850px;
-    overflow-y: auto;
-    overflow-x: hidden;
-    z-index: 1;
+<!-- UNTUK VIEW Pilihan -->
+<style>
+  .pilihangroup {
+    background: linear-gradient(to right, red, blue, green);
+    color: white;
+    padding: 20px;
+    text-align: center;
   }
-
-  #file-inputing {
-    display: flex;
-    flex-wrap: wrap;
-    padding: 5px;
-  }
-
-  #viewImage {
-    max-width: 100%;
-    max-height: calc(100% - 48px);
-    /* 48px is the height of h5 element */
-  }
-</style> -->
+</style>
 <!-- UNTUK EMOJI -->
 <style>
   .emoji-picker {

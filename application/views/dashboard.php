@@ -174,6 +174,7 @@
                         <?php else : ?>
                           <small class="badge badge-success float-right" style="margin-top: 5px; margin-right: 8px;">DONE</small>
                         <?php endif; ?>
+                        <i class="far fa-comment-alt text-xs float-right notetask" style="margin-top: 10px;" data-task-note="<?= $record->task_note ?>" data-changer-id="<?= $record->change_user_name ?>"></i>
 
                       </li>
 
@@ -293,6 +294,38 @@
   </div>
 </div>
 <!-- Batas Event View -->
+
+<!-- CATATAN NOTE -->
+<div class="modal fade" id="myNotes" tabindex="-1" role="dialog" aria-labelledby="myNotes" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title">The Note</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+        <textarea class="form-control" id="teks_note_update"></textarea>
+        <div class="row col-sm-12" style="margin-top: 10px;">
+          <div class="col-sm-2 text-sm">
+            Changer :
+          </div>
+          <div class="col-sm-10 text-sm text-muted" id="changer_name">
+            -
+          </div>
+        </div>
+      </div>
+      <div class="modal-footer text-right">
+        <div class="btn-group">
+          <button type="button" class="btn btn-secondary" data-dismiss="modal" aria-label="Close">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- END CATATAN NOTE -->
+
 <!-- Control Sidebar -->
 <script>
   $(document).ready(function() {
@@ -569,5 +602,16 @@
         console.log(error);
       },
     });
+
+    $(document).on('click', '.notetask', function() {
+      var noteview = $(this).data('task-note');
+      var changer = $(this).data('changer-id');
+
+      $('#teks_note_update').val(noteview);
+      $('#changer_name').html(changer);
+
+      $("#myNotes").modal('show');
+      console.log('bis');
+    })
   });
 </script>
