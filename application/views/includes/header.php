@@ -146,7 +146,7 @@ scratch. This page gets rid of all links and provides the needed markup only.
 <!-- UNTUK VIEW Pilihan -->
 <style>
   .pilihangroup {
-    background: linear-gradient(to right, red, blue, green);
+    background: #3498db;
     color: white;
     padding: 20px;
     text-align: center;

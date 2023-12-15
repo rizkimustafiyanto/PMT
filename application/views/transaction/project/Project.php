@@ -5,12 +5,8 @@
             <div class="row">
                 <div class="col-12">
                     <div class="card card-sm card-default">
-                        <div class="card-header">
-                            <div class="row">
-                                <div class="col-sm-6">
-                                    <h3>All Project</h3>
-                                </div>
-                            </div>
+                        <div class="card-header text-center">
+                            <h3>Project Main</h3>
                         </div>
                     </div>
                     <div class="card">
@@ -19,7 +15,7 @@
                                 <div class="card col-lg-2">
                                     <div class="card-header">
                                         <h5 class="card-title">
-                                            Group List
+                                            Grouping
                                         </h5>
                                         <div class="card-tools">
                                             <button type="button" class="btn btn-primary btn-sm btn-tool" id="btnAddGroup" data-toggle="modal" data-target="#modal-input-project-group">
@@ -216,7 +212,7 @@
                     </div>
                     <div class="card-footer text-right">
                         <div class="btn-group">
-                            <button type="button" class="btn btn-primary" id="AddGrouping">Save Project</button>
+                            <button type="button" class="btn btn-primary" id="AddGrouping">Save</button>
                         </div>
                     </div>
                 </form>
@@ -229,7 +225,7 @@
     $(document).on('click', '#btnAddGroup', function() {
         $('#group_project').val([]).trigger('change');
         $('#group_project').select2({
-            placeholder: '-- Choose Group --',
+            placeholder: '-- Choose Project --',
             allowClear: true,
             minimumInputLength: 0,
             data: [
@@ -436,11 +432,11 @@
         var groupName = $(this).data('groups-name');
         var dataGroup = $(this).data('progroups');
 
-        var groupArray = JSON.stringify(dataGroup).includes(',') ? dataGroup.split(',').map(item => item.trim()) : null;
+        var groupArray = JSON.stringify(dataGroup).includes(',') ? dataGroup.split(',').map(item => item.trim()) : dataGroup;
 
         $('#group_project').val([]).trigger('change');
         $('#group_project').select2({
-            placeholder: '-- Choose Group --',
+            placeholder: '-- Choose Project --',
             allowClear: true,
             minimumInputLength: 0,
             data: [
@@ -545,33 +541,32 @@
         tableing.clear();
 
         $.each(data.ProjectView, function(index, record) {
-            var newRow = '<tr>';
-            newRow += '<td>' + (index + 1) + '</td>';
+            var newRow = '<tr class="p-0">';
+            newRow += '<td class="text-center" style="width:3%;">';
+            newRow += index + 1;
+            newRow += '</td>';
             newRow += '<td>';
             newRow += '<div class="row align-items-center">';
             newRow += '<div class="col clickable" data-url="' + record.url + '" style="cursor: pointer;">';
             newRow += record.project_name + '<br>';
-            newRow += 'Created : ' + record.creation_date;
             newRow += '</div>';
             newRow += '<div class="col-auto pin-button" data-project-id="' + record.project_id + '" title="Pin Project"><i class="' + (record.pin_pro == 1 ? 'fa-regular' : 'fa-solid') + ' fa-bookmark"></i></div>';
             newRow += '</div>';
             newRow += '</td>';
-            newRow += '<td>';
-            newRow += '<div>Start : ' + (record.start_date ? record.start_date : '') + '</div>';
-            newRow += '<div>Due : ' + (record.due_date ? record.due_date : '') + '</div>';
+            newRow += '<td class="text-center" style="width:15%;">';
+            newRow += (record.start_date ? record.start_date : '') + ' - ' + (record.due_date ? record.due_date : '');
             newRow += '</td>';
-            newRow += '<td>';
+            newRow += '<td style="width:20%;">';
             newRow += '<div class="progress-group">';
-            newRow += '<div class="progress progress-sm">';
-            newRow += '<div class="progress-bar ' + (record.percent < 100 ? 'bg-primary' : 'bg-success') + '" style="width: ' + record.percent + '%"></div>';
+            newRow += '<div class="progress progress-sm" style="margin-top:5px;">';
+            newRow += '<div class="progress-bar ' + (record.percent < 100 ? 'bg-primary' : 'bg-success') + '" style="width: ' + record.percent + '%">><b>' + record.percent + ' %</b></div>';
             newRow += '</div>';
-            newRow += '<span class="float-center"><b>' + record.percent + ' % Complete</b></span>';
             newRow += '</div>';
             newRow += '</td>';
-            newRow += '<td class="text-center">';
+            newRow += '<td class="text-center" style="width:10%">';
             newRow += '<a class="badge ' + (record.status_id == 'STW-1' ? 'badge-warning' : 'badge-success') + ' float">' + record.name_project_status + '</a>';
             newRow += '</td>';
-            newRow += '<td class="text-center">';
+            newRow += '<td class="text-center" style="width:10%;">';
             newRow += '<div class="btn-group">';
             newRow += '<button type="button" class="btn btn-success btn-xs dropdown-toggle" data-toggle="dropdown">';
             newRow += '<i class="fas fa-bars"></i>';

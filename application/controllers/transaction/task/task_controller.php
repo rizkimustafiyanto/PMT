@@ -189,7 +189,7 @@ class task_controller extends BaseController
         $start_date = $this->input->post('start');
         $due_date = $this->input->post('due');
         $p_priority = $this->input->post('priority');
-        if ($flag == 0) {
+        if ($flag == '0') {
             $member_id = $this->input->post('membersTask');
         } else {
             $member_id = $this->session->userdata('member_id');
@@ -211,6 +211,7 @@ class task_controller extends BaseController
         ];
 
         $result = $this->task_model->Insert($task_param);
+
 
         // #EMAILING CONFIG
         // #==============================================================================================================

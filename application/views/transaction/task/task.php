@@ -253,15 +253,19 @@
 
                                         $groupingMem = false;
                                         $isiGroup = [];
+                                        $cekgrouP = 0;
                                         if ($TaskMemberRecords) :
                                             foreach ($TaskMemberRecords as $col) :
-                                                $isiGroup[] = $col->member_id;
-                                                if ($member_id == $col->member_id) {
-                                                    $groupingMem = true;
+                                                if ($record->task_id == $col->task_id) {
+                                                    $isiGroup[] = $col->member_id;
+                                                    if ($member_id == $col->member_id) {
+                                                        $groupingMem = true;
+                                                    }
+                                                    $cekgrouP = 1;
                                                 }
                                             endforeach;
                                         endif;
-
+                                        $izinLihat = (($batas_akses) || ($member_id == $record->creation_user_id) || ($member_id == $record->member_id) || $groupingMem);
 
                                     ?>
                                         <li class="overflow-auto text-nowrap" style="background-color: <?= $bgPriority ?>;">
@@ -273,7 +277,7 @@
                                             <span class="text title"><?= $record->task_name ?></span>
                                             <div class="tools" style="margin-top:2px;">
                                                 <?php if ($showCheckbox) : ?>
-                                                    <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= ($record->member_id) ? $record->member_id : implode(', ', $isiGroup) ?>"></i>
+                                                    <i class="fas fa-edit" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>" data-start="<?= $record->start_date ?>" data-due="<?= $record->due_date ?>" data-priority="<?= $record->priority_type_id ?>" data-task_member="<?= ($record->member_id) ? $record->member_id : implode(', ', $isiGroup) ?>" data-cekgr="<?= $cekgrouP ?>"></i>
                                                     <i class="fas fa-trash" data-task_id="<?= $record->task_id ?>" data-list_id="<?= $record->list_id ?>" data-task_name="<?= $record->task_name ?>"></i>
                                                 <?php endif; ?>
                                             </div>
@@ -285,23 +289,26 @@
                                             <?php endif; ?>
 
                                             <span class="text-muted float-right">
-                                                <i class="far fa-comment-alt text-xs notetask" data-task-note="<?= $record->task_note ?>" data-task-id="<?= $record->task_id ?>" data-changer-id="<?= $record->change_user_name ?>"></i>
+                                                <i class="far fa-comment-alt text-xs <?= $izinLihat ? 'notetask' : '' ?>" data-task-note="<?= $record->task_note ?>" data-task-id="<?= $record->task_id ?>" data-changer-id="<?= $record->change_user_name ?>" data-statustask="<?= $statusW ?>"></i>
                                                 ||
                                                 <?php if ($record->member_id) : ?>
                                                     <img src="<?= base_url() . $photo_url ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $record->member_name ?>" data-member-name="<?= $record->member_name ?>" data-member-company="<?= $record->company_name ?>" data-src="<?= base_url() . $photo_url ?>">
                                                 <?php else : ?>
                                                     <?php if ($TaskMemberRecords) :
                                                         foreach ($TaskMemberRecords as $key) :
-                                                            $avatar1 = $key->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
-                                                            $photo_url1 = $key->photo_url;
-                                                            if (empty($photo_url1) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url1)) {
-                                                                $photo_url1 = 'assets/dist/img/' . $avatar1;
-                                                            } else {
-                                                                $photo_url1 = '../api-hris/upload/' . $key->photo_url;
-                                                            }
+                                                            if ($record->task_id == $key->task_id) {
+                                                                $avatar1 = $key->gender_id == 'GR-001' ? 'avatar5.png' : 'avatar3.png';
+                                                                $photo_url1 = $key->photo_url;
+                                                                if (empty($photo_url1) || !file_exists(FCPATH . '../api-hris/upload/' . $photo_url1)) {
+                                                                    $photo_url1 = 'assets/dist/img/' . $avatar1;
+                                                                } else {
+                                                                    $photo_url1 = '../api-hris/upload/' . $key->photo_url;
+                                                                }
+
                                                     ?>
-                                                            <img src="<?= base_url() . $photo_url1 ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>" data-member-name="<?= $key->member_name ?>" data-member-company="<?= $key->company_name ?>" data-src="<?= base_url() . $photo_url1 ?>">
-                                                <?php endforeach;
+                                                                <img src="<?= base_url() . $photo_url1 ?>" alt="User Image" class="rounded-circle profile-trigger" style="width: 15px; height: 15px;" title="<?= $key->member_name ?>" data-member-name="<?= $key->member_name ?>" data-member-company="<?= $key->company_name ?>" data-src="<?= base_url() . $photo_url1 ?>">
+                                                <?php }
+                                                        endforeach;
                                                     endif;
                                                 endif; ?>
                                                 ||
@@ -862,9 +869,6 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h5 class="modal-title">The Note</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
             </div>
             <div class="modal-body">
                 <input type="hidden" class="form-control" id="teks_note_id" placeholder="Project ID" name="teks_note_id" required readonly>
@@ -878,7 +882,7 @@
                     </div>
                 </div>
             </div>
-            <div class="modal-footer text-right">
+            <div class="modal-footer text-right" id="footNote">
                 <div class="btn-group">
                     <button type="button" class="btn btn-primary" id="btnInNote">Save</button>
                 </div>
@@ -1183,11 +1187,11 @@
         // var taskDue = $('#task_due').val();
         var membersTask = $('#members_task').val();
         var priority = $("input[name='priority_task']:checked").val();
-        var personal = 0;
+        var personal = '0';
 
         const checks = document.getElementById("ppersonalc");
         if (checks.checked) {
-            personal = 1;
+            personal = '1';
         } else {
             // console.log('ok');
             if (membersTask == "") {
@@ -1282,9 +1286,10 @@
 
         var memberType = '<?= $member_type ?>';
         var memberNow = $(this).data('task_member');
+        var cekGr = $(this).data('cekgr');
         const checks = document.getElementById("ppersonalcu");
-        var memberArray = JSON.stringify(memberNow).includes(',') ? memberNow.split(',').map(item => item.trim()) : 1;
-        checks.checked = !Array.isArray(memberArray);
+        var memberArray = JSON.stringify(memberNow).includes(',') ? memberNow.split(',').map(item => item.trim()) : memberNow;
+        checks.checked = (!Array.isArray(memberArray) && (cekGr == 0));
         togglePersonalU();
 
         var membersData = [];
@@ -1428,6 +1433,14 @@
         var noteview = $(this).data('task-note');
         var idTask = $(this).data('task-id');
         var changer = $(this).data('changer-id');
+        var statustask = $(this).data('statustask');
+        var hidingsave = $('#footNote');
+
+        if (statustask == 'STL-4') {
+            hidingsave.hide();
+        } else {
+            hidingsave.show();
+        }
 
         $('#teks_note_id').val(idTask);
         $('#teks_note_update').val(noteview);
